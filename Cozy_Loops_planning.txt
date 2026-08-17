@@ -1,0 +1,681 @@
+# Crochet Studio Website — Project Planning (v1.0)
+
+---
+
+# Project Name
+
+**Nevo**
+
+Premium Crochet & Handmade Knitting Showcase
+
+---
+
+# Goal
+
+Create a premium, modern, beautifully animated website with a simple CMS that helps a crochet business:
+
+* Showcase handmade work with stunning 3D visuals and animations
+* Manage portfolio projects (add/edit/delete via admin panel)
+* Manage media gallery
+* Capture leads and track inquiries
+* Gain customer trust through design excellence
+* Drive inquiries via WhatsApp and contact form
+* Track customer orders and inquiries
+* Serve as a digital business card, portfolio, and content management hub
+
+**Focus**: Beautiful showcase with 3D elements + functional CMS for easy management (no payment system needed).
+
+---
+
+# Technology Stack
+
+## Frontend
+
+* Next.js 15
+* React 19
+* TypeScript
+* TailwindCSS
+* Framer Motion (smooth animations)
+* Three.js (lightweight 3D elements)
+* React Three Fiber (3D component library)
+* Drei (3D helpers)
+* React Hook Form
+* Swiper.js (image galleries)
+
+---
+
+## Backend
+
+**Supabase (Recommended for free tier)**
+* PostgreSQL database
+* Real-time subscriptions
+* Authentication
+* Storage for images
+* Edge Functions for serverless logic
+
+---
+
+## Database
+
+**Supabase PostgreSQL**
+
+Tables:
+- Projects/Gallery Items
+- Testimonials
+- Orders/Inquiries
+- Admin Users
+- Messages
+- Settings
+
+---
+
+## Storage
+
+Supabase Storage
+
+Later: Cloudinary for advanced image optimization
+
+---
+
+## Deployment
+
+**Vercel** (Next.js frontend) - free tier
+
+**Supabase** (database & backend) - free tier
+
+Both have generous free tiers perfect for small projects
+
+---
+
+# Project Architecture
+
+```
+Client (Browser)
+      │
+      ├─ Public Pages (Landing, Gallery, Work Details)
+      │
+      └─ Admin Dashboard (Login Required)
+            │
+            ▼
+    Next.js Frontend
+            │
+    REST API / Real-time Subscriptions
+            │
+      Supabase Backend
+            │
+      ├─ PostgreSQL Database
+      ├─ Authentication
+      └─ File Storage
+```
+
+**Scalable, real-time, and perfect for free tier deployment.**
+
+---
+
+# Website Flow
+
+```
+Landing
+
+↓
+
+Portfolio/Gallery
+
+↓
+
+Product Details
+
+↓
+
+Contact / WhatsApp / Inquiry
+
+↓
+
+Message Received (via form)
+```
+
+---
+
+# Main Pages
+
+## 1. Landing Page
+
+Purpose
+
+Brand introduction and portfolio showcase.
+
+Sections
+
+* Hero (brand story + main visual)
+* Featured Gallery
+* Why Handmade
+* Process
+* Testimonials
+* FAQ
+* CTA (Contact / WhatsApp)
+
+---
+
+## 2. Portfolio / Gallery
+
+Full gallery of work
+
+Filters
+
+* Category
+* Style
+* Material
+
+Sorting
+
+* Newest
+* Featured
+---
+
+## 2.5. Admin Dashboard
+
+**Projects Management**
+* Add/Edit/Delete projects
+* Upload images
+* Set featured status
+* Manage categories
+
+**Gallery Management**
+* Upload and organize media
+* Add metadata
+* Organize by collection
+
+**Orders / Inquiries**
+* View all customer inquiries
+* Track order status
+* Add notes
+* Mark as completed
+
+**Settings**
+* Site settings
+* WhatsApp number
+* Contact information
+---
+
+## 3. Work Details
+
+Contains
+
+* Full gallery/carousel
+* Description
+* Specifications
+* Materials used
+* Client feedback
+* Related works
+* Contact button
+
+---
+
+## 4. About
+
+Brand story
+
+Process/workflow
+
+Gallery
+
+Meet the artist
+
+Awards
+
+---
+
+## 5. Contact
+
+Contact form (name, email, message)
+
+WhatsApp link
+
+Email
+
+Map (optional)
+
+---
+
+## 6. Blog (Optional)
+
+Crochet care guides
+
+Behind the scenes
+
+Process videos
+
+Seasonal collections
+
+---
+
+# Landing Page Structure
+
+```
+Navbar
+
+↓
+
+Hero (with 3D Element)
+
+↓
+
+Featured Gallery
+
+↓
+
+Why Handmade
+
+↓
+
+Process/Timeline
+
+↓
+
+Testimonials
+
+↓
+
+FAQ
+
+↓
+
+Newsletter Signup
+
+↓
+
+Footer
+```
+
+---
+
+# Hero Design
+
+Left
+
+Luxury typography
+
+Brand tagline
+
+CTA buttons
+
+Key statistics
+
+Right
+
+**Interactive 3D Element** (One of the following):
+* Animated yarn ball with rotation
+* Floating crochet hook
+* 3D flower (subtle animation)
+* Fabric/textile animation
+
+Smooth fade-in and parallax
+
+High-quality background image with 3D overlay
+
+**Mobile-first approach** - 3D adapts responsively
+
+---
+
+---
+
+# Animation System
+
+Entrance animations (fade, slide)
+
+Scroll animations (fade on scroll)
+
+Page transitions (smooth)
+
+Hover interactions (card lift, scale) - touch-friendly on mobile
+
+**3D Elements:**
+* Animated 3D objects in hero (yarn, hook, flower, etc.)
+* 3D gallery card hover effects
+* Subtle 3D parallax on scroll
+* Touch-optimized interactions (no mouse tracking)
+
+Smooth scrolling
+
+**Mobile-first approach** - responsive animations that work on all screen sizes
+
+---
+
+# Color Palette
+
+Cream
+
+```
+#FFF8F3
+```
+
+Rose
+
+```
+#F6B5C8
+```
+
+Sage
+
+```
+#BFD8B8
+```
+
+Chocolate
+
+```
+#5A4638
+```
+
+Gold
+
+```
+#E8C36A
+```
+
+Dark
+
+```
+#2E2A29
+```
+
+---
+
+# Typography
+
+Primary
+
+Cormorant Garamond
+
+Secondary
+
+Poppins
+
+Accent
+
+Allura
+
+---
+
+# Components
+
+**Public Components:**
+```
+Navbar
+
+Hero + HeroCanvas (3D)
+
+FeaturedGallery
+
+GalleryCard
+
+FilterBar
+
+WorkDetails + Gallery Carousel
+
+AboutPreview
+
+ProcessTimeline
+
+Testimonials
+
+FAQ
+
+ContactForm
+
+Newsletter
+
+Footer
+
+FloatingWhatsApp
+
+BackToTop
+```
+
+**Admin Dashboard Components:**
+```
+AdminLayout
+
+Sidebar Navigation
+
+ProjectForm
+
+GalleryUploader
+
+OrderList
+
+OrderDetail
+
+SettingsForm
+
+AuthLogin
+```
+
+---
+
+# Database Schema
+
+**Projects Table**
+```
+id (UUID)
+slug (String)
+title (String)
+category (String)
+description (Text)
+images (JSON/Array)
+thumbnail (String)
+materials (String)
+colors (Array)
+featured (Boolean)
+created_at (Timestamp)
+updated_at (Timestamp)
+```
+
+**Gallery Table**
+```
+id (UUID)
+project_id (FK)
+image_url (String)
+alt_text (String)
+order (Integer)
+created_at (Timestamp)
+```
+
+**Orders/Inquiries Table**
+```
+id (UUID)
+customer_name (String)
+customer_email (String)
+customer_phone (String)
+message (Text)
+status (Enum: new, contacted, completed)
+notes (Text)
+created_at (Timestamp)
+```
+
+**Testimonials Table**
+```
+id (UUID)
+author (String)
+content (Text)
+rating (Integer)
+image_url (String)
+featured (Boolean)
+created_at (Timestamp)
+```
+
+**Admin Users Table**
+```
+id (UUID)
+email (String)
+password_hash (String)
+role (String)
+created_at (Timestamp)
+```
+
+---
+
+# Supabase Integration
+
+**Authentication:**
+* Email/Password for admin login
+* Row Level Security (RLS) for data protection
+
+**Real-time Features:**
+* Subscriptions for live order updates
+* Presence tracking (who's logged in)
+
+**Storage:**
+* Project images
+* Gallery images
+* Admin profile pictures
+
+---
+
+# Future Integrations
+
+Google Analytics
+
+Cloudinary (image optimization)
+
+SendGrid/Resend (email notifications)
+
+Stripe/PayPal (when ready to add shop)
+
+WhatsApp Business API (direct order messages)
+
+WhatsApp Business API (direct order messages)
+
+---
+
+# Performance Goals
+
+* Lighthouse score above 95
+* First Contentful Paint under 1.5 s
+* Largest Contentful Paint under 2.5 s
+* Image optimization with Next.js
+* Lazy-loaded 3D assets
+* Server-side rendering for SEO
+* Code splitting and route-based chunking
+* **Mobile-first responsive design** (320px and up)
+* Touch-optimized interactions
+* Fast performance on mobile networks
+
+---
+
+# Development Phases
+
+### Phase 1 — Foundation
+
+* Initialize Next.js project
+* Set up Supabase project
+* Set up TypeScript & TailwindCSS
+* Design system and component library
+* Database schema and RLS policies
+* 3D libraries setup (Three.js, React Three Fiber, Drei)
+
+### Phase 2 — Public Website
+
+* Landing page with 3D hero element
+* Portfolio/gallery pages with filters (connected to database)
+* Work detail pages
+* About page
+* Contact form (saves to database)
+* Contact/WhatsApp CTAs
+
+### Phase 3 — Admin Dashboard
+
+* Admin login & authentication
+* Project management (add/edit/delete)
+* Gallery management (upload images)
+* Order/inquiry tracking
+* Settings panel
+* RLS security implementation
+
+### Phase 4 — Polish & Optimization
+
+* Testimonials section
+* FAQ
+* Instagram feed integration
+* SEO optimization
+* Performance tuning (Lighthouse 90+)
+* Responsive design (mobile-first)
+* Image optimization
+
+### Phase 5 — Enhancements
+
+* Blog functionality (optional)
+* Newsletter signup
+* Analytics tracking
+* Advanced 3D elements
+* Multi-language support
+* Email notifications (SendGrid/Resend)
+
+---
+
+# Project Directory (High-Level)
+
+```text
+nevo/
+├── app/                   # Next.js app directory
+│   ├── layout.tsx
+│   ├── page.tsx           # Homepage
+│   ├── portfolio/
+│   │   ├── page.tsx       # Gallery listing
+│   │   └── [slug]/
+│   │       └── page.tsx   # Work details
+│   ├── about/
+│   ├── contact/
+│   ├── admin/             # Admin dashboard (protected)
+│   │   ├── layout.tsx
+│   │   ├── page.tsx       # Dashboard home
+│   │   ├── projects/      # Project management
+│   │   ├── gallery/       # Gallery management
+│   │   ├── orders/        # Order tracking
+│   │   └── settings/      # Settings
+│   └── api/               # API routes
+│       ├── auth.ts
+│       └── contact.ts
+│
+├── components/
+│   ├── public/            # Public pages components
+│   │   ├── Navbar.tsx
+│   │   ├── Hero.tsx
+│   │   ├── HeroCanvas.tsx # 3D canvas
+│   │   ├── GalleryCard.tsx
+│   │   ├── ContactForm.tsx
+│   │   └── ...
+│   └── admin/             # Admin components
+│       ├── AdminLayout.tsx
+│       ├── Sidebar.tsx
+│       ├── ProjectForm.tsx
+│       ├── GalleryUploader.tsx
+│       ├── OrderList.tsx
+│       └── ...
+│
+├── lib/
+│   ├── supabase.ts        # Supabase client
+│   ├── auth.ts            # Auth helpers
+│   ├── queries.ts         # Database queries
+│   └── utils.ts
+│
+├── public/                # Static files
+│   ├── images/
+│   ├── models/            # 3D models if needed
+│   └── icons/
+│
+├── styles/
+│   └── globals.css
+│
+├── types/
+│   ├── database.ts        # Database types
+│   └── index.ts
+│
+├── .env.local             # Supabase keys
+├── tailwind.config.ts
+├── tsconfig.json
+├── next.config.js
+└── README.md
+```
+
+**Full-featured, Supabase + Vercel integrated, admin CMS included.**
