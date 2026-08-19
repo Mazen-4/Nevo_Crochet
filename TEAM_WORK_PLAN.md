@@ -6,6 +6,13 @@
 - **Deployment**: Vercel (frontend) + Supabase (backend)
 - **Work Mode**: Parallel development with clear separation of concerns
 
+**Client decisions**:
+- Gallery cart collects items before an inquiry
+- No online payment or checkout in the current phase
+- Slogan: "Made slowly. Kept forever."
+- Pink and purple palette is confirmed in `Cozy_Loops_planning.txt`
+- Order tracking is planned for a future phase
+
 ---
 
 ## 👥 Team Structure & Role Assignment
@@ -55,6 +62,9 @@
 - [ ] Build Work detail page with image carousel
 - [ ] Create About page
 - [ ] Build Contact form UI
+- [ ] Add cart controls to gallery and work detail cards
+- [ ] Build cart review with quantity changes and item removal
+- [ ] Include selected cart items in contact form and WhatsApp inquiry messages
 - [ ] Implement Framer Motion animations for all pages
 - [ ] Create 3D hero component (Three.js/React Three Fiber)
 - [ ] Make everything mobile-responsive
@@ -64,6 +74,7 @@
   - [ ] Fetching projects/gallery items
   - [ ] Fetching testimonials
   - [ ] Saving contact form submissions
+  - [ ] Saving selected cart items with inquiries
   - [ ] Fetching portfolio filters (categories, etc.)
 - [ ] Set up API endpoints in Next.js API routes
 - [ ] Seed database with sample data
@@ -82,7 +93,7 @@
 - [ ] Create project management page (list view)
 - [ ] Create project form (add/edit)
 - [ ] Build gallery uploader interface
-- [ ] Create order/inquiry tracking page
+- [ ] Create inquiry management page with selected cart items
 - [ ] Build settings panel
 - [ ] Implement responsive design for admin
 
@@ -95,6 +106,8 @@
 - [ ] Set up image optimization
 - [ ] Implement data validation on backend
 - [ ] Create admin user management
+
+**Current phase boundary:** Do not implement online payment, checkout, or customer order tracking.
 
 **Deliverable**: Fully functional admin CMS
 **Sync Point**: End of Week 7 - Admin can create/edit projects
@@ -157,6 +170,8 @@
 - Email notifications
 - Multi-language support
 - Analytics dashboard
+- Customer-facing order tracking
+- Order status notifications
 
 ---
 
@@ -184,7 +199,7 @@
 | Week | Milestone | Status |
 |------|-----------|--------|
 | Week 2 | Project setup complete | - |
-| Week 5 | Public website live (connected to DB) | - |
+| Week 5 | Public website live with gallery cart (connected to DB) | - |
 | Week 7 | Admin dashboard complete | - |
 | Week 8 | Full optimization & testing | - |
 | Week 10 | Launch to production | - |
@@ -255,6 +270,7 @@ npm install
 3. [ ] Create `.env.local` template
 4. [ ] Set up communication channels (Slack, meeting schedule)
 5. [ ] Review this plan together
+6. [ ] Confirm gallery cart inquiry flow and current no-payment boundary
 
 **After Kickoff:**
 
@@ -262,7 +278,8 @@ npm install
 1. [ ] Clone repo and set up Node.js environment
 2. [ ] Initialize Next.js project with TypeScript
 3. [ ] Set up TailwindCSS and folder structure
-4. [ ] Start building design system
+4. [ ] Apply confirmed pink and purple design tokens
+5. [ ] Start building design system
 
 **Developer B:**
 1. [ ] Create Supabase project

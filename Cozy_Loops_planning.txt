@@ -1,4 +1,4 @@
-# Crochet Studio Website — Project Planning (v1.0)
+# Crochet Studio Website - Project Planning (v1.1)
 
 ---
 
@@ -7,6 +7,8 @@
 **Nevo**
 
 Premium Crochet & Handmade Knitting Showcase
+
+**Slogan**: Made slowly. Kept forever.
 
 ---
 
@@ -17,13 +19,13 @@ Create a premium, modern, beautifully animated website with a simple CMS that he
 * Showcase handmade work with stunning 3D visuals and animations
 * Manage portfolio projects (add/edit/delete via admin panel)
 * Manage media gallery
+* Let visitors collect gallery items in a cart before sending an inquiry
 * Capture leads and track inquiries
 * Gain customer trust through design excellence
 * Drive inquiries via WhatsApp and contact form
-* Track customer orders and inquiries
 * Serve as a digital business card, portfolio, and content management hub
 
-**Focus**: Beautiful showcase with 3D elements + functional CMS for easy management (no payment system needed).
+**Focus**: Beautiful showcase with 3D elements, a gallery cart for inquiry requests, and a functional CMS for easy management. Online payment and checkout are out of scope for the current phase.
 
 ---
 
@@ -67,6 +69,8 @@ Tables:
 - Messages
 - Settings
 
+The current phase stores inquiry/cart details only. Order tracking fields and workflows are reserved for a future phase.
+
 ---
 
 ## Storage
@@ -91,24 +95,26 @@ Both have generous free tiers perfect for small projects
 
 ```
 Client (Browser)
-      │
-      ├─ Public Pages (Landing, Gallery, Work Details)
-      │
-      └─ Admin Dashboard (Login Required)
-            │
-            ▼
-    Next.js Frontend
-            │
-    REST API / Real-time Subscriptions
-            │
+      |
+      +-- Public Pages (Landing, Gallery, Work Details, Cart)
+      |
+      +-- Inquiry Request (Contact Form / WhatsApp)
+      |
+      +-- Admin Dashboard (Login Required)
+            |
+            v
+      Next.js Frontend
+            |
+      REST API / Real-time Subscriptions
+            |
       Supabase Backend
-            │
-      ├─ PostgreSQL Database
-      ├─ Authentication
-      └─ File Storage
+            |
+            +-- PostgreSQL Database
+            +-- Authentication
+            +-- File Storage
 ```
 
-**Scalable, real-time, and perfect for free tier deployment.**
+**Scalable, real-time, and ready for future order tracking.**
 
 ---
 
@@ -117,19 +123,39 @@ Client (Browser)
 ```
 Landing
 
-↓
+|
+
+v
 
 Portfolio/Gallery
 
-↓
+|
+
+v
 
 Product Details
 
-↓
+|
+
+v
+
+Add items to cart
+
+|
+
+v
+
+Cart review / inquiry request
+
+|
+
+v
 
 Contact / WhatsApp / Inquiry
 
-↓
+|
+
+v
 
 Message Received (via form)
 ```
@@ -146,7 +172,7 @@ Brand introduction and portfolio showcase.
 
 Sections
 
-* Hero (brand story + main visual)
+* Hero with the slogan: "Made slowly. Kept forever."
 * Featured Gallery
 * Why Handmade
 * Process
@@ -158,7 +184,7 @@ Sections
 
 ## 2. Portfolio / Gallery
 
-Full gallery of work
+Full gallery of work.
 
 Filters
 
@@ -170,6 +196,15 @@ Sorting
 
 * Newest
 * Featured
+
+### Gallery Cart
+
+* Add products or projects to a client-side cart
+* View selected items and adjust quantities or remove items
+* Keep cart contents while the visitor browses the gallery
+* Send selected cart items with an inquiry through WhatsApp or the contact form
+* No online payment or checkout in the current phase
+
 ---
 
 ## 2.5. Admin Dashboard
@@ -185,16 +220,15 @@ Sorting
 * Add metadata
 * Organize by collection
 
-**Orders / Inquiries**
-* View all customer inquiries
-* Track order status
+**Inquiries**
+* View customer inquiries and selected cart items
 * Add notes
-* Mark as completed
+* Mark inquiries as contacted or completed
 
-**Settings**
-* Site settings
+**Contact Settings**
 * WhatsApp number
 * Contact information
+
 ---
 
 ## 3. Work Details
@@ -207,7 +241,18 @@ Contains
 * Materials used
 * Client feedback
 * Related works
+* Add to cart button
 * Contact button
+
+---
+
+## 3.5. Future Phase: Order Tracking
+
+* Convert an approved inquiry into an order
+* Track customer orders from inquiry through completion
+* Customer-facing order status page
+* Admin status updates and internal notes
+* Email or WhatsApp status notifications
 
 ---
 
@@ -227,7 +272,7 @@ Awards
 
 ## 5. Contact
 
-Contact form (name, email, message)
+Contact form (name, email, message, selected cart items)
 
 WhatsApp link
 
@@ -254,35 +299,51 @@ Seasonal collections
 ```
 Navbar
 
-↓
+|
 
-Hero (with 3D Element)
+v
 
-↓
+Hero with slogan and 3D Element
 
-Featured Gallery
+|
 
-↓
+v
+
+Featured Gallery with cart actions
+
+|
+
+v
 
 Why Handmade
 
-↓
+|
+
+v
 
 Process/Timeline
 
-↓
+|
+
+v
 
 Testimonials
 
-↓
+|
+
+v
 
 FAQ
 
-↓
+|
+
+v
 
 Newsletter Signup
 
-↓
+|
+
+v
 
 Footer
 ```
@@ -295,7 +356,7 @@ Left
 
 Luxury typography
 
-Brand tagline
+Brand tagline: "Made slowly. Kept forever."
 
 CTA buttons
 
@@ -314,8 +375,6 @@ Smooth fade-in and parallax
 High-quality background image with 3D overlay
 
 **Mobile-first approach** - 3D adapts responsively
-
----
 
 ---
 
@@ -343,339 +402,17 @@ Smooth scrolling
 
 # Color Palette
 
-Cream
-
-```
-#FFF8F3
-```
-
-Rose
-
-```
-#F6B5C8
-```
-
-Sage
-
-```
-#BFD8B8
-```
-
-Chocolate
-
-```
-#5A4638
-```
-
-Gold
-
-```
-#E8C36A
-```
-
-Dark
-
-```
-#2E2A29
-```
-
----
-
-# Typography
-
-Primary
-
-Cormorant Garamond
-
-Secondary
-
-Poppins
-
-Accent
-
-Allura
-
----
-
-# Components
-
-**Public Components:**
-```
-Navbar
-
-Hero + HeroCanvas (3D)
-
-FeaturedGallery
-
-GalleryCard
-
-FilterBar
-
-WorkDetails + Gallery Carousel
-
-AboutPreview
-
-ProcessTimeline
-
-Testimonials
-
-FAQ
-
-ContactForm
-
-Newsletter
-
-Footer
-
-FloatingWhatsApp
-
-BackToTop
-```
-
-**Admin Dashboard Components:**
-```
-AdminLayout
-
-Sidebar Navigation
-
-ProjectForm
-
-GalleryUploader
-
-OrderList
-
-OrderDetail
-
-SettingsForm
-
-AuthLogin
-```
-
----
-
-# Database Schema
-
-**Projects Table**
-```
-id (UUID)
-slug (String)
-title (String)
-category (String)
-description (Text)
-images (JSON/Array)
-thumbnail (String)
-materials (String)
-colors (Array)
-featured (Boolean)
-created_at (Timestamp)
-updated_at (Timestamp)
-```
-
-**Gallery Table**
-```
-id (UUID)
-project_id (FK)
-image_url (String)
-alt_text (String)
-order (Integer)
-created_at (Timestamp)
-```
-
-**Orders/Inquiries Table**
-```
-id (UUID)
-customer_name (String)
-customer_email (String)
-customer_phone (String)
-message (Text)
-status (Enum: new, contacted, completed)
-notes (Text)
-created_at (Timestamp)
-```
-
-**Testimonials Table**
-```
-id (UUID)
-author (String)
-content (Text)
-rating (Integer)
-image_url (String)
-featured (Boolean)
-created_at (Timestamp)
-```
-
-**Admin Users Table**
-```
-id (UUID)
-email (String)
-password_hash (String)
-role (String)
-created_at (Timestamp)
-```
-
----
-
-# Supabase Integration
-
-**Authentication:**
-* Email/Password for admin login
-* Row Level Security (RLS) for data protection
-
-**Real-time Features:**
-* Subscriptions for live order updates
-* Presence tracking (who's logged in)
-
-**Storage:**
-* Project images
-* Gallery images
-* Admin profile pictures
-
----
-
-# Future Integrations
-
-Google Analytics
-
-Cloudinary (image optimization)
-
-SendGrid/Resend (email notifications)
-
-Stripe/PayPal (when ready to add shop)
-
-WhatsApp Business API (direct order messages)
-
-WhatsApp Business API (direct order messages)
-
----
-
-# Performance Goals
-
-* Lighthouse score above 95
-* First Contentful Paint under 1.5 s
-* Largest Contentful Paint under 2.5 s
-* Image optimization with Next.js
-* Lazy-loaded 3D assets
-* Server-side rendering for SEO
-* Code splitting and route-based chunking
-* **Mobile-first responsive design** (320px and up)
-* Touch-optimized interactions
-* Fast performance on mobile networks
-
----
-
-# Development Phases
-
-### Phase 1 — Foundation
-
-* Initialize Next.js project
-* Set up Supabase project
-* Set up TypeScript & TailwindCSS
-* Design system and component library
-* Database schema and RLS policies
-* 3D libraries setup (Three.js, React Three Fiber, Drei)
-
-### Phase 2 — Public Website
-
-* Landing page with 3D hero element
-* Portfolio/gallery pages with filters (connected to database)
-* Work detail pages
-* About page
-* Contact form (saves to database)
-* Contact/WhatsApp CTAs
-
-### Phase 3 — Admin Dashboard
-
-* Admin login & authentication
-* Project management (add/edit/delete)
-* Gallery management (upload images)
-* Order/inquiry tracking
-* Settings panel
-* RLS security implementation
-
-### Phase 4 — Polish & Optimization
-
-* Testimonials section
-* FAQ
-* Instagram feed integration
-* SEO optimization
-* Performance tuning (Lighthouse 90+)
-* Responsive design (mobile-first)
-* Image optimization
-
-### Phase 5 — Enhancements
-
-* Blog functionality (optional)
-* Newsletter signup
-* Analytics tracking
-* Advanced 3D elements
-* Multi-language support
-* Email notifications (SendGrid/Resend)
-
----
-
-# Project Directory (High-Level)
-
-```text
-nevo/
-├── app/                   # Next.js app directory
-│   ├── layout.tsx
-│   ├── page.tsx           # Homepage
-│   ├── portfolio/
-│   │   ├── page.tsx       # Gallery listing
-│   │   └── [slug]/
-│   │       └── page.tsx   # Work details
-│   ├── about/
-│   ├── contact/
-│   ├── admin/             # Admin dashboard (protected)
-│   │   ├── layout.tsx
-│   │   ├── page.tsx       # Dashboard home
-│   │   ├── projects/      # Project management
-│   │   ├── gallery/       # Gallery management
-│   │   ├── orders/        # Order tracking
-│   │   └── settings/      # Settings
-│   └── api/               # API routes
-│       ├── auth.ts
-│       └── contact.ts
-│
-├── components/
-│   ├── public/            # Public pages components
-│   │   ├── Navbar.tsx
-│   │   ├── Hero.tsx
-│   │   ├── HeroCanvas.tsx # 3D canvas
-│   │   ├── GalleryCard.tsx
-│   │   ├── ContactForm.tsx
-│   │   └── ...
-│   └── admin/             # Admin components
-│       ├── AdminLayout.tsx
-│       ├── Sidebar.tsx
-│       ├── ProjectForm.tsx
-│       ├── GalleryUploader.tsx
-│       ├── OrderList.tsx
-│       └── ...
-│
-├── lib/
-│   ├── supabase.ts        # Supabase client
-│   ├── auth.ts            # Auth helpers
-│   ├── queries.ts         # Database queries
-│   └── utils.ts
-│
-├── public/                # Static files
-│   ├── images/
-│   ├── models/            # 3D models if needed
-│   └── icons/
-│
-├── styles/
-│   └── globals.css
-│
-├── types/
-│   ├── database.ts        # Database types
-│   └── index.ts
-│
-├── .env.local             # Supabase keys
-├── tailwind.config.ts
-├── tsconfig.json
-├── next.config.js
-└── README.md
-```
-
-**Full-featured, Supabase + Vercel integrated, admin CMS included.**
+Girly pink and purple palette provided by the client:
+
+| Purpose | Color | HEX |
+| --- | --- | --- |
+| Primary Pink | Dusty Rose | `#D98FA3` |
+| Bright Pink / CTA | Soft Coral Pink | `#E8758D` |
+| Primary Purple | Soft Lavender | `#9B8AC4` |
+| Light Purple | Lavender Mist | `#E8E0F2` |
+| Main Background | Warm Cream | `#FFF8F3` |
+| Secondary Background | Blush Cream | `#FDF0F2` |
+| Main Text | Cocoa Brown | `#4A3840` |
+| Secondary Text | Warm Brown | `#765B63` |
+| Very Light Accent | Pale Blush | `#F2C6D2` |
+| Card White | Soft White | `#FFFFFF` |

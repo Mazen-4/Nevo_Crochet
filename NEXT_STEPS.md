@@ -7,16 +7,15 @@
 **1. Repository Setup**
 
 - [X]  Create GitHub repo (private)
-- [ ]  Initialize with README.md
-- [ ]  Add .gitignore for Node.js
-- [ ]  Set up main, develop, and feature branch rules
+- [X]  Initialize with README.md
+- [X]  Add .gitignore for Node.js
 
 **2. Supabase Setup**
 
-- [ ]  Create Supabase project at https://supabase.com
-- [ ]  Copy API keys and project URL
-- [ ]  Save to shared secure location
-- [ ]  Create `.env.local` template with keys
+- [X]  Create Supabase project at https://supabase.com
+- [X]  Copy API keys and project URL
+- [X]  Save to shared secure location
+- [X]  Create `.env.local` template with keys
 
 **3. Project Management**
 
@@ -38,6 +37,14 @@
 - [ ]  Agree on TypeScript strict mode
 - [ ]  Set up code formatter (Prettier)
 - [ ]  Set up linter (ESLint)
+
+**6. Client Decisions Confirmed**
+
+- [X]  Gallery cart for collecting items before an inquiry
+- [X]  No online payment or checkout in the current phase
+- [X]  Slogan: "Made slowly. Kept forever."
+- [X]  Girly pink and purple color palette confirmed in `Cozy_Loops_planning.txt`
+- [X]  Order tracking reserved for a future phase
 
 ---
 
@@ -62,6 +69,13 @@ mkdir -p types
 npm run dev
 ```
 
+**Client-facing features to include:**
+
+- [ ]  Add cart controls to gallery and work detail cards
+- [ ]  Build cart review with quantity changes and item removal
+- [ ]  Include selected cart items in contact form and WhatsApp inquiry messages
+- [ ]  Apply the confirmed pink and purple design tokens
+
 **Developer B (Backend):**
 
 ```bash
@@ -76,6 +90,8 @@ npm run dev
 - [ ] Create Users table for admin
 - [ ] Set up RLS policies
 - [ ] Create TypeScript types file for Dev A
+- [ ] Store selected cart items with each inquiry
+- [ ] Keep payment and checkout out of the current schema
 ```
 
 ---
@@ -140,6 +156,12 @@ export interface Order {
   created_at: string;
 }
 
+export interface CartItem {
+  project_id: string;
+  title: string;
+  quantity: number;
+}
+
 // ... more types
 ```
 
@@ -154,6 +176,7 @@ DEL  /api/projects/[id]         → Delete project (admin)
 
 GET  /api/gallery               → List gallery items
 POST /api/gallery               → Upload image (admin)
+POST /api/inquiries             → Create inquiry with selected cart items
 
 GET  /api/orders                → List inquiries (admin)
 POST /api/orders                → Create inquiry
@@ -172,6 +195,8 @@ components/
 │   ├── HeroCanvas.tsx (3D)
 │   ├── GalleryGrid.tsx
 │   ├── GalleryCard.tsx
+│   ├── CartButton.tsx
+│   ├── CartDrawer.tsx
 │   ├── ContactForm.tsx
 │   └── ...
 ├── admin/
