@@ -48,18 +48,23 @@ Create a premium, modern, beautifully animated website with a simple CMS that he
 
 ## Backend
 
-**Supabase (Recommended for free tier)**
-* PostgreSQL database
-* Real-time subscriptions
-* Authentication
-* Storage for images
-* Edge Functions for serverless logic
+**MySQL database hosted externally (recommended to avoid Supabase inactivity pause)**
+* MySQL database with reliable free/low-cost hosting
+* REST API routes in Next.js
+* Admin authentication via custom auth/session logic or a lightweight access layer
+* Separate file storage for images (public URL hosting or object storage)
+* Lightweight serverless API routes for inquiry handling and admin CRUD
+
+**Reasoning:**
+* Vercel free tier works well for Next.js frontend hosting
+* Supabase free tier pauses inactive projects, which is not suitable for a site that may sit idle for days
+* MySQL is simpler for a low-traffic portfolio/business site and avoids the platform pause limitation
 
 ---
 
 ## Database
 
-**Supabase PostgreSQL**
+**MySQL (Railway / PlanetScale / local dev + managed MySQL)**
 
 Tables:
 - Projects/Gallery Items
@@ -83,11 +88,11 @@ Later: Cloudinary for advanced image optimization
 
 ## Deployment
 
-**Vercel** (Next.js frontend) - free tier
+**Vercel** (Next.js frontend) - free tier / Hobby plan
 
-**Supabase** (database & backend) - free tier
+**MySQL** (database) - free or low-cost external hosting (Railway, PlanetScale, or similar)
 
-Both have generous free tiers perfect for small projects
+This setup keeps the frontend on Vercel free while avoiding the Supabase inactivity pause issue that can affect low-traffic projects.
 
 ---
 
@@ -103,25 +108,16 @@ Client (Browser)
       +-- Admin Dashboard (Login Required)
             |
             v
-      Next.js Frontend
+      Next.js Frontend on Vercel (Free)
             |
-      REST API / Real-time Subscriptions
+      REST API Routes / Serverless Functions
             |
-      Supabase Backend
+      MySQL Database (managed low-cost/free host)
             |
-            +-- PostgreSQL Database
-            +-- Authentication
-            +-- File Storage
-```
-
-**Scalable, real-time, and ready for future order tracking.**
-
----
-
-# Website Flow
-
-```
-Landing
+            +-- Product and gallery data
+            +-- Inquiry records
+            +-- Admin access data
+            +-- File metadata
 
 |
 

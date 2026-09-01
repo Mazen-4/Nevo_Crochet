@@ -10,12 +10,13 @@
 - [X]  Initialize with README.md
 - [X]  Add .gitignore for Node.js
 
-**2. Supabase Setup**
+**2. Database + Hosting Setup (MySQL path)**
 
-- [X]  Create Supabase project at https://supabase.com
-- [X]  Copy API keys and project URL
-- [X]  Save to shared secure location
-- [X]  Create `.env.local` template with keys
+- [ ]  Provision a MySQL database on a free or low-cost host such as Railway or PlanetScale
+- [ ]  Copy the database connection string and save it securely
+- [ ]  Create `.env.local` template with `DATABASE_URL` and app keys
+- [ ]  Keep frontend on Vercel free tier for deployment
+- [ ]  Avoid Supabase free-tier inactivity pause for the live project
 
 **3. Project Management**
 
@@ -26,7 +27,7 @@
 
 **4. Documentation**
 
-- [ ]  Create `/docs` folder
+- [X]  Create `/docs` folder
 - [ ]  Add API specification template
 - [ ]  Add component guidelines
 - [ ]  Add database schema documentation
@@ -79,8 +80,8 @@ npm run dev
 **Developer B (Backend):**
 
 ```bash
-# Set up local Supabase (optional, can use cloud)
-# Or use cloud.supabase.com
+# Use a managed MySQL database instead of Supabase free plan
+# Good options: Railway, PlanetScale, or a similar low-cost provider
 
 # Tasks:
 - [ ] Create database schema
@@ -88,7 +89,7 @@ npm run dev
 - [ ] Create Gallery table
 - [ ] Create Orders/Inquiries table
 - [ ] Create Users table for admin
-- [ ] Set up RLS policies
+- [ ] Define admin access rules and session/auth flow
 - [ ] Create TypeScript types file for Dev A
 - [ ] Store selected cart items with each inquiry
 - [ ] Keep payment and checkout out of the current schema

@@ -2,9 +2,10 @@
 
 ## 📋 Project Overview
 - **Timeline**: 8-10 weeks (2 developers)
-- **Tech Stack**: Next.js 15 + React 19 + TypeScript + TailwindCSS + Supabase
-- **Deployment**: Vercel (frontend) + Supabase (backend)
+- **Tech Stack**: Next.js 15 + React 19 + TypeScript + TailwindCSS + MySQL (managed database)
+- **Deployment**: Vercel free tier (frontend) + MySQL hosting (free/low-cost external DB)
 - **Work Mode**: Parallel development with clear separation of concerns
+- **Important constraint**: Avoid Supabase free-tier inactivity pause by using a standard MySQL setup instead of Supabase for the live project
 
 **Client decisions**:
 - Gallery cart collects items before an inquiry
@@ -24,8 +25,8 @@
 - Tech: React, TypeScript, TailwindCSS, Framer Motion, Three.js, Next.js pages
 
 **Developer B: Backend Lead**  
-- Focus: Database design, Supabase setup, APIs, admin dashboard
-- Tech: Supabase, PostgreSQL, authentication, data queries
+- Focus: Database design, MySQL schema, APIs, admin dashboard
+- Tech: MySQL, Prisma/ORM, Next.js API routes, auth/session layer, data queries
 
 ---
 
@@ -42,12 +43,12 @@
 - [ ] Create layout components (Navbar, Footer)
 
 #### Developer B (Backend):
-- [ ] Create Supabase project and configure
+- [ ] Provision a MySQL database on a free/low-cost host (Railway, PlanetScale, or similar)
 - [ ] Design and create database schema (Projects, Gallery, Orders, Users, etc.)
-- [ ] Set up authentication with Supabase
-- [ ] Configure Row Level Security (RLS) policies
-- [ ] Create API client library for frontend
-- [ ] Set up environment variables
+- [ ] Set up admin authentication and session flow in Next.js
+- [ ] Define API endpoints for public and admin data access
+- [ ] Create DB access layer and shared TypeScript models for frontend
+- [ ] Set up environment variables, including the database connection string
 
 **Deliverable**: Basic project structure, design system, database ready
 **Sync Point**: End of Week 2 - Ensure API client works with frontend
@@ -70,7 +71,7 @@
 - [ ] Make everything mobile-responsive
 
 #### Developer B (Backend):
-- [ ] Create Supabase queries/functions for:
+- [ ] Create MySQL queries and service functions for:
   - [ ] Fetching projects/gallery items
   - [ ] Fetching testimonials
   - [ ] Saving contact form submissions
@@ -101,9 +102,9 @@
 - [ ] Create admin authentication system
 - [ ] Build API routes for:
   - [ ] CRUD operations (projects, gallery, orders)
-  - [ ] File uploads to Supabase Storage
-  - [ ] Admin-only queries with RLS
-- [ ] Set up image optimization
+  - [ ] File metadata and image URL handling
+  - [ ] Admin-only queries and permission checks
+- [ ] Set up image optimization and public asset hosting strategy
 - [ ] Implement data validation on backend
 - [ ] Create admin user management
 
@@ -148,7 +149,7 @@
 - [ ] Fix any bugs found in production
 
 #### Developer B (Backend):
-- [ ] Deploy Supabase to production
+- [ ] Deploy MySQL database to production hosting
 - [ ] Set up automated backups
 - [ ] Configure production environment variables
 - [ ] Monitor database performance
