@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ProductDetailActions } from '@/components/public/ProductDetailActions';
 import { projects } from '@/lib/data/site';
 
 export default async function ProductDetailPage({
@@ -55,14 +56,7 @@ export default async function ProductDetailPage({
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button className="flex-1 rounded-full bg-[#7b5ca8] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(123,92,168,0.25)] transition hover:bg-[#6d4f9b]">
-                Add to inquiry
-              </button>
-              <Link href="#contact" className="flex-1 rounded-full border border-[#e4d0ea] bg-white px-5 py-3.5 text-center text-sm font-semibold text-[#4f3559] transition hover:bg-[#fff8fc]">
-                Ask a question
-              </Link>
-            </div>
+            <ProductDetailActions project={project} />
           </div>
         </div>
       </div>

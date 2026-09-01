@@ -1,4 +1,7 @@
+"use client";
+
 import Link from 'next/link';
+import { useInquiryCart } from '@/components/public/InquiryCartProvider';
 
 const links = [
   { label: 'Gallery', href: '#gallery' },
@@ -8,6 +11,8 @@ const links = [
 ];
 
 export function NavBar() {
+  const { count, openCart } = useInquiryCart();
+
   return (
     <header className="sticky top-0 z-40 border-b border-[#f0dfe8] bg-[rgba(255,248,252,0.86)] backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
@@ -29,12 +34,16 @@ export function NavBar() {
           ))}
         </nav>
 
-        <Link
-          href="#contact"
-          className="rounded-full bg-[#7b5ca8] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(123,92,168,0.25)] transition hover:bg-[#6e4e9b]"
+        <button
+          type="button"
+          onClick={openCart}
+          className="flex items-center gap-2 rounded-full bg-[#7b5ca8] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(123,92,168,0.25)] transition hover:bg-[#6e4e9b]"
         >
-          Inquire
-        </Link>
+          <span>Cart</span>
+          <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#f7d7ff] px-1.5 text-xs font-bold text-[#2f1d36]">
+            {count}
+          </span>
+        </button>
       </div>
     </header>
   );

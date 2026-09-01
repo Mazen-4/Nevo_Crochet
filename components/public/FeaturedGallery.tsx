@@ -1,7 +1,11 @@
+"use client";
+
 import Link from 'next/link';
 import { projects } from '@/lib/data/site';
+import { useInquiryCart } from '@/components/public/InquiryCartProvider';
 
 export function FeaturedGallery() {
+  const { addItem } = useInquiryCart();
   return (
     <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 md:px-8 lg:px-10">
       <div className="mb-10 flex items-end justify-between gap-5">
@@ -56,12 +60,13 @@ export function FeaturedGallery() {
                 >
                   View details
                 </Link>
-                <Link
-                  href="#contact"
+                <button
+                  type="button"
+                  onClick={() => addItem(project)}
                   className="inline-flex rounded-full border border-[#ead8ef] px-4 py-2.5 text-sm font-semibold text-[#504061] transition hover:bg-[#fff8fc]"
                 >
-                  Add to inquiry
-                </Link>
+                  Add to cart
+                </button>
               </div>
             </div>
           </article>
