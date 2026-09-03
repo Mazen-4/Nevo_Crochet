@@ -14,6 +14,12 @@ export function ContactSection() {
     const selectCustomForm = () => {
       if (window.location.hash === '#contact-custom') {
         setActiveForm('custom');
+        window.requestAnimationFrame(() => {
+          document.getElementById('contact-custom')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
       }
     };
 
