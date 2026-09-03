@@ -23,10 +23,24 @@ export function ContactSection() {
       }
     };
 
+    const handleCustomRequest = () => {
+      setActiveForm('custom');
+      window.requestAnimationFrame(() => {
+        document.getElementById('contact-custom')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      });
+    };
+
     selectCustomForm();
     window.addEventListener('hashchange', selectCustomForm);
+    window.addEventListener('nevo:open-custom-request', handleCustomRequest);
 
-    return () => window.removeEventListener('hashchange', selectCustomForm);
+    return () => {
+      window.removeEventListener('hashchange', selectCustomForm);
+      window.removeEventListener('nevo:open-custom-request', handleCustomRequest);
+    };
   }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

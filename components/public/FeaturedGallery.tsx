@@ -24,7 +24,11 @@ export function FeaturedGallery() {
           <Link href="/gallery" className="text-sm font-semibold text-[#6d4e82] hover:text-[#4f3459]">
             {t('showMore')}
           </Link>
-          <Link href="/#contact-custom" className="text-sm font-semibold text-[#6d4e82] hover:text-[#4f3459]">
+          <Link
+            href="/#contact-custom"
+            onClick={() => window.dispatchEvent(new Event('nevo:open-custom-request'))}
+            className="text-sm font-semibold text-[#6d4e82] hover:text-[#4f3459]"
+          >
             {t('customPiece')}
           </Link>
         </div>

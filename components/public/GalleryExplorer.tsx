@@ -21,8 +21,6 @@ const colorKeys: Record<string, string[]> = {
   'petal-market-basket': ['petal', 'peony', 'sand'],
 };
 
-const placeholderKeys = ['placeholderOne', 'placeholderTwo', 'placeholderThree'] as const;
-
 export function GalleryExplorer() {
   const { addItem } = useInquiryCart();
   const locale = useLocale();
@@ -99,12 +97,6 @@ export function GalleryExplorer() {
             </article>
           ))}
 
-          {placeholderKeys.map((key) => (
-            <article key={key} className="flex min-h-[34rem] flex-col justify-between rounded-[1.75rem] border border-dashed border-[#d9c5e1] bg-[#fdf8fb] p-6">
-              <div className="flex h-80 items-center justify-center rounded-[1.5rem] bg-[radial-gradient(circle_at_top,_#fff,_#f7eefb)]"><span className="rounded-full border border-[#e5d2eb] bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#8d6e9e]">{t('galleryPage.comingSoon')}</span></div>
-              <div><h2 className={`mt-6 text-2xl font-semibold text-[#2f1d36] ${isArabic ? 'text-ar-title' : ''}`}>{t(`galleryPage.${key}`)}</h2><p className={`mt-2 text-sm leading-6 text-[#6b5873] ${isArabic ? 'text-ar-body' : ''}`}>{t('galleryPage.placeholderText')}</p></div>
-            </article>
-          ))}
         </div>
         <div className="mt-12 text-center">
           <Link href="/#contact-custom" className={`inline-flex rounded-full bg-[#7b5ca8] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_16px_35px_rgba(123,92,168,0.2)] transition hover:bg-[#6d4f9b] ${isArabic ? 'text-ar' : ''}`}>

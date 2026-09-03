@@ -152,11 +152,6 @@
       "latest": "Latest",
       "name": "Name",
       "results": "{count} pieces",
-      "comingSoon": "Coming soon",
-      "placeholderOne": "A new soft beginning",
-      "placeholderTwo": "Quiet color stories",
-      "placeholderThree": "Made for slow mornings",
-      "placeholderText": "A new Nevo piece is taking shape.",
       "requestCustom": "Request a custom piece"
     }
   },
