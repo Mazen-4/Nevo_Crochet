@@ -1,0 +1,207 @@
+@config "../../tailwind.config.ts";
+@import "tailwindcss";
+
+:root {
+  --background: #fffafc;
+  --foreground: #2f1d36;
+  --muted: #5d4b67;
+  --panel: #ffffff;
+  --card: #fdf2f9;
+  --line: #efdff2;
+  --accent: #7b5ca8;
+  --accent-deep: #563d5f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+  --font-cairo: var(--font-cairo), system-ui, sans-serif;
+  --font-almarai: var(--font-almarai), system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: opacity 180ms ease;
+}
+
+html[data-locale-switching] body {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+html[lang='en'],
+html[lang='en'] body {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+html[lang='en'] nav {
+  flex-direction: row;
+}
+
+html[lang='en'] input,
+html[lang='en'] textarea,
+html[lang='en'] select {
+  direction: ltr;
+  text-align: left;
+}
+
+html[lang='ar'],
+html[lang='ar'] body {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  word-spacing: 0.05em;
+}
+
+html[dir='rtl'] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[lang='ar'] h1 {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+html[lang='ar'] h2 {
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+
+html[lang='ar'] h3 {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+html[lang='ar'] h4 {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+
+html[lang='ar'] p {
+  line-height: 1.85;
+  letter-spacing: 0.3px;
+  word-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+html[dir='rtl'] button {
+  direction: rtl;
+  text-align: center;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+html[dir='rtl'] input,
+html[dir='rtl'] textarea,
+html[dir='rtl'] select {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir='rtl'] nav {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+html[dir='rtl'] nav a {
+  letter-spacing: 0.3px;
+  font-weight: 500;
+}
+
+html[dir='rtl'] ul,
+html[dir='rtl'] ol {
+  padding-right: 2rem;
+  padding-left: 0;
+  margin-right: 1rem;
+}
+
+html[dir='rtl'] li {
+  line-height: 1.85;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.text-ar {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.text-ar-title {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  line-height: 1.5;
+}
+
+.text-ar-body {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  line-height: 1.85;
+  letter-spacing: 0.3px;
+}
+
+.text-ar-small {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.2px;
+  line-height: 1.7;
+}
+
+.text-ar-large {
+  font-family: var(--font-cairo), var(--font-almarai), system-ui, sans-serif;
+  font-size: 1.125rem;
+  letter-spacing: 0.6px;
+  line-height: 1.85;
+}
+
+@media (max-width: 768px) {
+  html[lang='ar'] h1 {
+    font-size: 2.25rem;
+    letter-spacing: 0.4px;
+  }
+
+  html[lang='ar'] h2 {
+    font-size: 1.875rem;
+    letter-spacing: 0.3px;
+  }
+
+  html[lang='ar'] p {
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+}

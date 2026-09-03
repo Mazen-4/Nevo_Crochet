@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { CartDock } from '@/components/public/CartDock';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
 import { InquiryCartProvider } from '@/components/public/InquiryCartProvider';
-import "./globals.css";
+import "./[locale]/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const geist = Geist({
+  variable: '--font-geist',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -19,16 +21,14 @@ export const metadata: Metadata = {
   description: "Premium crochet and handmade home pieces made with intention and kept for years.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = (await headers()).get('X-NEXT-INTL-LOCALE') === 'ar' ? 'ar' : 'en';
+
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${geist.variable} ${geistMono.variable}`}>
+      <body className={`${locale === 'ar' ? 'font-cairo' : 'font-sans'} min-h-full flex flex-col`}>
         <InquiryCartProvider>
           {children}
-          <CartDock />
         </InquiryCartProvider>
       </body>
     </html>

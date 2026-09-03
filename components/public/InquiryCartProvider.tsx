@@ -65,6 +65,7 @@ export function InquiryCartProvider({ children }: { children: ReactNode }) {
         ...current,
         {
           id: project.id,
+          slug: project.slug,
           title: project.title,
           quantity: 1,
           priceLabel: project.priceLabel,
@@ -72,7 +73,7 @@ export function InquiryCartProvider({ children }: { children: ReactNode }) {
       ];
     });
 
-    setLastAdded(project.title);
+    setLastAdded(project.id);
     setIsOpen(true);
   };
 

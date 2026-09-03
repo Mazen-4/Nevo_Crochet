@@ -20,6 +20,7 @@ export type Testimonial = {
 
 export type CartItem = {
   id: string;
+  slug?: string;
   title: string;
   quantity: number;
   priceLabel?: string;

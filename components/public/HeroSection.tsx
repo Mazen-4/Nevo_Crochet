@@ -1,20 +1,22 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export function HeroSection() {
+  const t = useTranslations('home');
   return (
-    <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_#fff8fc,_#f5ecff_32%,_#f0f4ff_100%)]">
+    <section id="hero" className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_#fff8fc,_#f5ecff_32%,_#f0f4ff_100%)]">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 md:grid-cols-[1.1fr_0.9fr] md:items-center md:px-8 lg:px-10">
         <div className="space-y-8">
           <span className="inline-flex items-center rounded-full border border-[#eac9e4] bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#7a4d7d]">
-            Premium crochet studio
+            {t('eyebrow')}
           </span>
 
           <div className="space-y-5">
             <h1 className="max-w-xl text-5xl font-semibold tracking-[-0.06em] text-[#2f1d36] md:text-6xl">
-              Made slowly. <span className="text-[#9f6cb6]">Kept forever.</span>
+              {t('heroTitle')} <span className="text-[#9f6cb6]">{t('heroTitleAccent')}</span>
             </h1>
             <p className="max-w-lg text-lg leading-8 text-[#5d4868]">
-              Thoughtful crochet pieces for dreamy homes, slow rituals, and meaningful gift moments.
+              {t('heroDescription')}
             </p>
           </div>
 
@@ -23,28 +25,28 @@ export function HeroSection() {
               href="#gallery"
               className="rounded-full bg-[#7b5ca8] px-6 py-3.5 text-center text-sm font-semibold text-white shadow-[0_16px_40px_rgba(123,92,168,0.25)] transition hover:bg-[#6e4e9b]"
             >
-              Explore the gallery
+              {t('exploreGallery')}
             </Link>
             <Link
               href="#about"
               className="rounded-full border border-[#d8c0e4] bg-white/60 px-6 py-3.5 text-center text-sm font-semibold text-[#4d2c57] transition hover:bg-[#fff8fc]"
             >
-              Learn the craft
+              {t('learnCraft')}
             </Link>
           </div>
 
           <div className="flex items-center gap-8 pt-4 text-sm text-[#6a5972]">
             <div>
               <p className="text-2xl font-semibold text-[#2f1d36]">8+</p>
-              <p>signature collections</p>
+              <p>{t('collections')}</p>
             </div>
             <div>
               <p className="text-2xl font-semibold text-[#2f1d36]">1:1</p>
-              <p>custom commissions</p>
+              <p>{t('commissions')}</p>
             </div>
             <div>
               <p className="text-2xl font-semibold text-[#2f1d36]">100%</p>
-              <p>handcrafted</p>
+              <p>{t('handcrafted')}</p>
             </div>
           </div>
         </div>
@@ -62,8 +64,8 @@ export function HeroSection() {
               />
             </div>
             <div className="absolute bottom-10 left-10 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-lg backdrop-blur-sm">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-[#8d6e9e]">Featured make</p>
-              <p className="mt-1 text-lg font-semibold text-[#2f1d36]">Luna Cushion Set</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-[#8d6e9e]">{t('featuredMake')}</p>
+              <p className="mt-1 text-lg font-semibold text-[#2f1d36]">{t('featuredProduct')}</p>
             </div>
           </div>
         </div>
