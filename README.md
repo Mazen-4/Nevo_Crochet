@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nevo Crochet
 
-## Getting Started
+Nevo is a boutique crochet storefront built with Next.js and designed for a premium, calm, handmade brand experience. The project currently focuses on the public storefront experience, product browsing, and a polished local cart flow before connecting to a real database and production order system.
 
-First, run the development server:
+## Current project status
+
+The app is now aligned to the following direction:
+
+- Frontend hosting on Vercel free tier
+- MySQL instead of Supabase for the live data model
+- Public storefront landing page and product detail flow
+- Local cart interaction for selected products
+- Floating cart UI with product confirmation feedback
+- General contact form separated from the cart flow
+
+## Tech stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Vercel deployment
+- MySQL for future production data layer
+
+## Current app structure
+
+- `app/page.tsx` — storefront homepage
+- `app/products/[slug]/page.tsx` — dynamic product detail view
+- `components/public/` — storefront UI sections, navbar, floating cart, contact form
+- `lib/data/site.ts` — current sample product catalog and testimonials
+- `types/index.ts` — shared storefront types
+- `.env.example` and `.env.local` — environment placeholders for app config and MySQL usage
+
+## Local development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the local app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in the browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+## Deployment approach
 
-To learn more about Next.js, take a look at the following resources:
+The project is intended to deploy on Vercel as a frontend app while using a managed MySQL database for live product and order data.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Important constraints:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Avoid Supabase free-tier inactivity pause behavior
+- Keep the frontend simple and low-cost
+- Use MySQL as the long-term production-ready model
 
-## Deploy on Vercel
+## Environment variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app currently uses environment placeholders that are ready for future MySQL and app configuration:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+DATABASE_URL=mysql://username:password@host:3306/nevo
+NEXTAUTH_SECRET=replace_with_a_secure_secret
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+For Vercel production, add the same variables in the Vercel project settings under Environment Variables.
+
+## Planned next steps
+
+The near-term roadmap is:
+
+1. Add a real MySQL schema for products and orders
+2. Create a small API layer for products and future inquiries
+3. Replace static mock catalog data with database-backed content
+4. Add invoice/order submission logic for confirmed cart selections
+5. Add admin-side product management or CMS-like editing workflow
+6. Deploy and validate the full frontend + database workflow on Vercel and a managed MySQL host
+
+## Notes
+
+This project is intentionally moving in stages. The current storefront is already visually polished and working locally, but the live data layer is still planned rather than connected. The architecture is designed to stay lightweight, low-cost, and scalable without depending on Supabase free-tier constraints.
