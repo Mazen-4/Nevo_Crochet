@@ -1,4 +1,14 @@
-# Crochet Studio Website - Project Planning (v1.1)
+# Crochet Studio Website - Project Planning (v1.2)
+
+# Document Status
+
+Updated to match the current build. Changes from v1.1:
+
+* Frontend stack corrected to Next.js 16 (App Router) and React 19 - both installed
+* next-intl added - bilingual English/Arabic support with full RTL is built and working
+* Storage changed from Supabase Storage to Cloudinary / S3-compatible storage (Supabase is fully removed from the project)
+* Framer Motion, Three.js/React Three Fiber, Swiper.js, and React Hook Form remain planned, not yet installed
+* Current build status lives in README.md; the actionable roadmap lives in NEXT_STEPS.md
 
 ---
 
@@ -33,15 +43,21 @@ Create a premium, modern, beautifully animated website with a simple CMS that he
 
 ## Frontend
 
-* Next.js 15
+**Installed:**
+
+* Next.js 16 (App Router, Turbopack)
 * React 19
-* TypeScript
-* TailwindCSS
+* TypeScript (strict mode)
+* Tailwind CSS 4
+* next-intl 4 (English/Arabic localization, locale routing, RTL)
+
+**Planned (not yet installed):**
+
 * Framer Motion (smooth animations)
 * Three.js (lightweight 3D elements)
 * React Three Fiber (3D component library)
 * Drei (3D helpers)
-* React Hook Form
+* React Hook Form (form handling/validation)
 * Swiper.js (image galleries)
 
 ---
@@ -80,9 +96,9 @@ The current phase stores inquiry/cart details only. Order tracking fields and wo
 
 ## Storage
 
-Supabase Storage
+Cloudinary or S3-compatible object storage (for product images, custom-request uploads, admin gallery)
 
-Later: Cloudinary for advanced image optimization
+Note: Supabase Storage was dropped along with the rest of the Supabase stack.
 
 ---
 

@@ -1,65 +1,68 @@
-# Nevo - Team Work Split & Timeline
+# Nevo — Team Work Split & Timeline
 
 ## 📋 Project Overview
 
-- **Timeline**: 8-10 weeks (2 developers)
-- **Tech Stack**: Next.js 15 + React 19 + TypeScript + TailwindCSS + MySQL (managed database)
-- **Deployment**: Vercel free tier (frontend) + MySQL hosting (free/low-cost external DB)
+- **Tech Stack**: Next.js 16 + React 19 + TypeScript + Tailwind CSS 4 + next-intl (bilingual EN/AR) + MySQL/Prisma (planned)
+- **Deployment**: Vercel free tier (frontend) + managed MySQL host (Railway / PlanetScale / similar)
 - **Work Mode**: Parallel development with clear separation of concerns
-- **Important constraint**: Avoid Supabase free-tier inactivity pause by using a standard MySQL setup instead of Supabase for the live project
+- **Important constraint**: Avoid Supabase free-tier inactivity pause by using a standard MySQL setup for the live project
 
-**Client decisions**:
+**Client decisions:**
 
 - Gallery cart collects items before an inquiry
 - No online payment or checkout in the current phase
 - Slogan: "Made slowly. Kept forever."
-- Pink and purple palette is confirmed in `Cozy_Loops_planning.txt`
-- Order tracking is planned for a future phase
+- Pink and purple palette confirmed in `Cozy_Loops_planning.txt`
+- Order tracking planned for a future phase
+- Full English/Arabic bilingual support with RTL
+
+**Current overall state:** the public storefront frontend is complete and polished (3 routes, 14 components, bilingual, working inquiry cart). The backend — database, API routes, admin CMS — has been designed but not built. Details in [README.md](README.md); actionable next work in [NEXT_STEPS.md](NEXT_STEPS.md).
 
 ---
 
 ## 📅 Phase-by-Phase Timeline & Work Split
 
-### **Phase 1: Foundation (Week 1-2)**
+### **Phase 1: Foundation (Week 1–2)** — ✅ Frontend complete, ⬜ Backend outstanding
 
 #### Developer A (Frontend):
 
-- [X]  Set up Next.js 15 project with TypeScript
-- [X]  Configure TailwindCSS and design tokens
+- [X]  Set up Next.js project with TypeScript
+- [X]  Configure Tailwind CSS and design tokens
 - [X]  Create component structure and folder organization
 - [X]  Build design system (buttons, cards, typography)
 - [ ]  Set up Framer Motion basics
-- [X]  Create layout components (Navbar, Footer)
+- [X]  Create layout components (NavBar, Footer)
+- [X]  Full EN/AR localization with RTL typography (added beyond original scope)
 
 #### Developer B (Backend):
 
 - [ ]  Provision a MySQL database on a free/low-cost host (Railway, PlanetScale, or similar)
-- [ ]  Design and create database schema (Projects, Gallery, Orders, Users, etc.)
+- [ ]  Adopt the designed schema (`docs/UNCONFIRMED_database-schema.md`) via Prisma and run the initial migration
 - [ ]  Set up admin authentication and session flow in Next.js
 - [ ]  Define API endpoints for public and admin data access
-- [ ]  Create DB access layer and shared TypeScript models for frontend
+- [ ]  Create DB access layer (Prisma client singleton) and shared TypeScript models
 - [ ]  Set up environment variables, including the database connection string
 
-**Deliverable**: Basic project structure, design system, database ready
-**Sync Point**: End of Week 2 - Ensure API client works with frontend
+**Deliverable**: Frontend structure and design system ✅ / database ready ⬜
+**Sync Point**: Ensure the API client works with the frontend before Phase 2 integration
 
 ---
 
-### **Phase 2: Public Website (Week 3-5)**
+### **Phase 2: Public Website (Week 3–5)** — 🟡 Frontend done, ⬜ DB integration outstanding
 
 #### Developer A (Frontend):
 
-- [ ]  Build Landing page (Hero section with 3D element)
-- [ ]  Create Portfolio/Gallery listing page
-- [ ]  Build Work detail page with image carousel
-- [ ]  Create About page
-- [ ]  Build Contact form UI
-- [ ]  Add cart controls to gallery and work detail cards
-- [ ]  Build cart review with quantity changes and item removal
-- [ ]  Include selected cart items in contact form and WhatsApp inquiry messages
+- [X]  Build landing page (hero section — static image; 3D element deferred)
+- [X]  Create Portfolio/Gallery listing page with filters and sorting
+- [X]  Build Work/Product detail page
+- [X]  Create About content (in-page section)
+- [X]  Build Contact form UI (question + custom request tabs)
+- [X]  Add cart controls to gallery and product detail cards
+- [X]  Build cart review with quantity changes and item removal
+- [ ]  Send selected cart items with the contact form / WhatsApp inquiry (currently cart is only confirmed client-side)
 - [ ]  Implement Framer Motion animations for all pages
-- [ ]  Create 3D hero component (Three.js/React Three Fiber)
-- [ ]  Make everything mobile-responsive
+- [ ]  Create 3D hero component (Three.js / React Three Fiber) — scope TBD
+- [X]  Mobile-responsive layout (ongoing QA continues in Phase 4)
 
 #### Developer B (Backend):
 
@@ -69,57 +72,58 @@
   - [ ]  Saving contact form submissions
   - [ ]  Saving selected cart items with inquiries
   - [ ]  Fetching portfolio filters (categories, etc.)
-- [ ]  Set up API endpoints in Next.js API routes
-- [ ]  Seed database with sample data
-- [ ]  Create TypeScript types for all data models
-- [ ]  Implement error handling and validation
+- [ ]  Set up API endpoints (Next.js route handlers)
+- [ ]  Seed database with sample data (3 products, EN + AR translations)
+- [x]  Create TypeScript types for all data models (static-data types exist in `types/index.ts`; DB models pending Prisma)
+- [ ]  Implement error handling and validation (Zod)
 
 **Deliverable**: Fully functional public website connected to database
-**Sync Point**: End of Week 5 - Test all API connections
+**Sync Point**: End of integration — test all API connections
 
 ---
 
-### **Phase 3: Admin Dashboard (Week 6-7)**
+### **Phase 3: Admin Dashboard (Week 6–7)** — ⬜ Not started
 
 #### Developer A (Frontend):
 
 - [ ]  Build admin layout and sidebar navigation
-- [ ]  Create project management page (list view)
-- [ ]  Create project form (add/edit)
+- [ ]  Create product management page (list view)
+- [ ]  Create product form (add/edit)
 - [ ]  Build gallery uploader interface
 - [ ]  Create inquiry management page with selected cart items
-- [ ]  Build settings panel
+- [ ]  Build settings panel (WhatsApp number, contact info)
 - [ ]  Implement responsive design for admin
 
 #### Developer B (Backend):
 
 - [ ]  Create admin authentication system
 - [ ]  Build API routes for:
-  - [ ]  CRUD operations (projects, gallery, orders)
+  - [ ]  CRUD operations (projects, gallery, inquiries)
   - [ ]  File metadata and image URL handling
   - [ ]  Admin-only queries and permission checks
-- [ ]  Set up image optimization and public asset hosting strategy
+- [ ]  Set up image optimization and asset hosting strategy (Cloudinary/S3)
 - [ ]  Implement data validation on backend
 - [ ]  Create admin user management
 
 **Current phase boundary:** Do not implement online payment, checkout, or customer order tracking.
 
 **Deliverable**: Fully functional admin CMS
-**Sync Point**: End of Week 7 - Admin can create/edit projects
+**Sync Point**: Admin can create/edit projects and see inquiries
 
 ---
 
-### **Phase 4: Polish & Optimization (Week 8)**
+### **Phase 4: Polish & Optimization (Week 8)** — ⬜ Not started
 
 #### Developer A (Frontend):
 
 - [ ]  Fine-tune animations and transitions
+- [X]  Implement testimonials section
+- [X]  Build newsletter signup (UI; needs backend wiring)
+- [ ]  Add loading, error, and not-found states
 - [ ]  Optimize images and lazy loading
-- [ ]  Test across devices (mobile, tablet, desktop)
-- [ ]  Fix any responsive design issues
-- [ ]  Implement testimonials section
-- [ ]  Build newsletter signup
-- [ ]  SEO optimization (meta tags, structured data)
+- [ ]  Test across devices (mobile, tablet, desktop) incl. RTL
+- [ ]  Fix responsive design issues
+- [ ]  SEO optimization (meta tags, sitemap, robots, structured data)
 
 #### Developer B (Backend):
 
@@ -131,11 +135,11 @@
 - [ ]  Monitor and log errors
 
 **Deliverable**: Production-ready, optimized code
-**Sync Point**: End of Week 8 - Full testing and QA
+**Sync Point**: Full testing and QA
 
 ---
 
-### **Phase 5: Deployment & Launch (Week 9-10)**
+### **Phase 5: Deployment & Launch (Week 9–10)** — ⬜ Not started
 
 #### Developer A (Frontend):
 
@@ -154,7 +158,7 @@
 - [ ]  Set up error tracking (Sentry optional)
 
 **Deliverable**: Live website and fully functional admin panel
-**Sync Point**: Launch day - Full team testing
+**Sync Point**: Launch day — full team testing
 
 ---
 
@@ -169,7 +173,7 @@
 **Developer B**:
 
 - Email notifications
-- Multi-language support
+- Additional languages beyond EN/AR
 - Analytics dashboard
 - Customer-facing order tracking
 - Order status notifications
@@ -180,34 +184,36 @@
 
 ### Weekly Syncs (Recommended):
 
-1. **Monday 10:00 AM** - Week planning & blockers
-2. **Wednesday 3:00 PM** - Mid-week check-in
-3. **Friday 4:00 PM** - Week review & next week prep
+1. **Monday 10:00 AM** — Week planning & blockers
+2. **Wednesday 3:00 PM** — Mid-week check-in
+3. **Friday 4:00 PM** — Week review & next week prep
 
 ### Daily Updates:
 
 - Async updates in a shared doc (Google Docs/Notion)
-- Track: What done yesterday, what doing today, any blockers
+- Track: what was done yesterday, what is being done today, any blockers
 
 ### Tools Setup:
 
 - **Git**: GitHub repo with main/develop/feature branches
 - **Issue Tracking**: GitHub Issues or Linear
 - **Chat**: Slack or Discord for quick questions
-- **Docs**: Shared folder for API docs, component docs, etc.
+- **Docs**: This repo — [README.md](README.md), [NEXT_STEPS.md](NEXT_STEPS.md), `docs/`
 
 ---
 
 ## 📊 Key Milestones
 
+| Week | Milestone | Status |
+| --- | --- | --- |
+| Week 2 | Project setup + design system complete | ✅ Complete |
+| Week 3 | Public storefront (home, gallery, product) + bilingual cart complete | ✅ Complete |
+| Week 5 | Public website live with gallery cart (connected to DB) | ⬜ Pending — Phase 1/2 backend |
+| Week 7 | Admin dashboard complete | ⬜ Not started |
+| Week 8 | Full optimization & testing | ⬜ Not started |
+| Week 10 | Launch to production | ⬜ Not started |
 
-| Week    | Milestone                                               | Status |
-| ------- | ------------------------------------------------------- | ------ |
-| Week 2  | Project setup complete                                  | -      |
-| Week 5  | Public website live with gallery cart (connected to DB) | -      |
-| Week 7  | Admin dashboard complete                                | -      |
-| Week 8  | Full optimization & testing                             | -      |
-| Week 10 | Launch to production                                    | -      |
+> The frontend ran ahead of the original plan while the backend phase has not begun. Week numbers above are relative to the backend track starting now — see [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered task list.
 
 ---
 
@@ -215,9 +221,8 @@
 
 ### 1. **Clear API Contracts**
 
-- Define API endpoints early (Week 1)
-- Use Swagger/OpenAPI docs
-- Frontend mocks API responses while backend builds
+- API endpoints are pre-defined in `docs/UNCONFIRMED_database-schema.md` — treat them as the contract
+- Frontend should mock API responses while the backend is built
 
 ### 2. **Git Workflow**
 
@@ -233,14 +238,13 @@ feature/backend-* (Dev B)
 ### 3. **Component Isolation**
 
 - Develop components independently with mocked data
-- Integrate APIs only when both are ready
-- Use Storybook for component documentation
+- Integrate APIs only when both sides are ready
 
 ### 4. **Database-First Approach**
 
-- Dev B designs DB schema first (Week 1)
-- Dev A builds components using mocked data matching schema
-- Easy integration in Week 3
+- Schema is already designed — adopt it in Prisma first
+- Frontend types in `types/index.ts` should be aligned to Prisma models when the client is generated
+- Easy integration follows from matching shapes
 
 ### 5. **Testing Strategy**
 
@@ -264,48 +268,29 @@ npm run dev
 ### Developer B (Backend Setup):
 
 ```bash
-# Create Supabase project at supabase.com
-# Get API keys and add to .env.local
+# Provision a managed MySQL database (Railway / PlanetScale / similar)
+cp .env.example .env.local   # add the real DATABASE_URL
 npm install
-# Database ready to use via Supabase dashboard
+# Then follow Phase 1 in NEXT_STEPS.md (Prisma init, migrate, seed)
 ```
 
 ---
 
 ## 🎯 Next Steps (Immediate Actions)
 
-### Week 1, Day 1:
+**Both Developers Together:**
 
-**Both Developers Together (2 hours):**
-
-1. [ ]  Create GitHub repo
-2. [ ]  Set up Supabase project
-3. [ ]  Create `.env.local` template
-4. [ ]  Set up communication channels (Slack, meeting schedule)
-5. [ ]  Review this plan together
-6. [ ]  Confirm gallery cart inquiry flow and current no-payment boundary
-
-**After Kickoff:**
+1. [ ]  Answer the open questions in [NEXT_STEPS.md](NEXT_STEPS.md#open-questions) (DB host, domain, admin user, image storage)
+2. [ ]  Review this plan together
+3. [ ]  Confirm the Phase 1 backend kickoff date
 
 **Developer A:**
 
-1. [ ]  Clone repo and set up Node.js environment
-2. [ ]  Initialize Next.js project with TypeScript
-3. [ ]  Set up TailwindCSS and folder structure
-4. [ ]  Apply confirmed pink and purple design tokens
-5. [ ]  Start building design system
+1. [ ]  Pick up Phase 4 frontend items available before the backend lands (loading/error states, SEO files, Framer Motion)
 
 **Developer B:**
 
-1. [ ]  Create Supabase project
-2. [ ]  Design database schema
-3. [ ]  Set up authentication
-4. [ ]  Create TypeScript types file
-
-**End of Day 1 Target:**
-
-- Repo set up with both working independently
-- Both can run `npm run dev` successfully
+1. [ ]  Provision MySQL and complete Phase 1 (Prisma + migration + seed)
 
 ---
 
@@ -313,8 +298,8 @@ npm install
 
 ✅ **Code Quality**
 
-- TypeScript strict mode enabled
-- Consistent code style (Prettier/ESLint)
+- TypeScript strict mode enabled (already on)
+- Consistent code style (ESLint configured)
 - Components fully typed
 - Database queries optimized
 
@@ -322,11 +307,10 @@ npm install
 
 - Lighthouse score 90+
 - First Contentful Paint < 1.5s (mobile)
-- 3D elements optimized for mobile
 
 ✅ **User Experience**
 
-- Mobile-first responsive design
+- Mobile-first responsive design (verify for RTL)
 - Touch-friendly interactions
 - Fast load times
 - Smooth animations
@@ -343,7 +327,7 @@ npm install
 
 - [ ]  Domain registered and DNS configured
 - [ ]  Vercel connected and deployed
-- [ ]  Supabase in production mode
+- [ ]  MySQL production instance provisioned (not Supabase)
 - [ ]  Environment variables set correctly
 - [ ]  Email notifications working
 - [ ]  Admin user created
@@ -352,7 +336,7 @@ npm install
 - [ ]  Error tracking configured
 - [ ]  Security headers configured
 - [ ]  HTTPS enabled
-- [ ]  Final QA testing complete
+- [ ]  Final QA testing complete (EN + AR)
 - [ ]  Demo ready for stakeholders
 
 ---
@@ -363,6 +347,6 @@ If you encounter any blockers:
 
 1. Check GitHub Issues first
 2. Post in Slack with details
-3. Schedule 1:1 sync if needed
+3. Schedule a 1:1 sync if needed
 
 Good luck! 🎨🚀

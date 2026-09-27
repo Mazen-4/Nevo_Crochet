@@ -1,307 +1,112 @@
-# 🚀 Next Steps - Nevo Project Kickoff
+# Next Steps — Nevo Roadmap
 
-## This Week (Immediate Actions)
-
-### Day 1: Team Setup (2-3 hours together)
-
-**1. Repository Setup**
-
-- [X]  Create GitHub repo (private)
-- [X]  Initialize with README.md
-- [X]  Add .gitignore for Node.js
-
-**2. Database + Hosting Setup (MySQL path)**
-
-- [ ]  Provision a MySQL database on a free or low-cost host such as Railway or PlanetScale
-- [ ]  Copy the database connection string and save it securely
-- [ ]  Create `.env.local` template with `DATABASE_URL` and app keys
-- [ ]  Keep frontend on Vercel free tier for deployment
-- [ ]  Avoid Supabase free-tier inactivity pause for the live project
-
-**3. Project Management**
-
-- [ ]  Create GitHub Issues template
-- [ ]  Set up GitHub Projects board (Kanban)
-- [ ]  Create Slack workspace or Discord server
-- [ ]  Schedule weekly syncs (Mon, Wed, Fri)
-
-**4. Documentation**
-
-- [X]  Create `/docs` folder
-- [ ]  Add API specification template
-- [ ]  Add component guidelines
-- [ ]  Add database schema documentation
-
-**5. Initial Decisions**
-
-- [ ]  Decide on commit message convention
-- [ ]  Agree on TypeScript strict mode
-- [ ]  Set up code formatter (Prettier)
-- [ ]  Set up linter (ESLint)
-
-**6. Client Decisions Confirmed**
-
-- [X]  Gallery cart for collecting items before an inquiry
-- [X]  No online payment or checkout in the current phase
-- [X]  Slogan: "Made slowly. Kept forever."
-- [X]  Girly pink and purple color palette confirmed in `Cozy_Loops_planning.txt`
-- [X]  Order tracking reserved for a future phase
+> **Status:** The storefront frontend is complete and running locally. Everything below covers the backend/data layer, admin, polish, and launch that are still to be built.
+>
+> See [README.md](README.md) for the current project status and [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md) for the two-developer work split.
 
 ---
 
-### Day 2-3: Individual Setup & Phase 1 Start
+## Decisions Already Confirmed
 
-**Developer A (Frontend):**
-
-```bash
-# Initialize project
-npm create next-app@latest nevo -- --typescript --tailwind --app
-cd nevo
-npm install framer-motion three @react-three/fiber @react-three/drei react-hook-form
-
-# Folder structure
-mkdir -p app/{public,admin,contact}
-mkdir -p components/{public,admin,common,3d}
-mkdir -p lib
-mkdir -p styles
-mkdir -p types
-
-# Start building
-npm run dev
-```
-
-**Client-facing features to include:**
-
-- [ ]  Add cart controls to gallery and work detail cards
-- [ ]  Build cart review with quantity changes and item removal
-- [ ]  Include selected cart items in contact form and WhatsApp inquiry messages
-- [ ]  Apply the confirmed pink and purple design tokens
-
-**Developer B (Backend):**
-
-```bash
-# Use a managed MySQL database instead of Supabase free plan
-# Good options: Railway, PlanetScale, or a similar low-cost provider
-
-# Tasks:
-- [ ] Create database schema
-- [ ] Create Projects table
-- [ ] Create Gallery table
-- [ ] Create Orders/Inquiries table
-- [ ] Create Users table for admin
-- [ ] Define admin access rules and session/auth flow
-- [ ] Create TypeScript types file for Dev A
-- [ ] Store selected cart items with each inquiry
-- [ ] Keep payment and checkout out of the current schema
-```
+- [X] Gallery cart collects items before an inquiry (client-side, `localStorage`)
+- [X] No online payment or checkout in the current phase
+- [X] Slogan: "Made slowly. Kept forever."
+- [X] Pink and purple palette confirmed (`Cozy_Loops_planning.txt`)
+- [X] Order tracking reserved for a future phase
+- [X] MySQL (not Supabase) for the live data model — avoids free-tier inactivity pause
+- [X] Frontend on Vercel free tier
+- [X] Full English/Arabic bilingual support with RTL
 
 ---
 
-## Phase 1 Deliverables (End of Week 2)
+## Phase 1 — Data Layer (Next, Week 1–2)
 
-### Frontend:
+The schema is designed in [`docs/UNCONFIRMED_database-schema.md`](docs/UNCONFIRMED_database-schema.md); it needs to become a real, connected database.
 
-- ✅ Next.js project initialized
-- ✅ TailwindCSS configured
-- ✅ Folder structure set up
-- ✅ Design system components (Button, Card, Typography)
-- ✅ Layout components (Navbar, Footer)
-- ✅ Component documentation
+- [ ] Provision a managed MySQL database (Railway, PlanetScale, or similar low-cost host)
+- [ ] Save the connection string securely in `.env.local`
+- [ ] Add Prisma and initialize with the documented schema (`npx prisma init`)
+- [ ] Run the initial migration (`npx prisma migrate dev --name init`)
+- [ ] Create a Prisma client singleton (`lib/prisma.ts`) and retire the `lib/supabase.ts` placeholder
+- [ ] Seed the three sample projects from `lib/data/site.ts` with EN + AR translations
+- [ ] Confirm local reads against the seeded data
 
-### Backend:
-
-- ✅ Supabase project configured
-- ✅ Database schema complete
-- ✅ Authentication set up
-- ✅ RLS policies implemented
-- ✅ TypeScript types created and shared
-- ✅ API client library created (`lib/supabase.ts`)
-
-### Sync:
-
-- ✅ API documentation finalized
-- ✅ Frontend can mock API responses
-- ✅ Both teams can work independently
+**Sync point:** Frontend can pull a product list from the database.
 
 ---
 
-## Key Resources to Create Now
+## Phase 2 — API Layer (Week 2–3)
 
-### 1. Database Schema Document
+Public routes from the schema doc:
 
-```typescript
-// types/database.ts
-export interface Project {
-  id: string;
-  slug: string;
-  title: string;
-  category: string;
-  description: string;
-  images: string[];
-  thumbnail: string;
-  materials: string;
-  colors: string[];
-  featured: boolean;
-  created_at: string;
-  updated_at: string;
-}
+- [ ] `GET /api/projects?locale=en` — list projects
+- [ ] `GET /api/projects/[slug]?locale=ar` — single project
+- [ ] `POST /api/inquiries` — question + custom request, including cart items and image refs (transactional)
+- [ ] `POST /api/newsletter` — subscriber upsert
+- [ ] Add Zod validation (email normalization, text length limits, quantity ≥ 1, published-project check)
+- [ ] Replace `lib/data/site.ts` reads with database-backed fetches on the home/gallery/product pages
+- [ ] Wire the contact form, custom request form, and newsletter form to the new endpoints
+- [ ] Wire the floating cart's "Confirm cart" action to submit the cart as an inquiry
 
-export interface Order {
-  id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  message: string;
-  status: 'new' | 'contacted' | 'completed';
-  notes: string;
-  created_at: string;
-}
-
-export interface CartItem {
-  project_id: string;
-  title: string;
-  quantity: number;
-}
-
-// ... more types
-```
-
-### 2. API Endpoints Contract
-
-```
-GET  /api/projects              → List all projects
-GET  /api/projects/[slug]       → Get single project
-POST /api/projects              → Create project (admin)
-PUT  /api/projects/[id]         → Update project (admin)
-DEL  /api/projects/[id]         → Delete project (admin)
-
-GET  /api/gallery               → List gallery items
-POST /api/gallery               → Upload image (admin)
-POST /api/inquiries             → Create inquiry with selected cart items
-
-GET  /api/orders                → List inquiries (admin)
-POST /api/orders                → Create inquiry
-PATCH /api/orders/[id]          → Update order status (admin)
-
-POST /api/auth/login            → Admin login
-POST /api/auth/logout           → Admin logout
-```
-
-### 3. Component Structure
-
-```
-components/
-├── public/
-│   ├── Hero.tsx
-│   ├── HeroCanvas.tsx (3D)
-│   ├── GalleryGrid.tsx
-│   ├── GalleryCard.tsx
-│   ├── CartButton.tsx
-│   ├── CartDrawer.tsx
-│   ├── ContactForm.tsx
-│   └── ...
-├── admin/
-│   ├── AdminLayout.tsx
-│   ├── ProjectForm.tsx
-│   ├── GalleryUploader.tsx
-│   ├── OrderList.tsx
-│   └── ...
-└── common/
-    ├── Navbar.tsx
-    ├── Footer.tsx
-    ├── Button.tsx
-    └── ...
-```
+**Sync point:** A visitor can submit an inquiry that is stored and visible in the database.
 
 ---
 
-## Coding Standards (Agree on These Now)
+## Phase 3 — Admin CMS (Week 4–5)
 
-### TypeScript
+- [ ] Admin authentication (credential + session flow) and protected admin routes
+- [ ] Admin layout and sidebar navigation
+- [ ] Project management: list, add/edit/delete, featured toggle, ordering
+- [ ] Image upload + storage (Cloudinary or S3-compatible; see schema doc)
+- [ ] Inquiry management: view submissions with cart items, add notes, change status (New → Contacted → Completed)
+- [ ] Contact settings (WhatsApp number, email) via `SiteSetting`
 
-```typescript
-// ✅ Strict mode enabled
-"strict": true
-
-// ✅ Always type function parameters and returns
-const fetchProject = async (id: string): Promise<Project> => {
-  // ...
-}
-
-// ✅ Use interfaces, not `any`
-export interface Props {
-  title: string;
-  onSubmit: (data: FormData) => void;
-}
-```
-
-### Styling
-
-```typescript
-// ✅ Use TailwindCSS classes
-<div className="flex items-center gap-4 p-6">
-
-// ✅ Create reusable component variants with clsx
-import clsx from 'clsx';
-className={clsx(
-  'px-4 py-2 rounded',
-  variant === 'primary' && 'bg-rose-500 text-white'
-)}
-```
-
-### Component Organization
-
-```typescript
-// ✅ Always export components as named exports
-export const HeroCanvas = ({ ... }) => { ... }
-
-// ✅ Use prop interfaces
-interface HeroCanvasProps {
-  autoplay?: boolean;
-  scale?: number;
-}
-
-// ✅ Components in separate files
-src/components/Hero/Hero.tsx
-src/components/Hero/HeroCanvas.tsx
-src/components/Hero/index.ts (export both)
-```
+**Boundary:** Do not implement online payment, checkout, or customer order tracking in this phase.
 
 ---
 
-## Timeline Summary
+## Phase 4 — Polish & SEO (Week 6)
 
-
-| Week | Focus       | Dev A           | Dev B          | Sync             |
-| ---- | ----------- | --------------- | -------------- | ---------------- |
-| 1-2  | Foundation  | Design System   | DB Schema      | API Contract     |
-| 3-5  | Public Site | Frontend Pages  | API Routes     | Connect & Test   |
-| 6-7  | Admin Panel | Admin UI        | Admin APIs     | Full Integration |
-| 8    | Polish      | Animations, SEO | Performance    | Testing          |
-| 9-10 | Launch      | Deploy Frontend | Deploy Backend | Go Live          |
-
----
-
-## Questions to Answer Before Starting
-
-1. **Who is the admin user?** (email/password)
-2. **What's the domain name?** (for deployment)
-3. **Brand colors & fonts confirmed?** (from planning)
-4. **First few projects to add?** (sample data)
-5. **Deployment timeline?** (exact date target)
-6. **Any API integrations needed now?** (WhatsApp, email, etc.)
+- [ ] Add `loading.tsx`, `error.tsx`, and a custom `not-found.tsx`
+- [ ] SEO: `sitemap.ts`, `robots.ts`, Open Graph metadata, structured data (Product/FAQ)
+- [ ] Replace Unsplash placeholders with real product photography
+- [ ] Install and implement Framer Motion entrance/scroll animations
+- [ ] Evaluate the planned 3D hero (Three.js / React Three Fiber) — decide scope or defer
+- [ ] Responsive QA across mobile/tablet/desktop; verify RTL on every page
+- [ ] Fix known issues in [README.md](README.md#known-issues) (middleware → proxy migration, Tailwind module warning)
+- [ ] Accessibility pass (focus states, contrast, aria on cart/FAQ)
 
 ---
 
-## Get Started Checklist
+## Phase 5 — Testing & Deployment (Week 7–8)
 
-- [ ]  GitHub repo created
-- [ ]  Supabase project created
-- [ ]  Discord/Slack channel set up
-- [ ]  Weekly meeting scheduled
-- [ ]  This plan reviewed and agreed upon
-- [ ]  Coding standards documented
-- [ ]  Dev A and Dev B environments ready
-- [ ]  First sync meeting scheduled (Day 3)
+- [ ] Testing setup (unit + integration; E2E last)
+- [ ] Lighthouse pass — target 90+, FCP < 1.5s on mobile
+- [ ] Deploy frontend to Vercel; connect production MySQL and set env vars
+- [ ] Production migration (`npx prisma migrate deploy`)
+- [ ] Email notifications for new inquiries (Resend/SendGrid)
+- [ ] Error tracking (Sentry, optional) and database backups
+- [ ] Launch checklist in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md#-launch-checklist)
 
-**Ready to build! 🚀**
+---
+
+## Deferred / Future Phase
+
+- Order tracking (inquiry → approved order → status page)
+- Blog (care guides, behind the scenes)
+- Advanced 3D elements
+- Analytics dashboard
+- Multi-language expansion beyond EN/AR
+
+---
+
+## Open Questions
+
+Answer before Phase 1 begins:
+
+1. **Database host** — Railway or PlanetScale (or other)?
+2. **Domain name** for deployment?
+3. **Admin credentials** — who is the admin user?
+4. **Image storage** — Cloudinary or S3-compatible?
+5. **Deployment target date?**
+6. **WhatsApp number and contact email** — real values to replace placeholders?
