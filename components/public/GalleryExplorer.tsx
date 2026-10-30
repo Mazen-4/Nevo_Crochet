@@ -4,42 +4,29 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { projects } from '@/lib/data/site';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
+import type { Project } from '@/types';
 
 type Filter = 'all' | 'home' | 'blankets' | 'accessories';
 type Sort = 'featured' | 'latest' | 'name';
 
-const categoryKeys: Record<string, Filter> = {
-  Home: 'home',
-  Blankets: 'blankets',
-  Accessories: 'accessories',
-};
-
-const colorKeys: Record<string, string[]> = {
-  'luna-cushion-set': ['blush', 'lavender', 'cream'],
-  'rose-loop-throw': ['rose', 'lilac', 'grey'],
-  'petal-market-basket': ['petal', 'peony', 'sand'],
-};
-
-export function GalleryExplorer() {
+export function GalleryExplorer({ projects }: { projects: Project[] }) {
   const { addItem } = useInquiryCart();
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('home');
-  const product = useTranslations('products');
   const common = useTranslations('common');
   const [filter, setFilter] = useState<Filter>('all');
   const [sort, setSort] = useState<Sort>('featured');
 
   const visibleProjects = useMemo(() => {
-    const filtered = projects.filter((project) => filter === 'all' || categoryKeys[project.category] === filter);
+    const filtered = projects.filter((project) => filter === 'all' || project.categoryKey === filter);
     return [...filtered].sort((first, second) => {
       if (sort === 'featured') return Number(second.featured) - Number(first.featured);
-      if (sort === 'latest') return Number(second.id) - Number(first.id);
-      return product(`${first.slug}.title`).localeCompare(product(`${second.slug}.title`), locale);
+      if (sort === 'latest') return second.createdAt.localeCompare(first.createdAt);
+      return first.title.localeCompare(second.title, locale);
     });
-  }, [filter, sort, product, locale]);
+  }, [projects, filter, sort, locale]);
 
   const filters: Array<[Filter, string]> = [
     ['all', 'all'],
@@ -87,12 +74,12 @@ export function GalleryExplorer() {
           {visibleProjects.map((project) => (
             <article key={project.id} className="group overflow-hidden rounded-[1.75rem] border border-[#f1e1f0] bg-white shadow-[0_16px_38px_rgba(140,110,166,0.08)] transition hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(119,80,146,0.12)]">
               <Link href={`/products/${project.slug}`} className="block">
-                <div className="overflow-hidden"><Image src={project.image} alt={product(`${project.slug}.title`)} width={400} height={320} className="h-80 w-full object-cover transition duration-500 group-hover:scale-105" /></div>
+                <div className="overflow-hidden"><Image src={project.image} alt={project.title} width={400} height={320} className="h-80 w-full object-cover transition duration-500 group-hover:scale-105" /></div>
               </Link>
               <div className="space-y-4 p-5">
-                <div className="flex items-center justify-between gap-4"><span className="rounded-full bg-[#f9ebf5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#815f86]">{product(`${project.slug}.category`)}</span><span className="text-sm font-medium text-[#7d5d8f]">{product(`${project.slug}.price`)}</span></div>
-                <div><h2 className={`text-2xl font-semibold tracking-[-0.04em] text-[#2f1d36] ${isArabic ? 'text-ar-title' : ''}`}>{product(`${project.slug}.title`)}</h2><p className={`mt-2 text-sm leading-6 text-[#5e4b66] ${isArabic ? 'text-ar-body' : ''}`}>{product(`${project.slug}.description`)}</p></div>
-                <div className="flex flex-wrap gap-2">{project.colors.map((color, index) => <span key={color} className="rounded-full border border-[#ead8ef] bg-[#fffafc] px-2.5 py-1 text-xs text-[#5f4e69]">{product(`${project.slug}.colors.${colorKeys[project.slug][index]}`)}</span>)}</div>
+                <div className="flex items-center justify-between gap-4"><span className="rounded-full bg-[#f9ebf5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#815f86]">{project.category}</span><span className="text-sm font-medium text-[#7d5d8f]">{project.priceLabel}</span></div>
+                <div><h2 className={`text-2xl font-semibold tracking-[-0.04em] text-[#2f1d36] ${isArabic ? 'text-ar-title' : ''}`}>{project.title}</h2><p className={`mt-2 text-sm leading-6 text-[#5e4b66] ${isArabic ? 'text-ar-body' : ''}`}>{project.description}</p></div>
+                <div className="flex flex-wrap gap-2">{project.colors.map((color) => <span key={color.key} className="rounded-full border border-[#ead8ef] bg-[#fffafc] px-2.5 py-1 text-xs text-[#5f4e69]">{color.label}</span>)}</div>
                 <div className="flex gap-3"><Link href={`/products/${project.slug}`} className={`inline-flex rounded-full bg-[#f4ebff] px-4 py-2.5 text-sm font-semibold text-[#504061] transition hover:bg-[#e9dcff] ${isArabic ? 'text-ar' : ''}`}>{common('viewDetails')}</Link><button type="button" onClick={() => addItem(project)} className={`inline-flex rounded-full border border-[#ead8ef] px-4 py-2.5 text-sm font-semibold text-[#504061] transition hover:bg-[#fff8fc] ${isArabic ? 'text-ar' : ''}`}>{common('addToCart')}</button></div>
               </div>
             </article>

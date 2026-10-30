@@ -10,7 +10,7 @@ Online payment and checkout are intentionally out of scope for the current phase
 
 ## Current status
 
-The public storefront frontend is complete and runs locally. The backend (database, API routes, form persistence, admin CMS) has been designed but not yet built.
+The public storefront frontend is complete and runs locally against a live Neon PostgreSQL database. Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS is next.
 
 | Area | Status | Notes |
 | --- | --- | --- |
@@ -19,7 +19,7 @@ The public storefront frontend is complete and runs locally. The backend (databa
 | Inquiry cart (add, quantity, remove, persistence) | Done | `localStorage`-backed, floating cart dock |
 | Design system & responsive layout | Done | Pink/purple palette, Cairo/Almarai Arabic typography |
 | Database schema (PostgreSQL + Prisma) | Done | Neon PostgreSQL provisioned, migrated, and seeded (3 projects, 6 testimonials) |
-| API routes (inquiries, newsletter, products) | Not started | Forms currently simulate submission client-side |
+| API routes (inquiries, newsletter, products) | Done | `app/api/*`, Zod validation, pages read via cached `lib/projects.ts` |
 | Admin CMS | Not started | |
 | CSS animations (scroll reveal, hero, cards) | Done | Pure CSS + IntersectionObserver, no external deps |
 | Framer Motion / 3D hero | Not started | No Framer Motion or Three.js installed yet |
@@ -37,7 +37,8 @@ The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phas
 - **TypeScript** — strict mode enabled
 - **Tailwind CSS 4** (CSS-first config via `@theme` + `tailwind.config.ts`)
 - **next-intl 4** — locale routing, message loading, navigation helpers
-- **PostgreSQL (Neon) + Prisma 6** — production data layer (schema ready, pending Neon provisioning)
+- **PostgreSQL (Neon) + Prisma 6** — production data layer
+- **Zod 4** — request validation for the API routes
 - **Vercel** — planned frontend hosting
 
 Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (replaced by Neon PostgreSQL), online payments, checkout, order tracking.
@@ -65,6 +66,11 @@ app/
     page.tsx                 # Storefront homepage
     gallery/page.tsx         # Gallery listing page
     products/[slug]/page.tsx # Dynamic product detail page
+  api/
+    projects/route.ts        # GET  /api/projects?locale=en
+    projects/[slug]/route.ts # GET  /api/projects/:slug?locale=ar
+    inquiries/route.ts       # POST /api/inquiries (question, custom request, cart)
+    newsletter/route.ts      # POST /api/newsletter (subscriber upsert)
     globals.css              # Tailwind entry + global/RTL typography styles
 components/
   LanguageSwitcher.tsx       # EN/AR switch with RTL handoff
@@ -74,11 +80,13 @@ i18n/
   navigation.ts              # Locale-aware Link/useRouter/usePathname
   request.ts                 # next-intl request config (loads messages/<locale>.json)
 lib/
-  data/site.ts               # Static sample catalog + testimonials (to be replaced by DB reads)
   prisma.ts                  # Prisma client singleton (PostgreSQL via Neon)
+  projects.ts                # Cached, localized project/testimonial queries (tags: projects, testimonials)
+  validation.ts              # Zod schemas for inquiries and newsletter
+  api.ts                     # Route handler helpers (JSON body parsing, error responses)
   supabase.ts                # Deprecated — use prisma.ts instead
 messages/
-  en.json, ar.json           # All UI and product translations
+  en.json, ar.json           # UI translations (product/testimonial copy lives in the DB)
 types/index.ts               # Shared Project / Testimonial / CartItem types
 docs/                        # Database schema and project documents
 middleware.ts                # next-intl locale routing (see Known issues)
@@ -129,7 +137,7 @@ NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-No environment variables are required to run the storefront today — the app runs entirely on static data. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
+`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
 
 ---
 
@@ -148,7 +156,7 @@ No environment variables are required to run the storefront today — the app ru
 ## Roadmap
 
 1. **~~Data layer~~** — Neon PostgreSQL provisioned, Prisma migrated and seeded (3 projects, 6 testimonials)
-2. **API layer** — products read APIs, inquiry/newsletter write endpoints with validation; wire the existing forms
+2. **~~API layer~~** — product read APIs, inquiry/newsletter write endpoints with Zod validation; forms wired
 3. **Admin CMS** — authenticated admin for products, images, and inquiry management
 4. **Polish** — loading/error/not-found states, SEO files, Framer Motion animations, responsive QA, testing
 5. **Deploy** — Vercel frontend + Neon PostgreSQL, environment variables, monitoring
@@ -162,7 +170,8 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 - **~~Lint failures~~** — Resolved. `npm run lint` passes with 0 errors and 0 warnings.
 - **Middleware deprecation** — Next.js 16 flags `middleware.ts` as deprecated in favor of the `proxy` convention. Migrate with `npx @next/codemod@canary middleware-to-proxy .` (update `i18n` references accordingly).
 - **Tailwind config warning** — dev server warns about module type detection for `tailwind.config.ts`; adding `"type": "module"` to `package.json` resolves it.
-- **Forms do not persist** — contact, custom request, and newsletter submissions set a local "sent" state only.
+- **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
+- **No spam protection on public forms** — no rate limiting or honeypot on `/api/inquiries` and `/api/newsletter` yet.
 - **Sample imagery** — product images are Unsplash placeholders pending real product photography.
 
 ---

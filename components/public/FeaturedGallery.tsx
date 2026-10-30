@@ -3,15 +3,14 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { projects } from '@/lib/data/site';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
 import { ScrollReveal } from '@/components/public/ScrollReveal';
+import type { Project } from '@/types';
 
-export function FeaturedGallery() {
+export function FeaturedGallery({ projects }: { projects: Project[] }) {
   const { addItem } = useInquiryCart();
   const t = useTranslations('home');
   const common = useTranslations('common');
-  const product = useTranslations('products');
   const isArabic = useLocale() === 'ar';
   return (
     <section id="gallery" className="mx-auto max-w-6xl px-5 py-20 md:px-8 lg:px-10">
@@ -44,7 +43,7 @@ export function FeaturedGallery() {
               <div className="card-img-wrap">
                 <Image
                   src={project.image}
-                  alt={product(`${project.slug}.title`)}
+                  alt={project.title}
                   width={400}
                   height={320}
                   className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
@@ -54,20 +53,20 @@ export function FeaturedGallery() {
             <div className="space-y-4 p-5">
               <div className="flex items-center justify-between gap-4">
                 <span className="rounded-full bg-[#f9ebf5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#815f86]">
-                  {product(`${project.slug}.category`)}
+                  {project.category}
                 </span>
-                <span className="text-sm font-medium text-[#7d5d8f]">{product(`${project.slug}.price`)}</span>
+                <span className="text-sm font-medium text-[#7d5d8f]">{project.priceLabel}</span>
               </div>
 
               <div>
-                <h3 className={`text-2xl font-semibold tracking-[-0.04em] text-[#2f1d36] ${isArabic ? 'text-ar-title mb-2' : ''}`}>{product(`${project.slug}.title`)}</h3>
-                <p className={`mt-2 text-sm leading-6 text-[#5e4b66] ${isArabic ? 'text-ar-body mb-4' : ''}`}>{product(`${project.slug}.description`)}</p>
+                <h3 className={`text-2xl font-semibold tracking-[-0.04em] text-[#2f1d36] ${isArabic ? 'text-ar-title mb-2' : ''}`}>{project.title}</h3>
+                <p className={`mt-2 text-sm leading-6 text-[#5e4b66] ${isArabic ? 'text-ar-body mb-4' : ''}`}>{project.description}</p>
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {project.colors.map((color, index) => (
-                  <span key={color} className="rounded-full border border-[#ead8ef] bg-[#fffafc] px-2.5 py-1 text-xs text-[#5f4e69]">
-                    {product(`${project.slug}.colors.${['blush', 'lavender', 'cream', 'rose', 'lilac', 'grey', 'petal', 'peony', 'sand'][project.id === '1' ? index : project.id === '2' ? index + 3 : index + 6]}`)}
+                {project.colors.map((color) => (
+                  <span key={color.key} className="rounded-full border border-[#ead8ef] bg-[#fffafc] px-2.5 py-1 text-xs text-[#5f4e69]">
+                    {color.label}
                   </span>
                 ))}
               </div>

@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { CartItem, Project } from '@/types';
 
-const STORAGE_KEY = 'nevo-inquiry-cart';
+// v2: cart ids are database ids now; bumping the key drops carts saved with the old static ids.
+const STORAGE_KEY = 'nevo-inquiry-cart-v2';
 const emptySubscribe = () => () => {};
 
 type InquiryCartContextValue = {
@@ -93,7 +94,11 @@ export function InquiryCartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   };
 
-  const openCart = () => setIsOpen(true);
+  const openCart = () => {
+    setIsOpen(true);
+    // An explicit open cancels the auto-close timer started by addItem.
+    setLastAdded(null);
+  };
   const closeCart = () => setIsOpen(false);
 
   useEffect(() => {

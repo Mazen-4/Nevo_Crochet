@@ -3,12 +3,16 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
 export function ContactSection() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
   const [activeForm, setActiveForm] = useState<'question' | 'custom'>('question');
   const [imageCount, setImageCount] = useState(0);
-  const isArabic = useLocale() === 'ar';
+  const locale = useLocale();
+  const isArabic = locale === 'ar';
   const t = useTranslations('home');
+  const common = useTranslations('common');
 
   useEffect(() => {
     const selectCustomForm = () => {
@@ -43,10 +47,31 @@ export function ContactSection() {
     };
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const base = { name: data.get('name'), email: data.get('email'), locale };
+    // Reference images are not uploaded yet — that needs image storage (Phase 3).
+    const body =
+      activeForm === 'question'
+        ? { ...base, type: 'QUESTION', question: data.get('question') }
+        : { ...base, type: 'CUSTOM_REQUEST', customName: data.get('customName'), customSize: data.get('customSize'), details: data.get('message') };
+
+    setStatus('sending');
+    try {
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error(`Inquiry failed: ${response.status}`);
+      setStatus('sent');
+      setImageCount(0);
+      form.reset();
+    } catch {
+      setStatus('error');
+    }
   };
 
   const handleImages = (event: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +115,7 @@ export function ContactSection() {
             {(['question', 'custom'] as const).map((formType) => {
               const isActive = activeForm === formType;
               return (
-                <button key={formType} type="button" role="tab" aria-selected={isActive} onClick={() => { setActiveForm(formType); setSubmitted(false); }} className={`rounded-[1.25rem] px-4 py-3 text-sm transition ${isActive ? 'bg-[#f5dcff] text-[#2f1d36]' : 'text-[#f4ebff] hover:bg-white/10'} ${isArabic ? 'text-ar' : ''}`}>
+                <button key={formType} type="button" role="tab" aria-selected={isActive} onClick={() => { setActiveForm(formType); setStatus('idle'); }} className={`rounded-[1.25rem] px-4 py-3 text-sm transition ${isActive ? 'bg-[#f5dcff] text-[#2f1d36]' : 'text-[#f4ebff] hover:bg-white/10'} ${isArabic ? 'text-ar' : ''}`}>
                   {formType === 'question' ? t('questionTab') : t('customTab')}
                 </button>
               );
@@ -122,11 +147,17 @@ export function ContactSection() {
             </>
           )}
 
-          <button type="submit" className="w-full rounded-full bg-[#f5dcff] px-5 py-3.5 text-sm font-semibold text-[#2f1d36] transition hover:bg-[#efd6ff]">
-            {activeForm === 'question' ? t('sendMessage') : t('requestPiece')}
+          <button type="submit" disabled={status === 'sending'} className="w-full rounded-full bg-[#f5dcff] px-5 py-3.5 text-sm font-semibold text-[#2f1d36] transition hover:bg-[#efd6ff] disabled:opacity-60">
+            {status === 'sending' ? common('sending') : activeForm === 'question' ? t('sendMessage') : t('requestPiece')}
           </button>
 
-          {submitted && (
+          {status === 'error' && (
+            <p role="alert" className="rounded-2xl border border-rose-300/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              {common('submitError')}
+            </p>
+          )}
+
+          {status === 'sent' && (
             <p className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
               {t('messageSent')}
             </p>

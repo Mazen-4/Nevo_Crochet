@@ -40,13 +40,17 @@
     "materials": "Materials",
     "palette": "Palette",
     "confirmCart": "Confirm cart",
-    "cartConfirmed": "Cart confirmed",
     "cartReady": "Your cart is ready for the next step.",
     "cartEmpty": "Your cart is empty",
     "cartEmptyHint": "Pick a favorite piece to start your custom order.",
     "added": "Added: {name}",
     "decreaseQuantity": "Decrease quantity for {name}",
-    "increaseQuantity": "Increase quantity for {name}"
+    "increaseQuantity": "Increase quantity for {name}",
+    "cartNote": "Anything we should know? (optional)",
+    "sendCart": "Send inquiry",
+    "sending": "Sending…",
+    "cartSent": "Thank you! Your inquiry is on its way, and we’ll reply soon.",
+    "submitError": "Something went wrong. Please try again."
   },
   "home": {
     "eyebrow": "Premium crochet studio",
@@ -115,12 +119,7 @@
     "emailPlaceholder": "you@example.com",
     "detailsPlaceholder": "Tell us about the mood, colors, or space you're thinking of...",
     "sendMessage": "Send message",
-    "messageSent": "Your message has been sent. I’ll be in touch soon."
-    ,"testimonials": {
-      "amelia": { "name": "Amelia", "text": "Every piece feels thoughtful and intentional. It instantly made our home feel softer and more personal." },
-      "nora": { "name": "Nora", "text": "The detail is beautiful, and the colors feel like a gentle keepsake rather than mass-produced décor." },
-      "sofia": { "name": "Sofia", "text": "The process felt personal from start to finish, and the final piece looked even more beautiful in person." }
-    },
+    "messageSent": "Your message has been sent. I’ll be in touch soon.",
     "faqEyebrow": "Good to know",
     "faqTitle": "A few gentle answers before you begin.",
     "faq": {
@@ -153,32 +152,6 @@
       "name": "Name",
       "results": "{count} pieces",
       "requestCustom": "Request a custom piece"
-    }
-  },
-  "products": {
-    "luna-cushion-set": {
-      "title": "Luna Cushion Set",
-      "category": "Home",
-      "description": "Soft pastel cushions made in a cozy, heirloom finish with plush texture and careful stitching.",
-      "materials": "Cotton yarn, wool blend, hand-finished edges",
-      "colors": { "blush": "Blush pink", "lavender": "Lavender", "cream": "Cream" },
-      "price": "Made to order"
-    },
-    "rose-loop-throw": {
-      "title": "Rose Loop Throw",
-      "category": "Blankets",
-      "description": "A layered throw with a gentle drape and warm, tactile finish designed for slow evenings.",
-      "materials": "Merino blend, brushed cotton, hand-knotted tassels",
-      "colors": { "rose": "Rose", "lilac": "Lilac", "grey": "Warm grey" },
-      "price": "Custom sizing"
-    },
-    "petal-market-basket": {
-      "title": "Petal Market Basket",
-      "category": "Accessories",
-      "description": "A structured crochet basket with a soft silhouette and a sweet color story for daily rituals.",
-      "materials": "Cotton rope, braided handle, natural liner",
-      "colors": { "petal": "Petal pink", "peony": "Peony", "sand": "Sand" },
-      "price": "Small batch"
     }
   }
 }

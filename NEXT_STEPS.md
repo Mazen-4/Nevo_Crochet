@@ -40,14 +40,15 @@ The schema is designed in [`docs/UNCONFIRMED_database-schema.md`](docs/UNCONFIRM
 
 Public routes from the schema doc:
 
-- [ ] `GET /api/projects?locale=en` — list projects
-- [ ] `GET /api/projects/[slug]?locale=ar` — single project
-- [ ] `POST /api/inquiries` — question + custom request, including cart items and image refs (transactional)
-- [ ] `POST /api/newsletter` — subscriber upsert
-- [ ] Add Zod validation (email normalization, text length limits, quantity ≥ 1, published-project check)
-- [ ] Replace `lib/data/site.ts` reads with database-backed fetches on the home/gallery/product pages
-- [ ] Wire the contact form, custom request form, and newsletter form to the new endpoints
-- [ ] Wire the floating cart's "Confirm cart" action to submit the cart as an inquiry
+- [X] ~~`GET /api/projects?locale=en` — list projects~~
+- [X] ~~`GET /api/projects/[slug]?locale=ar` — single project~~
+- [X] ~~`POST /api/inquiries` — question + custom request, including cart items (transactional)~~ — image refs wait on image storage (Phase 3)
+- [X] ~~`POST /api/newsletter` — subscriber upsert~~
+- [X] ~~Add Zod validation~~ (`lib/validation.ts` — email normalization, length limits, quantity 1–99, published-project check, DB-side title/price snapshots)
+- [X] ~~Replace `lib/data/site.ts` reads with database-backed fetches~~ (`lib/projects.ts`, cached with tags `projects` / `testimonials`; static file removed)
+- [X] ~~Wire the contact form, custom request form, and newsletter form to the new endpoints~~
+- [X] ~~Wire the floating cart's "Confirm cart" action to submit the cart as an inquiry~~ (name/email/note form in the cart dock)
+- [ ] Spam protection for the public POST routes (honeypot field and/or rate limiting)
 
 **Sync point:** A visitor can submit an inquiry that is stored and visible in the database.
 
@@ -57,8 +58,9 @@ Public routes from the schema doc:
 
 - [ ] Admin authentication (credential + session flow) and protected admin routes
 - [ ] Admin layout and sidebar navigation
-- [ ] Project management: list, add/edit/delete, featured toggle, ordering
+- [ ] Project management: list, add/edit/delete, featured toggle, ordering — call `revalidateTag('projects')` after writes so the storefront cache refreshes
 - [ ] Image upload + storage (Cloudinary or S3-compatible; see schema doc)
+- [ ] Attach custom-request reference images to inquiries (`InquiryImage`) once upload storage exists
 - [ ] Inquiry management: view submissions with cart items, add notes, change status (New → Contacted → Completed)
 - [ ] Contact settings (WhatsApp number, email) via `SiteSetting`
 

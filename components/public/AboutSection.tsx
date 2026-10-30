@@ -1,7 +1,7 @@
-import { testimonials } from '@/lib/data/site';
 import { useTranslations } from 'next-intl';
+import type { Testimonial } from '@/types';
 
-export function AboutSection() {
+export function AboutSection({ testimonials }: { testimonials: Testimonial[] }) {
   const t = useTranslations('home');
   return (
     <section id="about" className="bg-[#fdf8fb]">
@@ -38,8 +38,8 @@ export function AboutSection() {
         <div className="grid gap-6 md:grid-cols-3">
           {testimonials.map((testimonial) => (
             <blockquote key={testimonial.id} className="rounded-[1.5rem] border border-[#efdfef] bg-white p-6 shadow-[0_10px_24px_rgba(140,112,163,0.05)]">
-              <p className="text-base leading-7 text-[#4f3c5c]">“{t(`testimonials.${testimonial.id === 't1' ? 'amelia' : testimonial.id === 't2' ? 'nora' : 'sofia'}.text`)}”</p>
-              <footer className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-[#8a6a95]">{t(`testimonials.${testimonial.id === 't1' ? 'amelia' : testimonial.id === 't2' ? 'nora' : 'sofia'}.name`)}</footer>
+              <p className="text-base leading-7 text-[#4f3c5c]">“{testimonial.text}”</p>
+              <footer className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-[#8a6a95]">{testimonial.name}</footer>
             </blockquote>
           ))}
         </div>

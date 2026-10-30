@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { Footer } from '@/components/public/Footer';
 import { CartDock } from '@/components/public/CartDock';
 import { routing } from '@/i18n/routing';
+import { getProjects } from '@/lib/projects';
 
 const cairo = Cairo({
   subsets: ['arabic'],
@@ -35,13 +36,14 @@ export default async function LocaleLayout({ children, params }: Readonly<Layout
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-  const messages = await getMessages();
+  const [messages, projects] = await Promise.all([getMessages(), getProjects(locale)]);
+  const catalog = projects.map(({ id, slug, title, priceLabel }) => ({ id, slug, title, priceLabel }));
 
   return (
     <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${cairo.variable} ${almarai.variable} ${locale === 'ar' ? 'font-cairo' : 'font-sans'} flex min-h-full flex-1 flex-col`}>
       <NextIntlClientProvider messages={messages}>
         {children}
-        <CartDock />
+        <CartDock catalog={catalog} />
         <Footer />
       </NextIntlClientProvider>
     </div>
