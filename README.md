@@ -10,7 +10,7 @@ Online payment and checkout are intentionally out of scope for the current phase
 
 ## Current status
 
-The public storefront frontend is complete and runs locally. The backend (database, API routes, form persistence, admin CMS) has been designed but not yet built.
+The public storefront frontend is complete and runs locally against a live Neon PostgreSQL database. Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS is next.
 
 | Area | Status | Notes |
 | --- | --- | --- |
@@ -18,13 +18,14 @@ The public storefront frontend is complete and runs locally. The backend (databa
 | English/Arabic i18n + RTL | Done | `next-intl`, locale middleware, language switcher |
 | Inquiry cart (add, quantity, remove, persistence) | Done | `localStorage`-backed, floating cart dock |
 | Design system & responsive layout | Done | Pink/purple palette, Cairo/Almarai Arabic typography |
-| Database schema (MySQL + Prisma) | Designed | See [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) |
-| API routes (inquiries, newsletter, products) | Not started | Forms currently simulate submission client-side |
+| Database schema (PostgreSQL + Prisma) | Done | Neon PostgreSQL provisioned, migrated, and seeded (3 projects, 6 testimonials) |
+| API routes (inquiries, newsletter, products) | Done | `app/api/*`, Zod validation, pages read via cached `lib/projects.ts` |
 | Admin CMS | Not started | |
-| Animations / 3D hero | Not started | No Framer Motion or Three.js installed yet |
+| CSS animations (scroll reveal, hero, cards) | Done | Pure CSS + IntersectionObserver, no external deps |
+| Framer Motion / 3D hero | Not started | No Framer Motion or Three.js installed yet |
 | SEO (sitemap, robots, OG, structured data) | Not started | Basic page metadata only |
 | Testing / CI | Not started | |
-| Production deployment | Not started | Target: Vercel free tier + managed MySQL |
+| Production deployment | Not started | Target: Vercel free tier + Neon PostgreSQL |
 
 The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phased work split in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md).
 
@@ -36,10 +37,11 @@ The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phas
 - **TypeScript** — strict mode enabled
 - **Tailwind CSS 4** (CSS-first config via `@theme` + `tailwind.config.ts`)
 - **next-intl 4** — locale routing, message loading, navigation helpers
-- **MySQL + Prisma** — planned production data layer (not yet connected)
+- **PostgreSQL (Neon) + Prisma 6** — production data layer
+- **Zod 4** — request validation for the API routes
 - **Vercel** — planned frontend hosting
 
-Deliberately excluded for now: Supabase (free-tier inactivity pause), online payments, checkout, order tracking.
+Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (replaced by Neon PostgreSQL), online payments, checkout, order tracking.
 
 ---
 
@@ -60,10 +62,21 @@ Deliberately excluded for now: Supabase (free-tier inactivity pause), online pay
 app/
   layout.tsx                 # Root layout (fonts, cart provider, locale detection)
   [locale]/
-    layout.tsx               # Locale layout (next-intl provider, nav, cart dock, footer)
-    page.tsx                 # Storefront homepage
-    gallery/page.tsx         # Gallery listing page
-    products/[slug]/page.tsx # Dynamic product detail page
+    layout.tsx               # Locale layout (next-intl provider, lang/dir)
+    (site)/                  # Storefront route group (URLs unchanged)
+      layout.tsx             # Cart dock + footer
+      page.tsx               # Storefront homepage
+      gallery/page.tsx       # Gallery listing page
+      products/[slug]/page.tsx # Dynamic product detail page
+    admin/                   # Admin area (noindex)
+      login/page.tsx         # /[locale]/admin/login
+      actions.ts             # login / logout server actions
+      (protected)/           # Requires a session; layout renders the admin header
+  api/
+    projects/route.ts        # GET  /api/projects?locale=en
+    projects/[slug]/route.ts # GET  /api/projects/:slug?locale=ar
+    inquiries/route.ts       # POST /api/inquiries (question, custom request, cart)
+    newsletter/route.ts      # POST /api/newsletter (subscriber upsert)
     globals.css              # Tailwind entry + global/RTL typography styles
 components/
   LanguageSwitcher.tsx       # EN/AR switch with RTL handoff
@@ -73,10 +86,16 @@ i18n/
   navigation.ts              # Locale-aware Link/useRouter/usePathname
   request.ts                 # next-intl request config (loads messages/<locale>.json)
 lib/
-  data/site.ts               # Static sample catalog + testimonials (to be replaced by DB reads)
-  supabase.ts                # Legacy env placeholder for DATABASE_URL (to be replaced by Prisma client)
+  prisma.ts                  # Prisma client singleton (PostgreSQL via Neon)
+  projects.ts                # Cached, localized project/testimonial queries (tags: projects, testimonials)
+  validation.ts              # Zod schemas for inquiries and newsletter
+  api.ts                     # Route handler helpers (JSON body parsing, error responses)
+  rate-limit.ts              # Best-effort in-memory per-IP rate limiter
+  auth/session.ts            # Signed admin session cookie, getAdmin / requireAdmin
+  auth/password.ts           # scrypt password hashing (node:crypto)
+  supabase.ts                # Deprecated — use prisma.ts instead
 messages/
-  en.json, ar.json           # All UI and product translations
+  en.json, ar.json           # UI translations (product/testimonial copy lives in the DB)
 types/index.ts               # Shared Project / Testimonial / CartItem types
 docs/                        # Database schema and project documents
 middleware.ts                # next-intl locale routing (see Known issues)
@@ -100,6 +119,12 @@ Run the dev server:
 npm run dev
 ```
 
+Create (or reset the password of) an admin account, then sign in at `/en/admin`:
+
+```bash
+npm run admin:create
+```
+
 Open http://localhost:3000 (redirects to `/en` or `/ar`).
 
 Other scripts:
@@ -121,13 +146,12 @@ cp .env.example .env.local
 ```
 
 ```env
-DATABASE_URL=mysql://username:password@host:3306/nevo
-NEXTAUTH_SECRET=replace_with_a_secure_secret
-NEXTAUTH_URL=http://localhost:3000
+DATABASE_URL=postgresql://username:password@host/nevo?sslmode=require
+AUTH_SECRET=replace_with_at_least_32_random_characters
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-No environment variables are required to run the storefront today — the app runs entirely on static data. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
+`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
 
 ---
 
@@ -138,18 +162,18 @@ No environment variables are required to run the storefront today — the app ru
 | [NEXT_STEPS.md](NEXT_STEPS.md) | Actionable roadmap — what to build next, in order |
 | [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md) | Two-developer work split, phases, and current progress |
 | [Cozy_Loops_planning.txt](Cozy_Loops_planning.txt) | Original creative brief: brand, palette, pages, animation direction |
-| [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) | Prisma/MySQL schema, API contract, validation rules |
+| [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) | Prisma/PostgreSQL schema, API contract, validation rules |
 | [AGENTS.md](AGENTS.md) | Development conventions for AI coding agents (also read via CLAUDE.md) |
 
 ---
 
 ## Roadmap
 
-1. **Data layer** — provision managed MySQL, add Prisma with the documented schema, seed the three sample products
-2. **API layer** — products read APIs, inquiry/newsletter write endpoints with validation; wire the existing forms
+1. **~~Data layer~~** — Neon PostgreSQL provisioned, Prisma migrated and seeded (3 projects, 6 testimonials)
+2. **~~API layer~~** — product read APIs, inquiry/newsletter write endpoints with Zod validation; forms wired
 3. **Admin CMS** — authenticated admin for products, images, and inquiry management
 4. **Polish** — loading/error/not-found states, SEO files, Framer Motion animations, responsive QA, testing
-5. **Deploy** — Vercel frontend + managed MySQL, environment variables, monitoring
+5. **Deploy** — Vercel frontend + Neon PostgreSQL, environment variables, monitoring
 
 Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
@@ -157,14 +181,15 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
 ## Known issues
 
-- **Lint failures (pre-existing)** — `npm run lint` currently reports 5 errors and 4 warnings: `setState` called directly inside effects (`CartDock.tsx`, `InquiryCartProvider.tsx`), direct `document.documentElement` mutation in `LanguageSwitcher.tsx` (all `react-hooks` rules), and raw `<img>` elements instead of `next/image`. Schedule the cleanup in Phase 4 polish.
+- **~~Lint failures~~** — Resolved. `npm run lint` passes with 0 errors and 0 warnings.
 - **Middleware deprecation** — Next.js 16 flags `middleware.ts` as deprecated in favor of the `proxy` convention. Migrate with `npx @next/codemod@canary middleware-to-proxy .` (update `i18n` references accordingly).
 - **Tailwind config warning** — dev server warns about module type detection for `tailwind.config.ts`; adding `"type": "module"` to `package.json` resolves it.
-- **Forms do not persist** — contact, custom request, and newsletter submissions set a local "sent" state only.
+- **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
+- **Per-IP rate limit is per server instance** — `lib/rate-limit.ts` keeps counts in memory, so on Vercel each instance counts separately and resets on cold start. The per-email inquiry limit (database-backed) and the honeypot field still apply everywhere.
 - **Sample imagery** — product images are Unsplash placeholders pending real product photography.
 
 ---
 
 ## Notes
 
-The project moves in stages on purpose: a polished, low-cost frontend first, then a lightweight MySQL-backed data layer, then the admin workflow. The architecture is designed to stay small and affordable without depending on Supabase free-tier constraints.
+The project moves in stages on purpose: a polished, low-cost frontend first, then a lightweight PostgreSQL-backed data layer (Neon free tier), then the admin workflow. The architecture is designed to stay small and affordable without depending on Supabase free-tier constraints.

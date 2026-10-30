@@ -11,6 +11,7 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-locale-switching', 'true');
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
 
@@ -22,13 +23,7 @@ export function LanguageSwitcher() {
   }, [locale]);
 
   const switchLocale = (nextLocale: Locale) => {
-    if (nextLocale === locale) {
-      return;
-    }
-
-    document.documentElement.setAttribute('data-locale-switching', 'true');
-    document.documentElement.lang = nextLocale;
-    document.documentElement.dir = nextLocale === 'ar' ? 'rtl' : 'ltr';
+    if (nextLocale === locale) return;
     router.replace(pathname, { locale: nextLocale });
   };
 

@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Locale {
+  en
+  ar
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum InquiryType {
+  QUESTION
+  CUSTOM_REQUEST
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  COMPLETED
+  ARCHIVED
+}
+
+enum AdminRole {
+  ADMIN
+  EDITOR
+}
+
+model Project {
+  id           String              @id @default(cuid())
+  slug         String              @unique @db.VarChar(160)
+  featured     Boolean             @default(false)
+  status       ProjectStatus       @default(PUBLISHED)
+  sortOrder    Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  translations ProjectTranslation[]
+  images       ProjectImage[]
+  colors       ProjectColor[]
+  inquiryItems InquiryItem[]
+
+  @@index([status, featured])
+  @@index([createdAt])
+}
+
+model ProjectTranslation {
+  id             String   @id @default(cuid())
+  projectId      String
+  locale         Locale
+  title          String   @db.VarChar(180)
+  category       String   @db.VarChar(80)
+  description    String   @db.Text
+  materials      String?  @db.Text
+  priceLabel     String?  @db.VarChar(100)
+  seoTitle       String?  @db.VarChar(180)
+  seoDescription String?  @db.Text
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, locale])
+  @@index([locale, category])
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  projectId String
+  url       String  @db.Text
+  altText   String? @db.VarChar(255)
+  sortOrder Int     @default(0)
+  isPrimary Boolean @default(false)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+}
+
+model ProjectColor {
+  id        String  @id @default(cuid())
+  projectId String
+  colorKey  String  @db.VarChar(80)
+  sortOrder Int     @default(0)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, colorKey])
+}
+
+model ColorTranslation {
+  id       String @id @default(cuid())
+  colorKey String @db.VarChar(80)
+  locale   Locale
+  label    String @db.VarChar(100)
+
+  @@unique([colorKey, locale])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  locale    Locale
+  name      String   @db.VarChar(120)
+  text      String   @db.Text
+  featured  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([locale, featured, sortOrder])
+}
+
+model Inquiry {
+  id         String        @id @default(cuid())
+  type       InquiryType
+  name       String        @db.VarChar(120)
+  email      String        @db.VarChar(255)
+  question   String?       @db.Text
+  customName String?       @db.VarChar(180)
+  customSize String?       @db.VarChar(180)
+  details    String?       @db.Text
+  locale     Locale
+  status     InquiryStatus @default(NEW)
+  adminNotes String?       @db.Text
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  items      InquiryItem[]
+  images     InquiryImage[]
+
+  @@index([status, createdAt])
+  @@index([email])
+}
+
+model InquiryItem {
+  id            String  @id @default(cuid())
+  inquiryId     String
+  projectId     String
+  quantity      Int     @default(1)
+  titleSnapshot String  @db.VarChar(180)
+  priceSnapshot String? @db.VarChar(100)
+  inquiry       Inquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  project       Project @relation(fields: [projectId], references: [id])
+
+  @@index([inquiryId])
+  @@index([projectId])
+}
+
+model InquiryImage {
+  id        String   @id @default(cuid())
+  inquiryId String
+  url       String   @db.Text
+  fileName  String?  @db.VarChar(255)
+  mimeType  String?  @db.VarChar(100)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+
+  @@index([inquiryId, sortOrder])
+}
+
+model NewsletterSubscriber {
+  id             String    @id @default(cuid())
+  email          String    @unique @db.VarChar(255)
+  locale         Locale
+  active         Boolean   @default(true)
+  unsubscribedAt DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([active, createdAt])
+}
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @db.VarChar(255)
+  role         AdminRole @default(EDITOR)
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model SiteSetting {
+  id           String   @id @default(cuid())
+  settingKey   String   @unique @db.VarChar(120)
+  settingValue String   @db.Text
+  updatedAt    DateTime @updatedAt
+}

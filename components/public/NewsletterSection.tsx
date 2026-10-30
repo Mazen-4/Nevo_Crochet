@@ -2,16 +2,36 @@
 
 import { FormEvent, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { HoneypotField } from '@/components/public/HoneypotField';
 
 export function NewsletterSection() {
   const t = useTranslations('home');
-  const isArabic = useLocale() === 'ar';
-  const [submitted, setSubmitted] = useState(false);
+  const common = useTranslations('common');
+  const locale = useLocale();
+  const isArabic = locale === 'ar';
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setStatus('sending');
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.get('email'), locale, website: data.get('website') }),
+      });
+      if (response.status === 429) {
+        setStatus('limited');
+        return;
+      }
+      if (!response.ok) throw new Error(`Subscribe failed: ${response.status}`);
+      setStatus('sent');
+      form.reset();
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -30,6 +50,7 @@ export function NewsletterSection() {
         </div>
 
         <form onSubmit={handleSubmit} className="w-full max-w-xl">
+          <HoneypotField />
           <label htmlFor="newsletter-email" className={`sr-only ${isArabic ? 'text-ar' : ''}`}>{t('newsletterEmailLabel')}</label>
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
@@ -43,13 +64,19 @@ export function NewsletterSection() {
             />
             <button
               type="submit"
-              className={`min-h-12 rounded-full bg-[#7b5ca8] px-6 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(123,92,168,0.2)] transition hover:bg-[#6e4e9b] ${isArabic ? 'text-ar' : ''}`}
+              disabled={status === 'sending'}
+              className={`min-h-12 disabled:opacity-60 rounded-full bg-[#7b5ca8] px-6 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(123,92,168,0.2)] transition hover:bg-[#6e4e9b] ${isArabic ? 'text-ar' : ''}`}
             >
-              {t('newsletterButton')}
+              {status === 'sending' ? common('sending') : t('newsletterButton')}
             </button>
           </div>
           <p className={`mt-3 text-xs text-[#806d87] ${isArabic ? 'text-ar-small' : ''}`}>{t('newsletterPrivacy')}</p>
-          {submitted && (
+          {(status === 'error' || status === 'limited') && (
+            <p role="alert" className={`mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 ${isArabic ? 'text-ar-body' : ''}`}>
+              {common(status === 'limited' ? 'tooManyRequests' : 'submitError')}
+            </p>
+          )}
+          {status === 'sent' && (
             <p role="status" className={`mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 ${isArabic ? 'text-ar-body' : ''}`}>
               {t('newsletterSuccess')}
             </p>

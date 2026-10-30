@@ -3,8 +3,6 @@ import { Almarai, Cairo } from 'next/font/google';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Footer } from '@/components/public/Footer';
-import { CartDock } from '@/components/public/CartDock';
 import { routing } from '@/i18n/routing';
 
 const cairo = Cairo({
@@ -41,8 +39,6 @@ export default async function LocaleLayout({ children, params }: Readonly<Layout
     <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className={`${cairo.variable} ${almarai.variable} ${locale === 'ar' ? 'font-cairo' : 'font-sans'} flex min-h-full flex-1 flex-col`}>
       <NextIntlClientProvider messages={messages}>
         {children}
-        <CartDock />
-        <Footer />
       </NextIntlClientProvider>
     </div>
   );

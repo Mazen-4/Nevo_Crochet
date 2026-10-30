@@ -38,8 +38,12 @@ export function FAQSection() {
                 <span>{t(`faq.${key}.question`)}</span>
                 <span aria-hidden="true" className="text-2xl font-normal text-[#7b5ca8]">{isOpen ? '−' : '+'}</span>
               </button>
-              <div id={panelId} hidden={!isOpen} className={`pb-5 text-sm leading-7 text-[#5d4b67] ${isArabic ? 'text-ar-body' : ''}`}>
-                {t(`faq.${key}.answer`)}
+              <div id={panelId} className="faq-panel" data-open={isOpen}>
+                <div className="faq-panel-inner">
+                  <div className={`pb-5 text-sm leading-7 text-[#5d4b67] ${isArabic ? 'text-ar-body' : ''}`}>
+                    {t(`faq.${key}.answer`)}
+                  </div>
+                </div>
               </div>
             </div>
           );

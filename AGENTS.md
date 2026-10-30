@@ -4,7 +4,7 @@ Guidance for AI coding agents (and new developers) working in this repository. `
 
 ## Project at a glance
 
-Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Frontend is complete; the backend (MySQL/Prisma, API routes, admin CMS) does not exist yet** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
+Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Frontend is complete and reads from Neon PostgreSQL via Prisma; public API routes are live; the admin CMS is next** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
 
 ## Commands
 
@@ -22,22 +22,28 @@ No test runner is configured yet. Do not add one without confirming the choice f
 1. **Never break EN/AR parity.** Every new user-facing string goes into *both* `messages/en.json` and `messages/ar.json` with the same key path. Arabic must read as native Arabic, not machine translation.
 2. **Respect RTL.** The app flips direction for `ar`. Use logical spacing already established in components; do not hardcode `left`/`right` positioning for UI that appears on both locales. Arabic typography helpers live in `app/[locale]/globals.css` (`.text-ar`, `.text-ar-title`, `.text-ar-body`, `.text-ar-small`).
 3. **Locale-aware navigation only.** Use `Link`, `useRouter`, `usePathname` from `@/i18n/navigation` — never from `next/navigation` directly in components.
-4. **Do not invent a backend.** There are no API routes, no database, and no auth yet. Forms intentionally simulate submission client-side. If asked to "wire up" data, follow the schema contract in `docs/UNCONFIRMED_database-schema.md` rather than inventing new shapes.
-5. **Do not add payment, checkout, or order tracking.** These are explicitly out of scope for the current phase (client decision).
-6. **Keep static data centralized.** Products and testimonials live only in `lib/data/site.ts` plus their translations in `messages/*.json`. When adding a sample product, update both files (and the `colorKeys` maps noted under Known pitfalls).
+4. **Follow the schema contract.** The database (`prisma/schema.prisma`) and public API routes (`app/api/*`) exist, and admin auth lives in `lib/auth/`. New data shapes follow `docs/UNCONFIRMED_database-schema.md` rather than being invented. Validate every request body with Zod (`lib/validation.ts`).
+5. **Every admin page and server action calls `requireAdmin(locale)`.** Layouts don't re-run on client navigation, so never rely on the `(protected)` layout alone.
+6. **Do not add payment, checkout, or order tracking.** These are explicitly out of scope for the current phase (client decision).
+7. **Catalog data lives in the database.** Products (with EN/AR translations, colors, images) and testimonials are read through the cached helpers in `lib/projects.ts` — never query them ad hoc in components. Sample data is added via `prisma/seed.ts`, not `messages/*.json`.
 
 ## Architecture map
 
 | Concern | Location |
 | --- | --- |
-| Routes (home, gallery, product) | `app/[locale]/page.tsx`, `app/[locale]/gallery/page.tsx`, `app/[locale]/products/[slug]/page.tsx` |
-| Locale layout (fonts, provider, nav, cart dock, footer) | `app/[locale]/layout.tsx` |
+| Storefront routes (home, gallery, product) | `app/[locale]/(site)/…` — `(site)/layout.tsx` adds the cart dock + footer |
+| Admin routes | `app/[locale]/admin/` — `login/`, `actions.ts`, `(protected)/` (session required) |
+| Admin auth | `lib/auth/session.ts` (`getAdmin`, `requireAdmin`), `lib/auth/password.ts` |
+| Admin data access (session-checked) | `lib/admin/` |
+| Locale layout (fonts, provider, lang/dir) | `app/[locale]/layout.tsx` |
 | Root layout (cart provider, locale detection) | `app/layout.tsx` |
 | Storefront components | `components/public/` |
 | Inquiry cart state (context + localStorage) | `components/public/InquiryCartProvider.tsx` |
 | Locale config / navigation / message loading | `i18n/routing.ts`, `i18n/navigation.ts`, `i18n/request.ts` |
 | Translations (EN/AR) | `messages/en.json`, `messages/ar.json` |
-| Sample catalog + testimonials | `lib/data/site.ts` |
+| Catalog queries (cached, localized) | `lib/projects.ts` |
+| API routes + helpers + Zod schemas | `app/api/*`, `lib/api.ts`, `lib/validation.ts` |
+| Prisma schema, migrations, seed | `prisma/` (client singleton: `lib/prisma.ts`) |
 | Shared types | `types/index.ts` |
 | Global + RTL styles | `app/[locale]/globals.css` (Tailwind entry, `@config` → `tailwind.config.ts`) |
 | Database schema contract | `docs/UNCONFIRMED_database-schema.md` |
@@ -53,9 +59,9 @@ No test runner is configured yet. Do not add one without confirming the choice f
 
 ## Known pitfalls
 
-- `FeaturedGallery.tsx` maps translated color keys using a positional index trick over hardcoded product IDs; `colorKeys` maps are duplicated in `GalleryExplorer.tsx` and `app/[locale]/products/[slug]/page.tsx`. Touch carefully — or consolidate before adding products.
+- Catalog reads are cached with `unstable_cache` (1h, tags `projects` / `testimonials`). After writing project data, call `revalidateTag` or the storefront will show stale content.
 - `middleware.ts` (next-intl locale routing) is deprecated in Next.js 16 in favor of the `proxy` convention; migration pending (see README "Known issues").
-- `lib/supabase.ts` is a misleading leftover name — it only exposes a `DATABASE_URL` placeholder. It will be replaced by a Prisma client singleton.
+- `lib/supabase.ts` is a misleading leftover name — use `lib/prisma.ts` instead.
 - Product images are Unsplash placeholders.
 - Root-level `mockup*.html` / `local-preview.html` are legacy design mockups, not part of the app.
 
