@@ -22,16 +22,20 @@ No test runner is configured yet. Do not add one without confirming the choice f
 1. **Never break EN/AR parity.** Every new user-facing string goes into *both* `messages/en.json` and `messages/ar.json` with the same key path. Arabic must read as native Arabic, not machine translation.
 2. **Respect RTL.** The app flips direction for `ar`. Use logical spacing already established in components; do not hardcode `left`/`right` positioning for UI that appears on both locales. Arabic typography helpers live in `app/[locale]/globals.css` (`.text-ar`, `.text-ar-title`, `.text-ar-body`, `.text-ar-small`).
 3. **Locale-aware navigation only.** Use `Link`, `useRouter`, `usePathname` from `@/i18n/navigation` — never from `next/navigation` directly in components.
-4. **Follow the schema contract.** The database (`prisma/schema.prisma`) and public API routes (`app/api/*`) exist; there is no auth yet. New data shapes follow `docs/UNCONFIRMED_database-schema.md` rather than being invented. Validate every request body with Zod (`lib/validation.ts`).
-5. **Do not add payment, checkout, or order tracking.** These are explicitly out of scope for the current phase (client decision).
-6. **Catalog data lives in the database.** Products (with EN/AR translations, colors, images) and testimonials are read through the cached helpers in `lib/projects.ts` — never query them ad hoc in components. Sample data is added via `prisma/seed.ts`, not `messages/*.json`.
+4. **Follow the schema contract.** The database (`prisma/schema.prisma`) and public API routes (`app/api/*`) exist, and admin auth lives in `lib/auth/`. New data shapes follow `docs/UNCONFIRMED_database-schema.md` rather than being invented. Validate every request body with Zod (`lib/validation.ts`).
+5. **Every admin page and server action calls `requireAdmin(locale)`.** Layouts don't re-run on client navigation, so never rely on the `(protected)` layout alone.
+6. **Do not add payment, checkout, or order tracking.** These are explicitly out of scope for the current phase (client decision).
+7. **Catalog data lives in the database.** Products (with EN/AR translations, colors, images) and testimonials are read through the cached helpers in `lib/projects.ts` — never query them ad hoc in components. Sample data is added via `prisma/seed.ts`, not `messages/*.json`.
 
 ## Architecture map
 
 | Concern | Location |
 | --- | --- |
-| Routes (home, gallery, product) | `app/[locale]/page.tsx`, `app/[locale]/gallery/page.tsx`, `app/[locale]/products/[slug]/page.tsx` |
-| Locale layout (fonts, provider, nav, cart dock, footer) | `app/[locale]/layout.tsx` |
+| Storefront routes (home, gallery, product) | `app/[locale]/(site)/…` — `(site)/layout.tsx` adds the cart dock + footer |
+| Admin routes | `app/[locale]/admin/` — `login/`, `actions.ts`, `(protected)/` (session required) |
+| Admin auth | `lib/auth/session.ts` (`getAdmin`, `requireAdmin`), `lib/auth/password.ts` |
+| Admin data access (session-checked) | `lib/admin/` |
+| Locale layout (fonts, provider, lang/dir) | `app/[locale]/layout.tsx` |
 | Root layout (cart provider, locale detection) | `app/layout.tsx` |
 | Storefront components | `components/public/` |
 | Inquiry cart state (context + localStorage) | `components/public/InquiryCartProvider.tsx` |

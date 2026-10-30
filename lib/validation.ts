@@ -1,3 +1,4 @@
+import { InquiryStatus } from '@prisma/client';
 import { z } from 'zod';
 import { routing } from '@/i18n/routing';
 
@@ -57,3 +58,15 @@ export const inquirySchema = z
   });
 
 export type InquiryInput = z.infer<typeof inquirySchema>;
+
+export const loginSchema = z.object({
+  email,
+  // Capped so an oversized password can't make scrypt burn CPU.
+  password: z.string().min(1).max(200),
+});
+
+export const inquiryUpdateSchema = z.object({
+  id: requiredText(40),
+  status: z.enum(InquiryStatus),
+  adminNotes: optionalText(5000),
+});

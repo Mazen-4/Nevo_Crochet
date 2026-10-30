@@ -8,7 +8,7 @@ const EMAIL_LIMIT = 5;
 const EMAIL_WINDOW_MS = 60 * 60 * 1000;
 
 export async function POST(request: Request) {
-  if (!rateLimit(`inquiries:${clientIp(request)}`, 5, 10 * 60 * 1000)) return rateLimitedResponse();
+  if (!rateLimit(`inquiries:${clientIp(request.headers)}`, 5, 10 * 60 * 1000)) return rateLimitedResponse();
 
   const parsed = await parseJsonBody(request, inquirySchema);
   if ('response' in parsed) return parsed.response;

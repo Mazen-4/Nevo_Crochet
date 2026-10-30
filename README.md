@@ -62,10 +62,16 @@ Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (rep
 app/
   layout.tsx                 # Root layout (fonts, cart provider, locale detection)
   [locale]/
-    layout.tsx               # Locale layout (next-intl provider, nav, cart dock, footer)
-    page.tsx                 # Storefront homepage
-    gallery/page.tsx         # Gallery listing page
-    products/[slug]/page.tsx # Dynamic product detail page
+    layout.tsx               # Locale layout (next-intl provider, lang/dir)
+    (site)/                  # Storefront route group (URLs unchanged)
+      layout.tsx             # Cart dock + footer
+      page.tsx               # Storefront homepage
+      gallery/page.tsx       # Gallery listing page
+      products/[slug]/page.tsx # Dynamic product detail page
+    admin/                   # Admin area (noindex)
+      login/page.tsx         # /[locale]/admin/login
+      actions.ts             # login / logout server actions
+      (protected)/           # Requires a session; layout renders the admin header
   api/
     projects/route.ts        # GET  /api/projects?locale=en
     projects/[slug]/route.ts # GET  /api/projects/:slug?locale=ar
@@ -85,6 +91,8 @@ lib/
   validation.ts              # Zod schemas for inquiries and newsletter
   api.ts                     # Route handler helpers (JSON body parsing, error responses)
   rate-limit.ts              # Best-effort in-memory per-IP rate limiter
+  auth/session.ts            # Signed admin session cookie, getAdmin / requireAdmin
+  auth/password.ts           # scrypt password hashing (node:crypto)
   supabase.ts                # Deprecated — use prisma.ts instead
 messages/
   en.json, ar.json           # UI translations (product/testimonial copy lives in the DB)
@@ -111,6 +119,12 @@ Run the dev server:
 npm run dev
 ```
 
+Create (or reset the password of) an admin account, then sign in at `/en/admin`:
+
+```bash
+npm run admin:create
+```
+
 Open http://localhost:3000 (redirects to `/en` or `/ar`).
 
 Other scripts:
@@ -133,12 +147,11 @@ cp .env.example .env.local
 
 ```env
 DATABASE_URL=postgresql://username:password@host/nevo?sslmode=require
-NEXTAUTH_SECRET=replace_with_a_secure_secret
-NEXTAUTH_URL=http://localhost:3000
+AUTH_SECRET=replace_with_at_least_32_random_characters
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
+`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
 
 ---
 

@@ -32,7 +32,7 @@ export function rateLimit(key: string, limit: number, windowMs: number): boolean
 }
 
 /** The caller's IP as reported by the hosting proxy (Vercel sets `x-forwarded-for`). */
-export function clientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  return forwarded?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'unknown';
+export function clientIp(headers: Headers): string {
+  const forwarded = headers.get('x-forwarded-for');
+  return forwarded?.split(',')[0]?.trim() || headers.get('x-real-ip') || 'unknown';
 }

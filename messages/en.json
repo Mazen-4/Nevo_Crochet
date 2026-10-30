@@ -154,5 +154,71 @@
       "results": "{count} pieces",
       "requestCustom": "Request a custom piece"
     }
+  },
+  "admin": {
+    "login": {
+      "eyebrow": "Nevo Studio",
+      "title": "Sign in",
+      "subtitle": "Manage inquiries and pieces from one place.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "invalid": "Incorrect email or password.",
+      "rateLimited": "Too many attempts. Please wait a few minutes and try again."
+    },
+    "nav": {
+      "brand": "Nevo Studio",
+      "inquiries": "Inquiries",
+      "viewSite": "View site",
+      "logout": "Sign out",
+      "signedInAs": "Signed in as {email}",
+      "newCount": "{count, plural, one {# new inquiry} other {# new inquiries}}"
+    },
+    "inquiries": {
+      "title": "Inquiries",
+      "statuses": {
+        "NEW": "New",
+        "CONTACTED": "Contacted",
+        "COMPLETED": "Completed",
+        "ARCHIVED": "Archived",
+        "ALL": "All"
+      },
+      "types": {
+        "QUESTION": "Question",
+        "CUSTOM_REQUEST": "Custom request"
+      },
+      "empty": "No inquiries here yet.",
+      "itemsCount": "{count, plural, =0 {No cart items} one {# cart item} other {# cart items}}",
+      "received": "Received {date}",
+      "page": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next",
+      "back": "← Back to inquiries",
+      "contact": "Contact",
+      "replyByEmail": "Reply by email",
+      "replySubject": "Your Nevo inquiry",
+      "language": "Language",
+      "languages": {
+        "en": "English",
+        "ar": "Arabic"
+      },
+      "message": "Message",
+      "customName": "Piece",
+      "customSize": "Size",
+      "details": "Details",
+      "noMessage": "No message, cart only.",
+      "cartItems": "Cart items",
+      "quantity": "Qty {count}",
+      "images": "Reference images",
+      "manage": "Manage",
+      "status": "Status",
+      "notes": "Private notes",
+      "notesPlaceholder": "Only admins can see these notes.",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Changes saved.",
+      "saveError": "Could not save. Please try again."
+    }
   }
 }

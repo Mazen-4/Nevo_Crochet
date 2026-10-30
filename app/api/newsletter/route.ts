@@ -4,7 +4,7 @@ import { clientIp, rateLimit } from '@/lib/rate-limit';
 import { newsletterSchema } from '@/lib/validation';
 
 export async function POST(request: Request) {
-  if (!rateLimit(`newsletter:${clientIp(request)}`, 5, 10 * 60 * 1000)) return rateLimitedResponse();
+  if (!rateLimit(`newsletter:${clientIp(request.headers)}`, 5, 10 * 60 * 1000)) return rateLimitedResponse();
 
   const parsed = await parseJsonBody(request, newsletterSchema);
   if ('response' in parsed) return parsed.response;

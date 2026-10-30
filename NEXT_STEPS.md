@@ -56,12 +56,12 @@ Public routes from the schema doc:
 
 ## Phase 3 — Admin CMS (Week 4–5)
 
-- [ ] Admin authentication (credential + session flow) and protected admin routes
-- [ ] Admin layout and sidebar navigation
+- [X] ~~Admin authentication (credential + session flow) and protected admin routes~~ (`/[locale]/admin`, scrypt + HMAC-signed cookie, no new deps; `npm run admin:create`)
+- [X] ~~Admin layout and navigation~~ (header with language switch and sign-out)
 - [ ] Project management: list, add/edit/delete, featured toggle, ordering — call `revalidateTag('projects')` after writes so the storefront cache refreshes
 - [ ] Image upload + storage (Cloudinary or S3-compatible; see schema doc)
 - [ ] Attach custom-request reference images to inquiries (`InquiryImage`) once upload storage exists
-- [ ] Inquiry management: view submissions with cart items, add notes, change status (New → Contacted → Completed)
+- [X] ~~Inquiry management: view submissions with cart items, add notes, change status~~ (`/[locale]/admin/inquiries` — status tabs with counts, detail page, reply-by-email, private notes; new-count badge in the header)
 - [ ] Contact settings (WhatsApp number, email) via `SiteSetting`
 
 **Boundary:** Do not implement online payment, checkout, or customer order tracking in this phase.
