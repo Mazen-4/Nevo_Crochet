@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { projects } from '@/lib/data/site';
@@ -86,7 +87,7 @@ export function GalleryExplorer() {
           {visibleProjects.map((project) => (
             <article key={project.id} className="group overflow-hidden rounded-[1.75rem] border border-[#f1e1f0] bg-white shadow-[0_16px_38px_rgba(140,110,166,0.08)] transition hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(119,80,146,0.12)]">
               <Link href={`/products/${project.slug}`} className="block">
-                <div className="overflow-hidden"><img src={project.image} alt={product(`${project.slug}.title`)} className="h-80 w-full object-cover transition duration-500 group-hover:scale-105" /></div>
+                <div className="overflow-hidden"><Image src={project.image} alt={product(`${project.slug}.title`)} width={400} height={320} className="h-80 w-full object-cover transition duration-500 group-hover:scale-105" /></div>
               </Link>
               <div className="space-y-4 p-5">
                 <div className="flex items-center justify-between gap-4"><span className="rounded-full bg-[#f9ebf5] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#815f86]">{product(`${project.slug}.category`)}</span><span className="text-sm font-medium text-[#7d5d8f]">{product(`${project.slug}.price`)}</span></div>

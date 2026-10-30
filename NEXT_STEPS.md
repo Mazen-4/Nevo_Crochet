@@ -13,7 +13,7 @@
 - [X] Slogan: "Made slowly. Kept forever."
 - [X] Pink and purple palette confirmed (`Cozy_Loops_planning.txt`)
 - [X] Order tracking reserved for a future phase
-- [X] MySQL (not Supabase) for the live data model — avoids free-tier inactivity pause
+- [X] Neon PostgreSQL (not Supabase/MySQL) for the live data model — free tier, no inactivity pause, 0.5 GB
 - [X] Frontend on Vercel free tier
 - [X] Full English/Arabic bilingual support with RTL
 
@@ -23,13 +23,14 @@
 
 The schema is designed in [`docs/UNCONFIRMED_database-schema.md`](docs/UNCONFIRMED_database-schema.md); it needs to become a real, connected database.
 
-- [ ] Provision a managed MySQL database (Railway, PlanetScale, or similar low-cost host)
-- [ ] Save the connection string securely in `.env.local`
-- [ ] Add Prisma and initialize with the documented schema (`npx prisma init`)
-- [ ] Run the initial migration (`npx prisma migrate dev --name init`)
-- [ ] Create a Prisma client singleton (`lib/prisma.ts`) and retire the `lib/supabase.ts` placeholder
-- [ ] Seed the three sample projects from `lib/data/site.ts` with EN + AR translations
-- [ ] Confirm local reads against the seeded data
+- [X] ~~Add Prisma and create the schema~~ (`prisma/schema.prisma` — PostgreSQL provider)
+- [X] ~~Create a Prisma client singleton~~ (`lib/prisma.ts`) and deprecate `lib/supabase.ts`
+- [X] ~~Create seed script~~ (`prisma/seed.ts` — 3 projects, EN+AR translations, colors, testimonials)
+- [X] ~~Provision a Neon PostgreSQL database~~ (https://neon.tech — free tier, project `young-bird-10422240`)
+- [X] ~~Save the connection string securely~~ (`.env` via `neon env pull`, git-ignored)
+- [X] ~~Run the initial migration~~ (`npx prisma migrate dev --name init` — `20261030184010_init`)
+- [X] ~~Run the seed~~ (`npx prisma db seed` — 3 projects EN+AR, 6 testimonials)
+- [X] ~~Confirm local reads against the seeded data~~
 
 **Sync point:** Frontend can pull a product list from the database.
 
@@ -82,7 +83,7 @@ Public routes from the schema doc:
 
 - [ ] Testing setup (unit + integration; E2E last)
 - [ ] Lighthouse pass — target 90+, FCP < 1.5s on mobile
-- [ ] Deploy frontend to Vercel; connect production MySQL and set env vars
+- [ ] Deploy frontend to Vercel; connect Neon PostgreSQL and set env vars
 - [ ] Production migration (`npx prisma migrate deploy`)
 - [ ] Email notifications for new inquiries (Resend/SendGrid)
 - [ ] Error tracking (Sentry, optional) and database backups
@@ -104,7 +105,7 @@ Public routes from the schema doc:
 
 Answer before Phase 1 begins:
 
-1. **Database host** — Railway or PlanetScale (or other)?
+1. ~~**Database host**~~ — **Neon PostgreSQL** (confirmed)
 2. **Domain name** for deployment?
 3. **Admin credentials** — who is the admin user?
 4. **Image storage** — Cloudinary or S3-compatible?

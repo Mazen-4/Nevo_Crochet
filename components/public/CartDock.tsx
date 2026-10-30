@@ -1,26 +1,24 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
 import { projects } from '@/lib/data/site';
 
+const emptySubscribe = () => () => {};
+
 export function CartDock() {
   const { items, count, isOpen, openCart, closeCart, updateQuantity, removeItem, lastAdded } = useInquiryCart();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [confirmed, setConfirmed] = useState(false);
+  const [prevIsOpen, setPrevIsOpen] = useState(false);
   const t = useTranslations('common');
   const product = useTranslations('products');
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setConfirmed(false);
-    }
-  }, [isOpen]);
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
+    if (!isOpen) setConfirmed(false);
+  }
 
   if (!mounted) {
     return null;

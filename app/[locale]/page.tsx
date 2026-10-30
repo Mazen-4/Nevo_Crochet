@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/public/HeroSection';
 import { NavBar } from '@/components/public/NavBar';
 import { NewsletterSection } from '@/components/public/NewsletterSection';
 import { ProcessSection } from '@/components/public/ProcessSection';
+import { ScrollReveal } from '@/components/public/ScrollReveal';
 
 export default function Home() {
   return (
@@ -13,11 +14,11 @@ export default function Home() {
       <NavBar />
       <HeroSection />
       <FeaturedGallery />
-      <AboutSection />
-      <ProcessSection />
-      <FAQSection />
-      <NewsletterSection />
-      <ContactSection />
+      <ScrollReveal><AboutSection /></ScrollReveal>
+      <ScrollReveal><ProcessSection /></ScrollReveal>
+      <ScrollReveal><FAQSection /></ScrollReveal>
+      <ScrollReveal><NewsletterSection /></ScrollReveal>
+      <ScrollReveal><ContactSection /></ScrollReveal>
     </main>
   );
 }

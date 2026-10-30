@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { hasLocale, useTranslations } from 'next-intl';
 import { notFound } from 'next/navigation';
@@ -33,7 +34,7 @@ function ProductDetailContent({ project }: { project: (typeof projects)[number] 
       <div className="mx-auto max-w-6xl">
         <Link href="/" className="inline-flex items-center rounded-full border border-[#ead8ef] bg-white px-4 py-2 text-sm font-medium text-[#4f3559] hover:bg-[#fff8fc]">← {t('backToGallery')}</Link>
         <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="overflow-hidden rounded-[2rem] border border-[#efdff2] bg-white p-3 shadow-[0_24px_60px_rgba(140,111,160,0.08)]"><img src={project.image} alt={product('title')} className="h-[520px] w-full rounded-[1.5rem] object-cover" /></div>
+          <div className="overflow-hidden rounded-[2rem] border border-[#efdff2] bg-white p-3 shadow-[0_24px_60px_rgba(140,111,160,0.08)]"><Image src={project.image} alt={product('title')} width={600} height={520} className="h-[520px] w-full rounded-[1.5rem] object-cover" /></div>
           <div className="space-y-6 rounded-[2rem] border border-[#eedaf1] bg-white p-7 shadow-[0_20px_46px_rgba(139,110,160,0.06)]">
             <div><p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8d6e9e]">{product('category')}</p><h1 className="mt-3 text-4xl font-semibold tracking-[-0.06em] text-[#2f1d36]">{product('title')}</h1></div>
             <p className="text-lg leading-8 text-[#5f4b67]">{product('description')}</p>

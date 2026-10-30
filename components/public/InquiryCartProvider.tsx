@@ -1,10 +1,11 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { CartItem, Project } from '@/types';
 
 const STORAGE_KEY = 'nevo-inquiry-cart';
+const emptySubscribe = () => () => {};
 
 type InquiryCartContextValue = {
   items: CartItem[];
@@ -22,32 +23,29 @@ type InquiryCartContextValue = {
 const InquiryCartContext = createContext<InquiryCartContextValue | undefined>(undefined);
 
 export function InquiryCartProvider({ children }: { children: ReactNode }) {
+  const hydrated = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [items, setItems] = useState<CartItem[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [lastAdded, setLastAdded] = useState<string | null>(null);
 
-  useEffect(() => {
+  if (hydrated && !initialized) {
+    setInitialized(true);
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as CartItem[];
-        setItems(Array.isArray(parsed) ? parsed : []);
+        if (Array.isArray(parsed)) setItems(parsed);
       }
-    } catch (error) {
-      console.warn('Unable to read inquiry cart from localStorage', error);
-    } finally {
-      setHydrated(true);
+    } catch {
+      // localStorage unavailable
     }
-  }, []);
+  }
 
   useEffect(() => {
-    if (!hydrated) {
-      return;
-    }
-
+    if (!initialized) return;
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }, [hydrated, items]);
+  }, [initialized, items]);
 
   const addItem = (project: Project) => {
     setItems((current) => {

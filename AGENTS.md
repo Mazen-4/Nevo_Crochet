@@ -4,7 +4,7 @@ Guidance for AI coding agents (and new developers) working in this repository. `
 
 ## Project at a glance
 
-Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Frontend is complete; the backend (MySQL/Prisma, API routes, admin CMS) does not exist yet** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
+Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Frontend is complete; the backend (PostgreSQL/Prisma, API routes, admin CMS) is in progress — schema ready, pending Neon provisioning** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
 
 ## Commands
 

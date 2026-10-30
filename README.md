@@ -18,13 +18,14 @@ The public storefront frontend is complete and runs locally. The backend (databa
 | English/Arabic i18n + RTL | Done | `next-intl`, locale middleware, language switcher |
 | Inquiry cart (add, quantity, remove, persistence) | Done | `localStorage`-backed, floating cart dock |
 | Design system & responsive layout | Done | Pink/purple palette, Cairo/Almarai Arabic typography |
-| Database schema (MySQL + Prisma) | Designed | See [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) |
+| Database schema (PostgreSQL + Prisma) | Done | Neon PostgreSQL provisioned, migrated, and seeded (3 projects, 6 testimonials) |
 | API routes (inquiries, newsletter, products) | Not started | Forms currently simulate submission client-side |
 | Admin CMS | Not started | |
-| Animations / 3D hero | Not started | No Framer Motion or Three.js installed yet |
+| CSS animations (scroll reveal, hero, cards) | Done | Pure CSS + IntersectionObserver, no external deps |
+| Framer Motion / 3D hero | Not started | No Framer Motion or Three.js installed yet |
 | SEO (sitemap, robots, OG, structured data) | Not started | Basic page metadata only |
 | Testing / CI | Not started | |
-| Production deployment | Not started | Target: Vercel free tier + managed MySQL |
+| Production deployment | Not started | Target: Vercel free tier + Neon PostgreSQL |
 
 The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phased work split in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md).
 
@@ -36,10 +37,10 @@ The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phas
 - **TypeScript** — strict mode enabled
 - **Tailwind CSS 4** (CSS-first config via `@theme` + `tailwind.config.ts`)
 - **next-intl 4** — locale routing, message loading, navigation helpers
-- **MySQL + Prisma** — planned production data layer (not yet connected)
+- **PostgreSQL (Neon) + Prisma 6** — production data layer (schema ready, pending Neon provisioning)
 - **Vercel** — planned frontend hosting
 
-Deliberately excluded for now: Supabase (free-tier inactivity pause), online payments, checkout, order tracking.
+Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (replaced by Neon PostgreSQL), online payments, checkout, order tracking.
 
 ---
 
@@ -74,7 +75,8 @@ i18n/
   request.ts                 # next-intl request config (loads messages/<locale>.json)
 lib/
   data/site.ts               # Static sample catalog + testimonials (to be replaced by DB reads)
-  supabase.ts                # Legacy env placeholder for DATABASE_URL (to be replaced by Prisma client)
+  prisma.ts                  # Prisma client singleton (PostgreSQL via Neon)
+  supabase.ts                # Deprecated — use prisma.ts instead
 messages/
   en.json, ar.json           # All UI and product translations
 types/index.ts               # Shared Project / Testimonial / CartItem types
@@ -121,7 +123,7 @@ cp .env.example .env.local
 ```
 
 ```env
-DATABASE_URL=mysql://username:password@host:3306/nevo
+DATABASE_URL=postgresql://username:password@host/nevo?sslmode=require
 NEXTAUTH_SECRET=replace_with_a_secure_secret
 NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -138,18 +140,18 @@ No environment variables are required to run the storefront today — the app ru
 | [NEXT_STEPS.md](NEXT_STEPS.md) | Actionable roadmap — what to build next, in order |
 | [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md) | Two-developer work split, phases, and current progress |
 | [Cozy_Loops_planning.txt](Cozy_Loops_planning.txt) | Original creative brief: brand, palette, pages, animation direction |
-| [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) | Prisma/MySQL schema, API contract, validation rules |
+| [docs/UNCONFIRMED_database-schema.md](docs/UNCONFIRMED_database-schema.md) | Prisma/PostgreSQL schema, API contract, validation rules |
 | [AGENTS.md](AGENTS.md) | Development conventions for AI coding agents (also read via CLAUDE.md) |
 
 ---
 
 ## Roadmap
 
-1. **Data layer** — provision managed MySQL, add Prisma with the documented schema, seed the three sample products
+1. **~~Data layer~~** — Neon PostgreSQL provisioned, Prisma migrated and seeded (3 projects, 6 testimonials)
 2. **API layer** — products read APIs, inquiry/newsletter write endpoints with validation; wire the existing forms
 3. **Admin CMS** — authenticated admin for products, images, and inquiry management
 4. **Polish** — loading/error/not-found states, SEO files, Framer Motion animations, responsive QA, testing
-5. **Deploy** — Vercel frontend + managed MySQL, environment variables, monitoring
+5. **Deploy** — Vercel frontend + Neon PostgreSQL, environment variables, monitoring
 
 Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
@@ -157,7 +159,7 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
 ## Known issues
 
-- **Lint failures (pre-existing)** — `npm run lint` currently reports 5 errors and 4 warnings: `setState` called directly inside effects (`CartDock.tsx`, `InquiryCartProvider.tsx`), direct `document.documentElement` mutation in `LanguageSwitcher.tsx` (all `react-hooks` rules), and raw `<img>` elements instead of `next/image`. Schedule the cleanup in Phase 4 polish.
+- **~~Lint failures~~** — Resolved. `npm run lint` passes with 0 errors and 0 warnings.
 - **Middleware deprecation** — Next.js 16 flags `middleware.ts` as deprecated in favor of the `proxy` convention. Migrate with `npx @next/codemod@canary middleware-to-proxy .` (update `i18n` references accordingly).
 - **Tailwind config warning** — dev server warns about module type detection for `tailwind.config.ts`; adding `"type": "module"` to `package.json` resolves it.
 - **Forms do not persist** — contact, custom request, and newsletter submissions set a local "sent" state only.
@@ -167,4 +169,4 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
 ## Notes
 
-The project moves in stages on purpose: a polished, low-cost frontend first, then a lightweight MySQL-backed data layer, then the admin workflow. The architecture is designed to stay small and affordable without depending on Supabase free-tier constraints.
+The project moves in stages on purpose: a polished, low-cost frontend first, then a lightweight PostgreSQL-backed data layer (Neon free tier), then the admin workflow. The architecture is designed to stay small and affordable without depending on Supabase free-tier constraints.

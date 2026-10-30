@@ -29,7 +29,7 @@ Excluded from the current phase:
 
 ## Recommended Stack
 
-- Database: MySQL
+- Database: PostgreSQL (Neon — free tier, 0.5 GB, no inactivity pause)
 - ORM: Prisma
 - Image storage: object storage such as Cloudinary or S3-compatible storage
 - Application hosting: Vercel
@@ -42,7 +42,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -371,7 +371,7 @@ npx prisma migrate deploy
 `.env.local`:
 
 ```env
-DATABASE_URL="mysql://username:password@host:3306/nevo"
+DATABASE_URL="postgresql://username:password@host/nevo?sslmode=require"
 NEXTAUTH_SECRET="long-random-secret"
 NEXTAUTH_URL="http://localhost:3000"
 ```
@@ -380,7 +380,7 @@ Never commit `.env.local` or real database credentials.
 
 ## Implementation Order
 
-1. Provision managed MySQL
+1. Provision Neon PostgreSQL (free tier)
 2. Add Prisma and this schema
 3. Run the initial migration
 4. Seed the three projects and translations

@@ -205,3 +205,153 @@ a {
     line-height: 1.85;
   }
 }
+
+/* ================================================================
+   Animation System
+   ================================================================ */
+
+/* --- Scroll reveal --- */
+
+.reveal-hidden {
+  opacity: 0;
+}
+
+@keyframes revealFadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes revealSlideLeft {
+  from { opacity: 0; transform: translateX(48px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes revealSlideRight {
+  from { opacity: 0; transform: translateX(-48px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes revealScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.reveal-fade-up { animation: revealFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.reveal-fade-in { animation: revealFadeIn 0.75s ease forwards; }
+.reveal-slide-left { animation: revealSlideLeft 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.reveal-slide-right { animation: revealSlideRight 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.reveal-scale-in { animation: revealScaleIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* --- Hero page-load animations --- */
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroScaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.hero-animate {
+  opacity: 0;
+  animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-animate-image {
+  opacity: 0;
+  animation: heroScaleIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-delay-1 { animation-delay: 100ms; }
+.hero-delay-2 { animation-delay: 200ms; }
+.hero-delay-3 { animation-delay: 350ms; }
+.hero-delay-4 { animation-delay: 500ms; }
+
+/* --- Decorative floating --- */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.05); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: floatSlow 8s ease-in-out infinite; }
+
+/* --- FAQ smooth accordion --- */
+
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.faq-panel-inner {
+  overflow: hidden;
+}
+
+/* --- Card enhancements --- */
+
+.card-hover {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 56px rgba(119, 80, 146, 0.14);
+  border-color: #d4b5f3;
+}
+
+.card-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(47, 29, 54, 0.12), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.group:hover .card-img-wrap::after {
+  opacity: 1;
+}
+
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden { opacity: 1; }
+  .hero-animate,
+  .hero-animate-image { opacity: 1; animation: none; }
+  .animate-float,
+  .animate-float-slow { animation: none; }
+  .reveal-fade-up,
+  .reveal-fade-in,
+  .reveal-slide-left,
+  .reveal-slide-right,
+  .reveal-scale-in { animation: none; opacity: 1; }
+  .faq-panel { transition: none; }
+  .card-hover { transition: none; }
+  .card-img-wrap::after { transition: none; }
+}

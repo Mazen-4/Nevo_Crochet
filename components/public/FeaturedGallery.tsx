@@ -1,9 +1,11 @@
 "use client";
 
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { projects } from '@/lib/data/site';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
+import { ScrollReveal } from '@/components/public/ScrollReveal';
 
 export function FeaturedGallery() {
   const { addItem } = useInquiryCart();
@@ -35,13 +37,16 @@ export function FeaturedGallery() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        {projects.map((project) => (
-          <article key={project.id} className={`group overflow-hidden rounded-[1.75rem] border border-[#f1e1f0] bg-white shadow-[0_16px_38px_rgba(140,110,166,0.08)] transition hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(119,80,146,0.12)] ${isArabic ? 'text-ar' : ''}`}>
+        {projects.map((project, index) => (
+          <ScrollReveal key={project.id} delay={index * 150}>
+          <article className={`group overflow-hidden rounded-[1.75rem] border border-[#f1e1f0] bg-white shadow-[0_16px_38px_rgba(140,110,166,0.08)] card-hover ${isArabic ? 'text-ar' : ''}`}>
             <Link href={`/products/${project.slug}`} className="block">
-              <div className="overflow-hidden">
-                <img
+              <div className="card-img-wrap">
+                <Image
                   src={project.image}
                   alt={product(`${project.slug}.title`)}
+                  width={400}
+                  height={320}
                   className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
                 />
               </div>
@@ -84,6 +89,7 @@ export function FeaturedGallery() {
               </div>
             </div>
           </article>
+          </ScrollReveal>
         ))}
       </div>
     </section>
