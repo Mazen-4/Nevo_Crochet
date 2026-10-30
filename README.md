@@ -84,6 +84,7 @@ lib/
   projects.ts                # Cached, localized project/testimonial queries (tags: projects, testimonials)
   validation.ts              # Zod schemas for inquiries and newsletter
   api.ts                     # Route handler helpers (JSON body parsing, error responses)
+  rate-limit.ts              # Best-effort in-memory per-IP rate limiter
   supabase.ts                # Deprecated — use prisma.ts instead
 messages/
   en.json, ar.json           # UI translations (product/testimonial copy lives in the DB)
@@ -171,7 +172,7 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 - **Middleware deprecation** — Next.js 16 flags `middleware.ts` as deprecated in favor of the `proxy` convention. Migrate with `npx @next/codemod@canary middleware-to-proxy .` (update `i18n` references accordingly).
 - **Tailwind config warning** — dev server warns about module type detection for `tailwind.config.ts`; adding `"type": "module"` to `package.json` resolves it.
 - **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
-- **No spam protection on public forms** — no rate limiting or honeypot on `/api/inquiries` and `/api/newsletter` yet.
+- **Per-IP rate limit is per server instance** — `lib/rate-limit.ts` keeps counts in memory, so on Vercel each instance counts separately and resets on cold start. The per-email inquiry limit (database-backed) and the honeypot field still apply everywhere.
 - **Sample imagery** — product images are Unsplash placeholders pending real product photography.
 
 ---

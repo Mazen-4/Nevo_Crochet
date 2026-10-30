@@ -2,8 +2,9 @@
 
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { HoneypotField } from '@/components/public/HoneypotField';
 
-type Status = 'idle' | 'sending' | 'sent' | 'error';
+type Status = 'idle' | 'sending' | 'sent' | 'error' | 'limited';
 
 export function ContactSection() {
   const [status, setStatus] = useState<Status>('idle');
@@ -51,7 +52,7 @@ export function ContactSection() {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const base = { name: data.get('name'), email: data.get('email'), locale };
+    const base = { name: data.get('name'), email: data.get('email'), locale, website: data.get('website') };
     // Reference images are not uploaded yet — that needs image storage (Phase 3).
     const body =
       activeForm === 'question'
@@ -65,6 +66,10 @@ export function ContactSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
+      if (response.status === 429) {
+        setStatus('limited');
+        return;
+      }
       if (!response.ok) throw new Error(`Inquiry failed: ${response.status}`);
       setStatus('sent');
       setImageCount(0);
@@ -123,6 +128,7 @@ export function ContactSection() {
           </div>
 
           <form onSubmit={handleSubmit} className={`space-y-4 p-4 pt-6 sm:p-6 ${isArabic ? 'text-ar' : ''}`}>
+          <HoneypotField />
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-medium text-[#f0e6ff]">{t('name')}</label>
             <input id="name" name="name" required className="w-full rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder:text-[#d9c0eb] focus:border-[#e9d0ff] focus:outline-none" placeholder={t('namePlaceholder')} />
@@ -151,9 +157,9 @@ export function ContactSection() {
             {status === 'sending' ? common('sending') : activeForm === 'question' ? t('sendMessage') : t('requestPiece')}
           </button>
 
-          {status === 'error' && (
+          {(status === 'error' || status === 'limited') && (
             <p role="alert" className="rounded-2xl border border-rose-300/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-              {common('submitError')}
+              {common(status === 'limited' ? 'tooManyRequests' : 'submitError')}
             </p>
           )}
 

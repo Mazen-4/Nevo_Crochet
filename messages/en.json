@@ -50,7 +50,8 @@
     "sendCart": "Send inquiry",
     "sending": "Sending…",
     "cartSent": "Thank you! Your inquiry is on its way, and we’ll reply soon.",
-    "submitError": "Something went wrong. Please try again."
+    "submitError": "Something went wrong. Please try again.",
+    "tooManyRequests": "Too many attempts. Please wait a little and try again."
   },
   "home": {
     "eyebrow": "Premium crochet studio",

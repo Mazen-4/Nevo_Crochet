@@ -48,7 +48,7 @@ Public routes from the schema doc:
 - [X] ~~Replace `lib/data/site.ts` reads with database-backed fetches~~ (`lib/projects.ts`, cached with tags `projects` / `testimonials`; static file removed)
 - [X] ~~Wire the contact form, custom request form, and newsletter form to the new endpoints~~
 - [X] ~~Wire the floating cart's "Confirm cart" action to submit the cart as an inquiry~~ (name/email/note form in the cart dock)
-- [ ] Spam protection for the public POST routes (honeypot field and/or rate limiting)
+- [X] ~~Spam protection for the public POST routes~~ (honeypot `website` field, per-IP in-memory limit 5/10 min, per-email DB limit 5 inquiries/hour)
 
 **Sync point:** A visitor can submit an inquiry that is stored and visible in the database.
 
@@ -89,6 +89,7 @@ Public routes from the schema doc:
 - [ ] Production migration (`npx prisma migrate deploy`)
 - [ ] Email notifications for new inquiries (Resend/SendGrid)
 - [ ] Error tracking (Sentry, optional) and database backups
+- [ ] If spam gets through, move the per-IP limit to a shared store (e.g. Upstash Redis free tier) or add Cloudflare Turnstile
 - [ ] Launch checklist in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md#-launch-checklist)
 
 ---

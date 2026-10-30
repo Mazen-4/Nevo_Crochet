@@ -1,13 +1,28 @@
 import { Locale, ProjectStatus } from '@prisma/client';
-import { errorResponse, parseJsonBody } from '@/lib/api';
+import { errorResponse, parseJsonBody, rateLimitedResponse } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
+import { clientIp, rateLimit } from '@/lib/rate-limit';
 import { inquirySchema } from '@/lib/validation';
 
+const EMAIL_LIMIT = 5;
+const EMAIL_WINDOW_MS = 60 * 60 * 1000;
+
 export async function POST(request: Request) {
+  if (!rateLimit(`inquiries:${clientIp(request)}`, 5, 10 * 60 * 1000)) return rateLimitedResponse();
+
   const parsed = await parseJsonBody(request, inquirySchema);
   if ('response' in parsed) return parsed.response;
 
   const input = parsed.data;
+
+  // Spam trap filled in: pretend it worked so bots learn nothing.
+  if (input.website) return Response.json({ ok: true }, { status: 201 });
+
+  // Durable per-email limit, shared across server instances.
+  const recentFromEmail = await prisma.inquiry.count({
+    where: { email: input.email, createdAt: { gt: new Date(Date.now() - EMAIL_WINDOW_MS) } },
+  });
+  if (recentFromEmail >= EMAIL_LIMIT) return rateLimitedResponse();
 
   // Merge duplicate cart lines so each project appears once.
   const quantities = new Map<string, number>();
@@ -47,7 +62,7 @@ export async function POST(request: Request) {
   });
 
   // A nested create runs as a single transaction: the inquiry and its items land together or not at all.
-  const inquiry = await prisma.inquiry.create({
+  await prisma.inquiry.create({
     data: {
       type: input.type,
       name: input.name,
@@ -58,8 +73,7 @@ export async function POST(request: Request) {
         : { customName: input.customName, customSize: input.customSize, details: input.details }),
       items: { create: items },
     },
-    select: { id: true },
   });
 
-  return Response.json({ ok: true, id: inquiry.id }, { status: 201 });
+  return Response.json({ ok: true }, { status: 201 });
 }

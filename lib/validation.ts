@@ -13,9 +13,13 @@ const optionalText = (max: number) =>
     .optional()
     .transform((value) => value || undefined);
 
+/** Spam-trap field; real visitors never see it, so any value marks the request as a bot. */
+const honeypot = z.string().max(500).optional();
+
 export const newsletterSchema = z.object({
   email,
   locale: localeSchema,
+  website: honeypot,
 });
 
 /** Cart lines carry only an id and quantity — titles/prices are re-read from the database. */
@@ -29,6 +33,7 @@ const inquiryBase = {
   email,
   locale: localeSchema,
   items: z.array(inquiryItemSchema).max(50).default([]),
+  website: honeypot,
 };
 
 export const inquirySchema = z

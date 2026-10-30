@@ -2,24 +2,30 @@
 
 import { FormEvent, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { HoneypotField } from '@/components/public/HoneypotField';
 
 export function NewsletterSection() {
   const t = useTranslations('home');
   const common = useTranslations('common');
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
+    const data = new FormData(form);
     setStatus('sending');
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: new FormData(form).get('email'), locale }),
+        body: JSON.stringify({ email: data.get('email'), locale, website: data.get('website') }),
       });
+      if (response.status === 429) {
+        setStatus('limited');
+        return;
+      }
       if (!response.ok) throw new Error(`Subscribe failed: ${response.status}`);
       setStatus('sent');
       form.reset();
@@ -44,6 +50,7 @@ export function NewsletterSection() {
         </div>
 
         <form onSubmit={handleSubmit} className="w-full max-w-xl">
+          <HoneypotField />
           <label htmlFor="newsletter-email" className={`sr-only ${isArabic ? 'text-ar' : ''}`}>{t('newsletterEmailLabel')}</label>
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
@@ -64,9 +71,9 @@ export function NewsletterSection() {
             </button>
           </div>
           <p className={`mt-3 text-xs text-[#806d87] ${isArabic ? 'text-ar-small' : ''}`}>{t('newsletterPrivacy')}</p>
-          {status === 'error' && (
+          {(status === 'error' || status === 'limited') && (
             <p role="alert" className={`mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 ${isArabic ? 'text-ar-body' : ''}`}>
-              {common('submitError')}
+              {common(status === 'limited' ? 'tooManyRequests' : 'submitError')}
             </p>
           )}
           {status === 'sent' && (

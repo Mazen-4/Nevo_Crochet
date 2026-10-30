@@ -7,6 +7,10 @@ export function errorResponse(status: number, error: string, details?: unknown) 
   return Response.json(details === undefined ? { error } : { error, details }, { status });
 }
 
+export function rateLimitedResponse() {
+  return errorResponse(429, 'rate_limited');
+}
+
 /** Reads `?locale=` (defaulting to the routing default); `null` if it is not a supported locale. */
 export function localeFromQuery(request: NextRequest): Locale | null {
   const result = localeSchema.safeParse(request.nextUrl.searchParams.get('locale') ?? routing.defaultLocale);

@@ -2,13 +2,14 @@
 
 import { FormEvent, useState, useSyncExternalStore } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { HoneypotField } from '@/components/public/HoneypotField';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
 import type { CatalogEntry } from '@/types';
 
 const emptySubscribe = () => () => {};
 
 type Step = 'cart' | 'details' | 'sent';
-type Status = 'idle' | 'sending' | 'error';
+type Status = 'idle' | 'sending' | 'error' | 'limited';
 
 const inputClass = 'w-full rounded-2xl border border-[#decbe5] bg-white px-4 py-2.5 text-sm text-[#2f1d36] outline-none placeholder:text-[#927e9a] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20';
 
@@ -55,9 +56,14 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
           email: data.get('email'),
           question: data.get('note'),
           locale,
+          website: data.get('website'),
           items: items.map((item) => ({ projectId: item.id, quantity: item.quantity })),
         }),
       });
+      if (response.status === 429) {
+        setStatus('limited');
+        return;
+      }
       if (!response.ok) throw new Error(`Inquiry failed: ${response.status}`);
       clearCart();
       setStep('sent');
@@ -176,6 +182,7 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
 
           {step === 'details' && items.length > 0 && (
             <form onSubmit={handleSubmit} className="space-y-3 border-t border-[#f2e7f4] bg-[#fffafc] p-4">
+              <HoneypotField />
               <p className="text-sm font-medium text-[#4a2f58]">{t('cartReady')}</p>
               <label htmlFor="cart-name" className="sr-only">{home('name')}</label>
               <input id="cart-name" name="name" required maxLength={120} autoComplete="name" placeholder={home('namePlaceholder')} className={inputClass} />
@@ -190,9 +197,9 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
               >
                 {status === 'sending' ? t('sending') : t('sendCart')}
               </button>
-              {status === 'error' && (
+              {(status === 'error' || status === 'limited') && (
                 <p role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-center text-sm text-rose-700">
-                  {t('submitError')}
+                  {t(status === 'limited' ? 'tooManyRequests' : 'submitError')}
                 </p>
               )}
             </form>
