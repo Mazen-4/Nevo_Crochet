@@ -66,6 +66,7 @@ No test runner is configured yet. Do not add one without confirming the choice f
 - Catalog and settings reads are cached with `unstable_cache` (1h, tags `projects` / `testimonials` / `settings`). After writing that data, call `updateTag(tag)` in Server Actions (or `revalidateTag(tag, 'max')` in Route Handlers) or the storefront will show stale content. In Next.js 16, `revalidateTag` without a second argument is deprecated.
 - Next.js merges metadata **shallowly**: a page that sets `openGraph` replaces the layout's whole `openGraph` object. Build it with `openGraphFor()` from `lib/site.ts` so `og:locale` / `og:site_name` survive.
 - Don't add a `loading.tsx` to the storefront: streaming makes `notFound()` return a 200 "soft 404" instead of a real 404.
+- `npm install` runs `prisma generate` (postinstall; required for clean installs such as Vercel's). On Windows, stop `npm run dev` first, or the generate step fails with `EPERM` because the dev server locks Prisma's engine file.
 - Locale routing lives in `proxy.ts` (Next.js 16 renamed `middleware` to `proxy`). Don't recreate a `middleware.ts`.
 - `lib/supabase.ts` is a misleading leftover name — use `lib/prisma.ts` instead.
 - Product images are Unsplash placeholders.

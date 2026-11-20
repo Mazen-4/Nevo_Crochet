@@ -152,7 +152,7 @@ AUTH_SECRET=replace_with_at_least_32_random_characters
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings.
+`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings — `DATABASE_URL` must be available to the **Build** step too, because product pages and the sitemap read the catalog at build time. The `postinstall` script runs `prisma generate`, which a clean install (like Vercel's) needs before TypeScript can see the Prisma types.
 
 ---
 
