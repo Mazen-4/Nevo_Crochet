@@ -209,6 +209,7 @@
       "signedInAs": "Signed in as {email}",
       "newCount": "{count, plural, one {# new inquiry} other {# new inquiries}}",
       "projects": "Pieces",
+      "social": "Social",
       "settings": "Settings"
     },
     "inquiries": {
@@ -351,7 +352,50 @@
         "tooMany": "Only {count, plural, =0 {no more photos} one {# more photo} other {# more photos}} can be added to this piece.",
         "failed": "Couldn’t upload {name}. Please try again.",
         "notConfigured": "Photo uploads aren’t available right now. Please try again later."
-      }
+      },
+      "fromSocial": "Draft created from a social post. The Arabic caption and photos are filled in; add the English text, a category and a price, then set the status to Published."
+    },
+    "social": {
+      "title": "Social inbox",
+      "subtitle": "Posts from Nevo's <facebook>Facebook Page</facebook> and <instagram>Instagram</instagram>. Nothing is published automatically: turn a post into a draft piece, finish it, then publish.",
+      "syncNow": "Sync now",
+      "syncing": "Syncing…",
+      "neverSynced": "Not synced yet. Press “Sync now” to fetch the latest posts.",
+      "lastSync": "Last sync: {date}.",
+      "added": "{count, plural, =0 {No new posts.} one {# new post.} other {# new posts.}}",
+      "remaining": "{count, plural, one {# more post is waiting; press “Sync now” again.} other {# more posts are waiting; press “Sync now” again.}}",
+      "syncError": "The last sync had a problem. Try again in a few minutes.",
+      "tokenProblem": "Meta no longer accepts the connection (this happens after a Facebook password change). The connection needs to be renewed with npm run meta:setup.",
+      "statuses": {
+        "NEW": "Inbox",
+        "IMPORTED": "Turned into pieces",
+        "IGNORED": "Ignored"
+      },
+      "hints": {
+        "NEW": "Posts waiting for review.",
+        "IMPORTED": "Posts already turned into pieces.",
+        "IGNORED": "Hidden posts, including Instagram posts that repeat a Facebook post."
+      },
+      "empty": {
+        "NEW": "The inbox is empty. New posts show up here after the next sync.",
+        "IMPORTED": "No posts have been turned into pieces yet.",
+        "IGNORED": "No ignored posts."
+      },
+      "platforms": {
+        "FACEBOOK": "Facebook",
+        "INSTAGRAM": "Instagram"
+      },
+      "viewOriginal": "View on {platform} ↗",
+      "noCaption": "No caption.",
+      "photoAlt": "Post photo {index}",
+      "crossPost": "Also posted on Facebook.",
+      "createPiece": "Create draft piece",
+      "creating": "Creating…",
+      "ignore": "Ignore",
+      "restore": "Back to inbox",
+      "saving": "Saving…",
+      "openPiece": "Open piece: {title}",
+      "openPieceUntitled": "Open piece"
     },
     "settings": {
       "title": "Settings",

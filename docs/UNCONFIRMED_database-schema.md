@@ -19,6 +19,7 @@ Included:
 - Newsletter subscribers
 - Admin users
 - Site contact settings
+- Social posts imported from the official Facebook Page and Instagram account (one-way, reviewed in the admin before becoming pieces)
 
 Excluded from the current phase:
 
@@ -86,6 +87,7 @@ model Project {
   images       ProjectImage[]
   colors       ProjectColor[]
   inquiryItems InquiryItem[]
+  socialPosts  SocialPost[]
 
   @@index([status, featured])
   @@index([createdAt])
@@ -226,6 +228,54 @@ model SiteSetting {
   settingKey   String   @unique @db.VarChar(120)
   settingValue String   @db.Text
   updatedAt    DateTime @updatedAt
+}
+
+enum SocialPlatform {
+  FACEBOOK
+  INSTAGRAM
+}
+
+enum SocialPostStatus {
+  NEW
+  IMPORTED
+  IGNORED
+}
+
+/// A post read from Nevo's official Facebook Page or Instagram account (one-way: social → site).
+/// Admins review these in the social inbox and turn the good ones into draft pieces.
+model SocialPost {
+  id            String            @id @default(cuid())
+  platform      SocialPlatform
+  externalId    String            @db.VarChar(120)
+  permalink     String            @db.Text
+  caption       String?           @db.Text
+  postedAt      DateTime
+  status        SocialPostStatus  @default(NEW)
+  /// The same post on the other platform (cross-posted). Duplicates start out IGNORED.
+  duplicateOfId String?
+  duplicateOf   SocialPost?       @relation("SocialPostDuplicate", fields: [duplicateOfId], references: [id], onDelete: SetNull)
+  duplicates    SocialPost[]      @relation("SocialPostDuplicate")
+  /// The piece created from this post, if any.
+  projectId     String?
+  project       Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  images        SocialPostImage[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@unique([platform, externalId])
+  @@index([status, postedAt])
+  @@index([projectId])
+}
+
+/// Photos are copied to Cloudinary at sync time: Facebook and Instagram image URLs expire.
+model SocialPostImage {
+  id           String     @id @default(cuid())
+  socialPostId String
+  url          String     @db.Text
+  sortOrder    Int        @default(0)
+  socialPost   SocialPost @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+
+  @@index([socialPostId, sortOrder])
 }
 ```
 

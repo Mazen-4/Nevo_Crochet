@@ -36,34 +36,35 @@ enum AdminRole {
 }
 
 model Project {
-  id           String              @id @default(cuid())
-  slug         String              @unique @db.VarChar(160)
-  featured     Boolean             @default(false)
-  status       ProjectStatus       @default(PUBLISHED)
-  sortOrder    Int                 @default(0)
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id           String               @id @default(cuid())
+  slug         String               @unique @db.VarChar(160)
+  featured     Boolean              @default(false)
+  status       ProjectStatus        @default(PUBLISHED)
+  sortOrder    Int                  @default(0)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
   translations ProjectTranslation[]
   images       ProjectImage[]
   colors       ProjectColor[]
   inquiryItems InquiryItem[]
+  socialPosts  SocialPost[]
 
   @@index([status, featured])
   @@index([createdAt])
 }
 
 model ProjectTranslation {
-  id             String   @id @default(cuid())
+  id             String  @id @default(cuid())
   projectId      String
   locale         Locale
-  title          String   @db.VarChar(180)
-  category       String   @db.VarChar(80)
-  description    String   @db.Text
-  materials      String?  @db.Text
-  priceLabel     String?  @db.VarChar(100)
-  seoTitle       String?  @db.VarChar(180)
-  seoDescription String?  @db.Text
-  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title          String  @db.VarChar(180)
+  category       String  @db.VarChar(80)
+  description    String  @db.Text
+  materials      String? @db.Text
+  priceLabel     String? @db.VarChar(100)
+  seoTitle       String? @db.VarChar(180)
+  seoDescription String? @db.Text
+  project        Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@unique([projectId, locale])
   @@index([locale, category])
@@ -113,19 +114,19 @@ model Testimonial {
 }
 
 model Inquiry {
-  id         String        @id @default(cuid())
+  id         String         @id @default(cuid())
   type       InquiryType
-  name       String        @db.VarChar(120)
-  email      String        @db.VarChar(255)
-  question   String?       @db.Text
-  customName String?       @db.VarChar(180)
-  customSize String?       @db.VarChar(180)
-  details    String?       @db.Text
+  name       String         @db.VarChar(120)
+  email      String         @db.VarChar(255)
+  question   String?        @db.Text
+  customName String?        @db.VarChar(180)
+  customSize String?        @db.VarChar(180)
+  details    String?        @db.Text
   locale     Locale
-  status     InquiryStatus @default(NEW)
-  adminNotes String?       @db.Text
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  status     InquiryStatus  @default(NEW)
+  adminNotes String?        @db.Text
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
   items      InquiryItem[]
   images     InquiryImage[]
 
@@ -187,4 +188,52 @@ model SiteSetting {
   settingKey   String   @unique @db.VarChar(120)
   settingValue String   @db.Text
   updatedAt    DateTime @updatedAt
+}
+
+enum SocialPlatform {
+  FACEBOOK
+  INSTAGRAM
+}
+
+enum SocialPostStatus {
+  NEW
+  IMPORTED
+  IGNORED
+}
+
+/// A post read from Nevo's official Facebook Page or Instagram account (one-way: social → site).
+/// Admins review these in the social inbox and turn the good ones into draft pieces.
+model SocialPost {
+  id            String            @id @default(cuid())
+  platform      SocialPlatform
+  externalId    String            @db.VarChar(120)
+  permalink     String            @db.Text
+  caption       String?           @db.Text
+  postedAt      DateTime
+  status        SocialPostStatus  @default(NEW)
+  /// The same post on the other platform (cross-posted). Duplicates start out IGNORED.
+  duplicateOfId String?
+  duplicateOf   SocialPost?       @relation("SocialPostDuplicate", fields: [duplicateOfId], references: [id], onDelete: SetNull)
+  duplicates    SocialPost[]      @relation("SocialPostDuplicate")
+  /// The piece created from this post, if any.
+  projectId     String?
+  project       Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  images        SocialPostImage[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@unique([platform, externalId])
+  @@index([status, postedAt])
+  @@index([projectId])
+}
+
+/// Photos are copied to Cloudinary at sync time: Facebook and Instagram image URLs expire.
+model SocialPostImage {
+  id           String     @id @default(cuid())
+  socialPostId String
+  url          String     @db.Text
+  sortOrder    Int        @default(0)
+  socialPost   SocialPost @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+
+  @@index([socialPostId, sortOrder])
 }

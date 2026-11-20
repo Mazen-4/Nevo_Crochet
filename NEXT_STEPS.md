@@ -64,6 +64,9 @@ Public routes from the schema doc:
 - [X] ~~Inquiry management: view submissions with cart items, add notes, change status~~ (`/[locale]/admin/inquiries` — status tabs with counts, detail page, reply-by-email, private notes; new-count badge in the header)
 - [X] ~~Contact settings (WhatsApp number, email) via `SiteSetting`~~ (`/[locale]/admin/settings`, cached in `lib/settings.ts` under tag `settings`; an empty value hides that line on the site — **real values still need to be entered**)
 
+- [X] ~~Social import from the official Facebook Page and Instagram (one-way, social → site)~~ (`/[locale]/admin/social` inbox; `lib/social/` reads the Meta Graph API with a never-expiring Page token from `npm run meta:setup`, copies photos to Cloudinary `nevo/social`, hides Instagram cross-posts of Facebook posts; "Create draft piece" makes a DRAFT with the Arabic caption + photos for the admin to finish. Initial import done on the `dev` branch: 31 Facebook posts in the inbox, 10 Instagram cross-posts linked)
+- [ ] Turn the imported posts into pieces (English text, category, price per piece) and replace the Unsplash samples
+
 **Boundary:** Do not implement online payment, checkout, or customer order tracking in this phase.
 
 ---
@@ -87,6 +90,7 @@ Public routes from the schema doc:
 - [ ] Lighthouse pass — target 90+, FCP < 1.5s on mobile
 - [ ] Deploy frontend to Vercel; connect Neon PostgreSQL and set env vars
 - [ ] Production migration (`npx prisma migrate deploy`)
+- [ ] Social sync in production: add `META_PAGE_ID`, `META_PAGE_TOKEN`, `META_IG_USER_ID` and `CRON_SECRET` to Vercel (the daily cron in `vercel.json` calls `/api/cron/social-sync`), then press "Sync now" once on production
 - [ ] Email notifications for new inquiries — **decided: Resend free tier** (3 000 emails / month, 100 / day; one transactional sender, template in both languages)
 - [ ] Error tracking (Sentry, optional) and database backups
 - [ ] If spam gets through, move the per-IP limit to a shared store (e.g. Upstash Redis free tier) or add Cloudflare Turnstile

@@ -13,6 +13,12 @@ export const SITE_URL = (
 
 export const OG_LOCALES: Record<Locale, string> = { en: 'en_US', ar: 'ar_AR' };
 
+/** Nevo's official social accounts ("Nevo Handmade"). Used for Organization `sameAs` and as the content source for the social import. */
+export const OFFICIAL_SOCIAL = {
+  facebook: 'https://www.facebook.com/p/Nevo-Handmade-61593513131592/',
+  instagram: 'https://www.instagram.com/nevohandmade/',
+} as const;
+
 /** `/gallery` → absolute URL for one locale. Pass `''` for the home page. */
 export const localeUrl = (locale: Locale, path: string) => `${SITE_URL}/${locale}${path}`;
 

@@ -29,7 +29,7 @@ export default async function EditProjectPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ created?: string; saved?: string }>;
+  searchParams: Promise<{ created?: string; saved?: string; fromSocial?: string }>;
 }) {
   const { locale, id } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
@@ -54,7 +54,7 @@ export default async function EditProjectPage({
     })),
     images: project.images.map((image) => ({ url: image.url, altText: image.altText ?? '' })),
   };
-  const title = initial[locale].title || initial.en.title || t('untitled');
+  const title = initial[locale].title || initial.en.title || initial.ar.title || t('untitled');
 
   return (
     <div className="space-y-4">
@@ -77,6 +77,11 @@ export default async function EditProjectPage({
       {(query.created || query.saved) && (
         <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-700">
           {t(query.created ? 'created' : 'saved')}
+        </p>
+      )}
+      {query.fromSocial && (
+        <p role="status" className="rounded-2xl border border-[#d9c6ea] bg-[#f8f1ff] px-4 py-2.5 text-sm text-[#504061]">
+          {t('fromSocial')}
         </p>
       )}
 

@@ -39,6 +39,8 @@ No test runner is configured yet. Do not add one without confirming the choice f
 | Allowed product image hosts | `lib/image-hosts.ts` (read by `next.config.ts` and project validation) |
 | Photo uploads (Cloudinary signed direct upload) | `lib/cloudinary.ts` (server-only signing), `components/admin/ImageUploadButton.tsx` |
 | SEO helpers (base URL, hreflang, Open Graph, JSON-LD) | `lib/site.ts`; `app/sitemap.ts`, `app/robots.ts` |
+| Official social accounts | `OFFICIAL_SOCIAL` in `lib/site.ts` (Organization `sameAs`, social import source) |
+| Social import (Meta → inbox, one-way) | `lib/social/meta.ts` (Graph reads), `lib/social/sync.ts` (dedupe, Cloudinary copy), `app/[locale]/admin/(protected)/social/`, cron `app/api/cron/social-sync` + `vercel.json`; token setup `scripts/meta-setup.ts` |
 | Site settings (contact email, WhatsApp) | `lib/settings.ts` (cached, tag `settings`), edited at `/[locale]/admin/settings` |
 | Locale layout (fonts, provider, lang/dir) | `app/[locale]/layout.tsx` |
 | Root layout (cart provider, locale detection) | `app/layout.tsx` |

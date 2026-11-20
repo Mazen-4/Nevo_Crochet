@@ -53,6 +53,7 @@ Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (rep
 - **Product detail** (`/[locale]/products/[slug]`) — localized product content, palette, add to cart
 - **Inquiry cart** — floating dock, quantity controls, removal, `localStorage` persistence, add confirmation feedback
 - **Bilingual UI** — full English and Arabic translations for every string, RTL layout, Arabic fonts and typography rules
+- **Social inbox** (`/[locale]/admin/social`) — posts from the official Facebook Page and Instagram are imported (daily cron + "Sync now"), photos copied to Cloudinary; admins turn posts into draft pieces
 - **Contact forms** — "Ask a question" and "Request a custom piece" tabs, newsletter signup (submission is client-side only; nothing is stored or emailed yet)
 
 ---
@@ -153,6 +154,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 `DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. **Database branches (Neon project `young-bird-10422240`):** `production` (default) is the live site's database; `dev` is a copy for local development and Vercel Preview deploys. Keep your local `.env` on `dev` (`NEON_BRANCH=dev`) so local testing never touches live data. Vercel's Production environment uses `production`, its Preview environment uses `dev`, and each has its own `AUTH_SECRET`.
+
+**Social import (Meta):** `META_APP_ID` and `META_APP_SECRET` come from the Meta developer app. Run `npm run meta:setup` once with a short-lived `META_USER_TOKEN` from the Graph API Explorer (permissions `pages_show_list`, `pages_read_engagement`, `instagram_basic`, `business_management`); it writes `META_PAGE_ID`, `META_PAGE_TOKEN` (never expires unless the Page owner changes their Facebook password) and `META_IG_USER_ID` to `.env.local`. `CRON_SECRET` protects `/api/cron/social-sync`; Vercel sends it automatically to the daily cron.
 
 For Vercel, set the same variables in the project settings — `DATABASE_URL` must be available to the **Build** step too, because product pages and the sitemap read the catalog at build time. The `postinstall` script runs `prisma generate`, which a clean install (like Vercel's) needs before TypeScript can see the Prisma types.
 

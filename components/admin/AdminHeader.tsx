@@ -23,6 +23,7 @@ export async function AdminHeader({ email, locale, newCount }: { email: string; 
               )}
             </AdminNavLink>
             <AdminNavLink href="/admin/projects">{t('projects')}</AdminNavLink>
+            <AdminNavLink href="/admin/social">{t('social')}</AdminNavLink>
             <AdminNavLink href="/admin/settings">{t('settings')}</AdminNavLink>
             <Link href="/" className="rounded-full px-3 py-1.5 text-[#6d4e82] hover:bg-[#fff8fc]">{t('viewSite')}</Link>
           </nav>

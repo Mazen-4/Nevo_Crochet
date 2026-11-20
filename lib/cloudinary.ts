@@ -30,6 +30,34 @@ function sign(params: Record<string, string | number>, apiSecret: string): strin
   return createHash('sha1').update(payload + apiSecret).digest('hex');
 }
 
+/**
+ * Server-side copy of a remote image (used by the social import: Facebook/Instagram URLs expire).
+ * The `publicId` is deterministic per source photo and `overwrite` is off, so re-running a sync
+ * returns the already-stored copy instead of uploading a duplicate. Returns the HTTPS delivery URL.
+ */
+export async function uploadRemoteImage(sourceUrl: string, publicId: string): Promise<string> {
+  const config = credentials();
+  if (!config) throw new Error('Cloudinary is not configured');
+
+  const params = {
+    folder: 'nevo/social',
+    public_id: publicId,
+    overwrite: 'false',
+    transformation: UPLOAD_OPTIONS.transformation,
+    timestamp: Math.floor(Date.now() / 1000),
+  };
+  const body = new URLSearchParams({
+    ...Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
+    file: sourceUrl,
+    api_key: config.apiKey,
+    signature: sign(params, config.apiSecret),
+  });
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, { method: 'POST', body });
+  const json = (await res.json()) as { secure_url?: string; error?: { message: string } };
+  if (!res.ok || !json.secure_url) throw new Error(`Cloudinary upload failed: ${json.error?.message ?? res.status}`);
+  return json.secure_url;
+}
+
 /** Returns `null` when Cloudinary isn't configured. Cloudinary accepts a signature for one hour. */
 export function createUploadSignature(): UploadSignature | null {
   const config = credentials();

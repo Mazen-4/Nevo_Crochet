@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import type { Project } from '@/types';
 
-export function HeroSection() {
+/** `featured` is the first featured piece; without one the hero falls back to the stock photo. */
+export function HeroSection({ featured }: { featured?: Project }) {
   const t = useTranslations('home');
   return (
     <section id="hero" className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_#fff8fc,_#f5ecff_32%,_#f0f4ff_100%)]">
@@ -59,18 +61,28 @@ export function HeroSection() {
           <div className="relative overflow-hidden rounded-[2rem] border border-[#eedaf1] bg-white/70 p-4 shadow-[0_30px_80px_rgba(142,99,159,0.17)] backdrop-blur-sm">
             <div className="overflow-hidden rounded-[1.5rem] bg-[#f7eefb]">
               <Image
-                src="https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=1200&q=80"
-                alt="Handcrafted crochet textures and cozy home styling"
+                src={featured?.image ?? 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=1200&q=80'}
+                alt={featured?.title ?? 'Handcrafted crochet textures and cozy home styling'}
                 width={600}
                 height={560}
                 className="h-[560px] w-full object-cover"
                 priority
               />
             </div>
-            <div className="absolute bottom-10 left-10 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-lg backdrop-blur-sm">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-[#856895]">{t('featuredMake')}</p>
-              <p className="mt-1 text-lg font-semibold text-[#2f1d36]">{t('featuredProduct')}</p>
-            </div>
+            {featured ? (
+              <Link
+                href={`/products/${featured.slug}`}
+                className="absolute bottom-10 start-10 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-lg backdrop-blur-sm transition hover:bg-white"
+              >
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[#856895]">{t('featuredMake')}</p>
+                <p className="mt-1 text-lg font-semibold text-[#2f1d36]">{featured.title}</p>
+              </Link>
+            ) : (
+              <div className="absolute bottom-10 start-10 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-lg backdrop-blur-sm">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[#856895]">{t('featuredMake')}</p>
+                <p className="mt-1 text-lg font-semibold text-[#2f1d36]">{t('featuredProduct')}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

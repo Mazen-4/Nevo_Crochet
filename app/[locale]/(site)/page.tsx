@@ -15,7 +15,7 @@ import { routing } from '@/i18n/routing';
 import { getProjects, getTestimonials } from '@/lib/projects';
 import { getContactSettings } from '@/lib/settings';
 import { FAQ_KEYS } from '@/lib/faq';
-import { alternatesFor, jsonLd, localeUrl, openGraphFor } from '@/lib/site';
+import { alternatesFor, jsonLd, localeUrl, OFFICIAL_SOCIAL, openGraphFor } from '@/lib/site';
 import type { Project } from '@/types';
 
 const FEATURED_COUNT = 3;
@@ -61,6 +61,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       url: localeUrl(locale, ''),
       slogan: meta('slogan'),
       description: meta('description'),
+      sameAs: Object.values(OFFICIAL_SOCIAL),
       ...(contact.email && { email: contact.email }),
       ...(contact.whatsapp && { telephone: `+${contact.whatsapp.digits}` }),
     },
@@ -80,7 +81,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <main className="min-h-screen bg-[#fffafc] text-[#2f1d36]">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />
       <NavBar />
-      <HeroSection />
+      <HeroSection featured={featured[0]} />
       <FeaturedGallery projects={featured} />
       <ScrollReveal><AboutSection testimonials={testimonials} /></ScrollReveal>
       <ScrollReveal><ProcessSection /></ScrollReveal>

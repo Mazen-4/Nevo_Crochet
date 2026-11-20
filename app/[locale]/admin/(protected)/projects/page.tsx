@@ -48,7 +48,8 @@ export default async function ProjectsPage({ params }: { params: Promise<{ local
           {projects.map((project, index) => {
             const translation =
               project.translations.find((tr) => tr.locale === locale) ?? project.translations.find((tr) => tr.locale === 'en');
-            const title = translation?.title ?? t('untitled');
+            // Drafts created from a social post have only an Arabic title until the English side is filled in.
+            const title = translation?.title || project.translations.find((tr) => tr.title)?.title || t('untitled');
             const image = project.images[0];
 
             return (
