@@ -4,7 +4,7 @@ Guidance for AI coding agents (and new developers) working in this repository. `
 
 ## Project at a glance
 
-Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Frontend is complete and reads from Neon PostgreSQL via Prisma; public API routes are live; the admin CMS is next** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
+Bilingual (EN/AR) premium crochet storefront. Next.js 16 App Router + React 19 + TypeScript (strict) + Tailwind CSS 4 + next-intl. **Live at https://nevo-crochet.vercel.app: the storefront reads Neon PostgreSQL via Prisma, and the public API routes and admin CMS (pieces, inquiries, settings, social inbox) are done** — see [README.md](README.md) for status and [NEXT_STEPS.md](NEXT_STEPS.md) for the ordered roadmap.
 
 ## Commands
 
@@ -72,7 +72,10 @@ No test runner is configured yet. Do not add one without confirming the choice f
 - `npm install` runs `prisma generate` (postinstall; required for clean installs such as Vercel's). On Windows, stop `npm run dev` first, or the generate step fails with `EPERM` because the dev server locks Prisma's engine file.
 - Locale routing lives in `proxy.ts` (Next.js 16 renamed `middleware` to `proxy`). Don't recreate a `middleware.ts`.
 - `lib/supabase.ts` is a misleading leftover name — use `lib/prisma.ts` instead.
-- Product images are Unsplash placeholders.
+- Catalog pieces use real photos imported from Facebook (Cloudinary `nevo/social`); `prisma/seed.ts` still seeds Unsplash samples into a fresh database.
+- Database changes made by scripts (not admin actions) don't expire the storefront cache; they show up within an hour.
+- Pushing `main` deploys production, but Vercel doesn't run migrations: run `prisma migrate deploy` against the Neon `production` branch first (README → Deploying). Ask before every push.
+- `next dev` keeps the Prisma client in memory: after a migration, stop the dev server, rerun `npx prisma generate` (it fails with `EPERM` while the server runs), then start it again.
 - Root-level `mockup*.html` / `local-preview.html` are legacy design mockups, not part of the app.
 
 ## Before you finish

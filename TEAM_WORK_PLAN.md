@@ -139,21 +139,21 @@
 
 ---
 
-### **Phase 5: Deployment & Launch (Week 9–10)** — ⬜ Not started
+### **Phase 5: Deployment & Launch (Week 9–10)** — 🟡 In progress (live on Vercel since 2026-11-20)
 
 #### Developer A (Frontend):
 
 - [ ]  Build optimization
-- [ ]  Deploy to Vercel
+- [X]  Deploy to Vercel (https://nevo-crochet.vercel.app, `main` auto-deploys)
 - [ ]  Set up staging environment
 - [ ]  Monitor performance (Lighthouse)
 - [ ]  Fix any bugs found in production
 
 #### Developer B (Backend):
 
-- [ ]  Deploy MySQL database to production hosting
+- [X]  Production database (Neon PostgreSQL `production` branch — replaced MySQL)
 - [ ]  Set up automated backups
-- [ ]  Configure production environment variables
+- [X]  Configure production environment variables
 - [ ]  Monitor database performance
 - [ ]  Set up error tracking (Sentry optional)
 
@@ -326,9 +326,9 @@ npm install
 ## 🚀 Launch Checklist
 
 - [ ]  Domain registered and DNS configured
-- [ ]  Vercel connected and deployed
-- [ ]  MySQL production instance provisioned (not Supabase)
-- [ ]  Environment variables set correctly
+- [X]  Vercel connected and deployed
+- [X]  Production database provisioned (Neon PostgreSQL, not MySQL/Supabase)
+- [X]  Environment variables set correctly
 - [ ]  Email notifications working
 - [ ]  Admin user created
 - [ ]  Backup strategy in place

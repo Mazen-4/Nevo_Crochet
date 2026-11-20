@@ -1,6 +1,6 @@
 # Nevo Database Schema
 
-> **Status: designed, not yet implemented.** No database is provisioned and Prisma is not installed. This document is the agreed contract for Phase 1 of [NEXT_STEPS.md](../NEXT_STEPS.md) — when the schema is migrated and seeded, rename this file to `database-schema.md` and drop the `UNCONFIRMED_` prefix.
+> **Status: implemented.** This schema is migrated on Neon PostgreSQL (`dev` and `production` branches; latest migration `20261120205746_social_posts`) and stays the contract for any data change — update this file before `prisma/schema.prisma`. The `UNCONFIRMED_` prefix is kept only because other docs link to this path.
 
 This schema is designed for the current Nevo Crochet website: a bilingual English/Arabic product gallery with inquiry cart, custom requests, newsletter signup, and a future admin CMS.
 

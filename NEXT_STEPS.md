@@ -65,7 +65,8 @@ Public routes from the schema doc:
 - [X] ~~Contact settings (WhatsApp number, email) via `SiteSetting`~~ (`/[locale]/admin/settings`, cached in `lib/settings.ts` under tag `settings`; an empty value hides that line on the site — **real values still need to be entered**)
 
 - [X] ~~Social import from the official Facebook Page and Instagram (one-way, social → site)~~ (`/[locale]/admin/social` inbox; `lib/social/` reads the Meta Graph API with a never-expiring Page token from `npm run meta:setup`, copies photos to Cloudinary `nevo/social`, hides Instagram cross-posts of Facebook posts; "Create draft piece" makes a DRAFT with the Arabic caption + photos for the admin to finish. Initial import done on the `dev` branch: 31 Facebook posts in the inbox, 10 Instagram cross-posts linked)
-- [ ] Turn the imported posts into pieces (English text, category, price per piece) and replace the Unsplash samples
+- [X] ~~Replace the 3 Unsplash sample pieces with real pieces from the social import~~ (dev + production: Nesting Basket Set, Burgundy Chain Shoulder Bag, Chunky Fringed Winter Scarf — English written from the captions, "Made to order" until prices are set)
+- [ ] Turn the remaining imported posts into pieces (English text, category, price per piece)
 
 **Boundary:** Do not implement online payment, checkout, or customer order tracking in this phase.
 
@@ -75,7 +76,7 @@ Public routes from the schema doc:
 
 - [X] ~~Add `loading.tsx`, `error.tsx`, and a custom `not-found.tsx`~~ (bilingual 404 via `(site)/[...rest]` catch-all, `[locale]/error.tsx` + `global-error.tsx`; `loading.tsx` only in the admin, because storefront streaming would turn real 404s into soft 404s)
 - [X] ~~SEO: `sitemap.ts`, `robots.ts`, Open Graph metadata, structured data (Product/FAQ)~~ (canonical + EN/AR hreflang on every page, per-piece SEO fields from the admin, Organization + FAQPage + Product JSON-LD; base URL from `NEXT_PUBLIC_APP_URL` → Vercel production URL → localhost, see `lib/site.ts`)
-- [ ] Replace Unsplash placeholders with real product photography
+- [X] ~~Replace Unsplash placeholders with real product photography~~ (catalog and home hero now use imported Facebook photos; `prisma/seed.ts` still uses Unsplash for fresh databases)
 - [ ] Install and implement Framer Motion entrance/scroll animations — **approved**. Keep it light: transform/opacity only (no layout-triggering properties), stagger ≤ 60 ms, IntersectionObserver-triggered one-shot entrance instead of scroll-linked motion, respect `prefers-reduced-motion`. Use `motion/react` only where a CSS transition can't do the job; measure with Lighthouse before merging.
 - [ ] Evaluate the planned 3D hero (Three.js / React Three Fiber) — decide scope or defer
 - [ ] Responsive QA across mobile/tablet/desktop; verify RTL on every page
@@ -88,9 +89,10 @@ Public routes from the schema doc:
 
 - [ ] Testing setup (unit + integration; E2E last) — **approved**. Vitest for unit/integration (Zod schemas, cache-tag logic, admin data helpers), Playwright for the small E2E loop already covered by the scratchpad scripts (`admin/projects`, `admin/settings`, SEO). No Jest, no snapshot tests of HTML.
 - [ ] Lighthouse pass — target 90+, FCP < 1.5s on mobile
-- [ ] Deploy frontend to Vercel; connect Neon PostgreSQL and set env vars
-- [ ] Production migration (`npx prisma migrate deploy`)
-- [ ] Social sync in production: add `META_PAGE_ID`, `META_PAGE_TOKEN`, `META_IG_USER_ID` and `CRON_SECRET` to Vercel (the daily cron in `vercel.json` calls `/api/cron/social-sync`), then press "Sync now" once on production
+- [X] ~~Deploy frontend to Vercel; connect Neon PostgreSQL and set env vars~~ (live at https://nevo-crochet.vercel.app; `main` auto-deploys)
+- [X] ~~Production migration (`npx prisma migrate deploy`)~~ (run manually against the Neon `production` branch before deploying schema changes — see README → Deploying)
+- [X] ~~Social sync in production~~ (`META_PAGE_ID`, `META_PAGE_TOKEN`, `META_IG_USER_ID`, `CRON_SECRET` on Vercel; daily cron 05:00 UTC; initial import done: 31 Facebook posts in the inbox, 10 Instagram cross-posts linked)
+- [ ] Custom domain, then set `NEXT_PUBLIC_APP_URL`
 - [ ] Email notifications for new inquiries — **decided: Resend free tier** (3 000 emails / month, 100 / day; one transactional sender, template in both languages)
 - [ ] Error tracking (Sentry, optional) and database backups
 - [ ] If spam gets through, move the per-IP limit to a shared store (e.g. Upstash Redis free tier) or add Cloudflare Turnstile

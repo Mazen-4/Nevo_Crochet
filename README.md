@@ -10,7 +10,7 @@ Online payment and checkout are intentionally out of scope for the current phase
 
 ## Current status
 
-The public storefront frontend is complete and runs locally against a live Neon PostgreSQL database. Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS manages inquiries and pieces; photo uploads wait on an image storage choice.
+The site is **live at https://nevo-crochet.vercel.app** (Vercel + Neon PostgreSQL; no custom domain yet). Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS manages inquiries, pieces (with Cloudinary photo uploads), contact settings, and a social inbox that imports posts from Nevo's official Facebook Page and Instagram. The catalog now shows 3 real pieces imported from Facebook; the rest of the imported posts are waiting in the inbox.
 
 | Area | Status | Notes |
 | --- | --- | --- |
@@ -20,13 +20,14 @@ The public storefront frontend is complete and runs locally against a live Neon 
 | Design system & responsive layout | Done | Pink/purple palette, Cairo/Almarai Arabic typography |
 | Database schema (PostgreSQL + Prisma) | Done | Neon PostgreSQL provisioned, migrated, and seeded (3 projects, 6 testimonials) |
 | API routes (inquiries, newsletter, products) | Done | `app/api/*`, Zod validation, pages read via cached `lib/projects.ts` |
-| Admin CMS | In progress | Sign-in, inquiry management and piece (project) management done; image upload pending a storage choice |
+| Admin CMS | Done | Sign-in, inquiries, pieces with Cloudinary photo uploads, contact settings. Custom-request reference images still not uploaded |
+| Social import (Facebook + Instagram → site) | Done | One-way; daily Vercel cron + "Sync now"; posts reviewed in `/[locale]/admin/social` before becoming pieces |
 | CSS animations (scroll reveal, hero, cards) | Done | Pure CSS + IntersectionObserver, no external deps |
 | Framer Motion / 3D hero | Not started | No Framer Motion or Three.js installed yet |
 | SEO (sitemap, robots, OG, structured data) | Done | `app/sitemap.ts`, `app/robots.ts`, per-page canonical/hreflang/OG, JSON-LD; set `NEXT_PUBLIC_APP_URL` once the domain is known |
 | Loading / error / 404 states | Done | Bilingual 404 + error boundaries; admin loading skeleton |
 | Testing / CI | Not started | |
-| Production deployment | Not started | Target: Vercel free tier + Neon PostgreSQL |
+| Production deployment | Live | https://nevo-crochet.vercel.app — Vercel (auto-deploys `main`) + Neon `production` branch; custom domain not chosen yet |
 
 The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phased work split in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md).
 
@@ -40,7 +41,9 @@ The near-term roadmap lives in [NEXT_STEPS.md](NEXT_STEPS.md), and the full phas
 - **next-intl 4** — locale routing, message loading, navigation helpers
 - **PostgreSQL (Neon) + Prisma 6** — production data layer
 - **Zod 4** — request validation for the API routes
-- **Vercel** — planned frontend hosting
+- **Vercel** — hosting (deploys on every push to `main`), daily cron for the social import
+- **Cloudinary** — product and imported social photos
+- **Meta Graph API** — read-only access to Nevo's Facebook Page and Instagram
 
 Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (replaced by Neon PostgreSQL), online payments, checkout, order tracking.
 
@@ -48,13 +51,13 @@ Deliberately excluded for now: Supabase (free-tier inactivity pause), MySQL (rep
 
 ## What works today
 
-- **Home page** (`/[locale]`) — hero, featured gallery, about/values, process, FAQ, newsletter, contact
+- **Home page** (`/[locale]`) — hero (shows the first featured piece), featured gallery, about/values, process, FAQ, newsletter, contact
 - **Gallery** (`/[locale]/gallery`) — filter by collection, sort by featured/latest/name, add to cart
 - **Product detail** (`/[locale]/products/[slug]`) — localized product content, palette, add to cart
 - **Inquiry cart** — floating dock, quantity controls, removal, `localStorage` persistence, add confirmation feedback
 - **Bilingual UI** — full English and Arabic translations for every string, RTL layout, Arabic fonts and typography rules
 - **Social inbox** (`/[locale]/admin/social`) — posts from the official Facebook Page and Instagram are imported (daily cron + "Sync now"), photos copied to Cloudinary; admins turn posts into draft pieces
-- **Contact forms** — "Ask a question" and "Request a custom piece" tabs, newsletter signup (submission is client-side only; nothing is stored or emailed yet)
+- **Contact forms** — "Ask a question" and "Request a custom piece" tabs, newsletter signup (stored in the database via `/api/inquiries` and `/api/newsletter` and shown in the admin; no email notifications yet)
 
 ---
 
@@ -157,6 +160,16 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 **Social import (Meta):** `META_APP_ID` and `META_APP_SECRET` come from the Meta developer app. Run `npm run meta:setup` once with a short-lived `META_USER_TOKEN` from the Graph API Explorer (permissions `pages_show_list`, `pages_read_engagement`, `instagram_basic`, `business_management`); it writes `META_PAGE_ID`, `META_PAGE_TOKEN` (never expires unless the Page owner changes their Facebook password) and `META_IG_USER_ID` to `.env.local`. `CRON_SECRET` protects `/api/cron/social-sync`; Vercel sends it automatically to the daily cron.
 
+### Deploying
+
+Pushing to `main` deploys production on Vercel automatically. Vercel does **not** run database migrations: apply new migrations to the production database first (additive changes are safe to apply before the deploy):
+
+```bash
+DATABASE_URL="$(neon connection-string production --project-id young-bird-10422240)" npx prisma migrate deploy
+```
+
+Vercel env vars (Production and Preview): `DATABASE_URL`, `AUTH_SECRET`, `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `META_PAGE_ID`, `META_PAGE_TOKEN`, `META_IG_USER_ID`, `CRON_SECRET`. `META_APP_ID` / `META_APP_SECRET` are only needed locally for `npm run meta:setup`.
+
 For Vercel, set the same variables in the project settings — `DATABASE_URL` must be available to the **Build** step too, because product pages and the sitemap read the catalog at build time. The `postinstall` script runs `prisma generate`, which a clean install (like Vercel's) needs before TypeScript can see the Prisma types.
 
 ---
@@ -177,9 +190,9 @@ For Vercel, set the same variables in the project settings — `DATABASE_URL` mu
 
 1. **~~Data layer~~** — Neon PostgreSQL provisioned, Prisma migrated and seeded (3 projects, 6 testimonials)
 2. **~~API layer~~** — product read APIs, inquiry/newsletter write endpoints with Zod validation; forms wired
-3. **Admin CMS** — authenticated admin for products, images, and inquiry management
+3. **~~Admin CMS~~** — authenticated admin for pieces, photos (Cloudinary), inquiries, settings, and the social inbox
 4. **Polish** — loading/error/not-found states, SEO files, Framer Motion animations, responsive QA, testing
-5. **Deploy** — Vercel frontend + Neon PostgreSQL, environment variables, monitoring
+5. **Deploy** — ~~Vercel + Neon PostgreSQL, environment variables~~ (live); still to do: custom domain, monitoring, email notifications
 
 Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 
@@ -192,7 +205,10 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 - **~~Tailwind config warning~~** — Resolved by `"type": "module"` in `package.json`.
 - **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
 - **Per-IP rate limit is per server instance** — `lib/rate-limit.ts` keeps counts in memory, so on Vercel each instance counts separately and resets on cold start. The per-email inquiry limit (database-backed) and the honeypot field still apply everywhere.
-- **Sample imagery** — the seeded pieces still use Unsplash placeholders. Upload real photos from the piece form (Cloudinary); pasted links are accepted only from hosts in `lib/image-hosts.ts`.
+- **Sample imagery** — the dev and production databases now show 3 real pieces imported from Facebook (the Unsplash samples were removed; `petal-market-basket` is archived because an inquiry references it). `prisma/seed.ts` still seeds the Unsplash samples into a fresh database. Real photos come from the social inbox or the piece form (Cloudinary); pasted links are accepted only from hosts in `lib/image-hosts.ts`.
+- **Imported captions are Arabic only, with no prices** — English text, category and price are added by hand per piece ("Made to order" until prices are decided).
+- **Catalog changes made outside the admin show up within an hour** — storefront reads are cached for 1 hour (tags `projects`/`testimonials`/`settings`). Admin actions expire the cache immediately; direct database scripts don't.
+- **Meta connection** — the Page token doesn't expire, but changing the Page owner's Facebook password cancels it. The social inbox then shows a reconnect message: generate a new Graph API Explorer token, run `npm run meta:setup` (see Environment variables), then update `META_PAGE_TOKEN` on Vercel.
 - **Contact details are empty** — the site hides the email/WhatsApp lines until they're entered at `/[locale]/admin/settings`.
 - **All storefront routes render dynamically** — the root layout reads request headers for `lang`/`dir`, which opts every page out of static rendering. Database reads are still cached; revisit during the Lighthouse pass.
 
