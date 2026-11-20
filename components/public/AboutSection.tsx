@@ -7,7 +7,7 @@ export function AboutSection({ testimonials }: { testimonials: Testimonial[] }) 
     <section id="about" className="bg-[#fdf8fb]">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 md:grid-cols-[0.9fr_1.1fr] md:px-8 lg:px-10">
         <div className="space-y-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8d6e9e]">{t('aboutEyebrow')}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#856895]">{t('aboutEyebrow')}</p>
           <h2 className="text-3xl font-semibold tracking-[-0.05em] text-[#2f1d36] md:text-4xl">
             {t('aboutTitle')}
           </h2>

@@ -25,7 +25,7 @@ export function NavBar() {
             N
           </div>
           <div>
-            <p className={`text-xs uppercase tracking-[0.28em] text-[#8d6e9e] ${isArabic ? 'text-ar-small' : ''}`}>{t('brand')}</p>
+            <p className={`text-xs uppercase tracking-[0.28em] text-[#856895] ${isArabic ? 'text-ar-small' : ''}`}>{t('brand')}</p>
             <p className={`text-sm font-medium text-[#3f2d46] ${isArabic ? 'text-ar' : ''}`}>{t('tagline')}</p>
           </div>
         </Link>

@@ -38,7 +38,7 @@ export function NewsletterSection() {
     <section id="newsletter" className="border-y border-[#ead8ef] bg-[#fdf8fb] px-5 py-16 md:px-8 lg:px-10">
       <div className={`mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-end md:justify-between ${isArabic ? 'text-ar' : ''}`}>
         <div className="max-w-xl">
-          <p className={`text-xs font-semibold uppercase tracking-[0.24em] text-[#8d6e9e] ${isArabic ? 'text-ar-small' : ''}`}>
+          <p className={`text-xs font-semibold uppercase tracking-[0.24em] text-[#856895] ${isArabic ? 'text-ar-small' : ''}`}>
             {t('newsletterEyebrow')}
           </p>
           <h2 className={`mt-3 text-3xl font-semibold tracking-[-0.05em] text-[#2f1d36] md:text-4xl ${isArabic ? 'text-ar-title' : ''}`}>
@@ -60,7 +60,7 @@ export function NewsletterSection() {
               required
               autoComplete="email"
               placeholder={t('newsletterPlaceholder')}
-              className={`min-h-12 flex-1 rounded-full border border-[#decbe5] bg-white px-5 text-sm text-[#2f1d36] outline-none transition placeholder:text-[#927e9a] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20 ${isArabic ? 'text-ar' : ''}`}
+              className={`min-h-12 flex-1 rounded-full border border-[#decbe5] bg-white px-5 text-sm text-[#2f1d36] outline-none transition placeholder:text-[#806f88] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20 ${isArabic ? 'text-ar' : ''}`}
             />
             <button
               type="submit"

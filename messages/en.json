@@ -1,7 +1,11 @@
 {
   "metadata": {
     "title": "Nevo | Made slowly. Kept forever.",
-    "description": "Premium crochet and handmade home pieces made with intention and kept for years."
+    "description": "Premium crochet and handmade home pieces made with intention and kept for years.",
+    "siteName": "Nevo",
+    "slogan": "Made slowly. Kept forever.",
+    "galleryTitle": "Gallery | Nevo",
+    "galleryDescription": "Browse handmade crochet pieces for the home: cushions, throws, baskets and more, each made to order."
   },
   "header": {
     "brand": "Nevo",
@@ -51,7 +55,22 @@
     "sending": "Sending…",
     "cartSent": "Thank you! Your inquiry is on its way, and we’ll reply soon.",
     "submitError": "Something went wrong. Please try again.",
-    "tooManyRequests": "Too many attempts. Please wait a little and try again."
+    "tooManyRequests": "Too many attempts. Please wait a little and try again.",
+    "notFound": {
+      "title": "We couldn’t find that page",
+      "text": "The piece or page you’re looking for may have moved or is no longer available. Our gallery is a good place to keep looking.",
+      "gallery": "Browse the gallery",
+      "home": "Back to home"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "text": "This page didn’t load as expected. Please try again in a moment.",
+      "retry": "Try again",
+      "home": "Back to home",
+      "reference": "Reference: {digest}"
+    },
+    "cartCount": "{count, plural, =0 {empty} one {# item} other {# items}}",
+    "removeItem": "Remove {name}"
   },
   "home": {
     "eyebrow": "Premium crochet studio",
@@ -124,11 +143,26 @@
     "faqEyebrow": "Good to know",
     "faqTitle": "A few gentle answers before you begin.",
     "faq": {
-      "custom": { "question": "Can I request a custom color or size?", "answer": "Yes. Share your preferred colors, dimensions, and the feeling you want, and we will shape the details around your space." },
-      "timing": { "question": "How long does a custom piece take?", "answer": "Most pieces are ready within 1–2 weeks. We will confirm the exact timing with you before we begin." },
-      "care": { "question": "How should I care for my crochet piece?", "answer": "Gently hand wash when needed, reshape while damp, and let it dry flat away from direct heat." },
-      "shipping": { "question": "Do you ship internationally?", "answer": "We currently arrange shipping case by case. Send us your location and we will share the available options." },
-      "inquiry": { "question": "How do I start an inquiry?", "answer": "Add the pieces you love to your cart, then send us your details through the contact form. We will reply personally." }
+      "custom": {
+        "question": "Can I request a custom color or size?",
+        "answer": "Yes. Share your preferred colors, dimensions, and the feeling you want, and we will shape the details around your space."
+      },
+      "timing": {
+        "question": "How long does a custom piece take?",
+        "answer": "Most pieces are ready within 1–2 weeks. We will confirm the exact timing with you before we begin."
+      },
+      "care": {
+        "question": "How should I care for my crochet piece?",
+        "answer": "Gently hand wash when needed, reshape while damp, and let it dry flat away from direct heat."
+      },
+      "shipping": {
+        "question": "Do you ship internationally?",
+        "answer": "We currently arrange shipping case by case. Send us your location and we will share the available options."
+      },
+      "inquiry": {
+        "question": "How do I start an inquiry?",
+        "answer": "Add the pieces you love to your cart, then send us your details through the contact form. We will reply personally."
+      }
     },
     "newsletterEyebrow": "A little note from Nevo",
     "newsletterTitle": "Stay close to the next beautiful thing.",
@@ -173,7 +207,9 @@
       "viewSite": "View site",
       "logout": "Sign out",
       "signedInAs": "Signed in as {email}",
-      "newCount": "{count, plural, one {# new inquiry} other {# new inquiries}}"
+      "newCount": "{count, plural, one {# new inquiry} other {# new inquiries}}",
+      "projects": "Pieces",
+      "settings": "Settings"
     },
     "inquiries": {
       "title": "Inquiries",
@@ -219,6 +255,114 @@
       "saving": "Saving…",
       "saved": "Changes saved.",
       "saveError": "Could not save. Please try again."
-    }
+    },
+    "projects": {
+      "title": "Pieces",
+      "subtitle": "Add, edit and arrange the pieces shown in the gallery.",
+      "add": "Add a piece",
+      "empty": "No pieces yet. Add the first one.",
+      "statuses": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published",
+        "ARCHIVED": "Archived"
+      },
+      "featured": "Featured",
+      "feature": "Feature on home page",
+      "unfeature": "Remove from home page",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "edit": "Edit",
+      "view": "View",
+      "noImage": "No image",
+      "untitled": "Untitled",
+      "inquiriesCount": "{count, plural, =0 {Not in any inquiry} one {In # inquiry} other {In # inquiries}}",
+      "back": "← Back to pieces",
+      "newTitle": "New piece",
+      "editTitle": "Edit piece",
+      "created": "Piece created.",
+      "sections": {
+        "basics": "Basics",
+        "english": "English",
+        "arabic": "Arabic",
+        "colors": "Colors",
+        "images": "Images",
+        "seo": "Search engines (optional)",
+        "danger": "Delete piece"
+      },
+      "fields": {
+        "slug": "Web address",
+        "slugHint": "Lowercase letters, numbers and dashes. Changing it breaks old links.",
+        "status": "Visibility",
+        "statusHint": "Only published pieces appear on the site.",
+        "featured": "Show on the home page",
+        "title": "Title",
+        "category": "Category",
+        "categoryHint": "Reuse an existing category so gallery filters stay tidy.",
+        "description": "Description",
+        "materials": "Materials",
+        "priceLabel": "Price label",
+        "priceLabelHint": "Free text, e.g. “Made to order” or “From 45 JOD”.",
+        "seoTitle": "Page title",
+        "seoDescription": "Page description",
+        "colorEn": "Name in English",
+        "colorAr": "Name in Arabic",
+        "imageUrl": "Image address (https)",
+        "altText": "Image description",
+        "altTextHint": "Describe the photo for screen readers and search engines."
+      },
+      "colorsHint": "Color names are shared: renaming one updates every piece that uses it.",
+      "addColor": "Add new color",
+      "addExistingColor": "Add an existing color…",
+      "removeColor": "Remove color",
+      "imagesHint": "The first image is the cover. Paste links from {hosts} until photo uploads are set up.",
+      "addImage": "Add image",
+      "removeImage": "Remove image",
+      "cover": "Cover",
+      "noColors": "No colors yet.",
+      "noImages": "No images yet. Drafts can wait, but a piece needs at least one image to be published.",
+      "save": "Save piece",
+      "create": "Create piece",
+      "saving": "Saving…",
+      "saved": "Piece saved.",
+      "errors": {
+        "required": "Required.",
+        "tooLong": "Too long.",
+        "invalid": "Not valid.",
+        "taken": "Another piece already uses this address.",
+        "host": "Use an https link from an approved image host.",
+        "duplicate": "Each color can only be added once.",
+        "missing": "This piece no longer exists.",
+        "failed": "Could not save. Please try again.",
+        "summary": "Some fields need attention.",
+        "imageRequired": "Add at least one image before publishing."
+      },
+      "deleteHint": "Deleting removes the piece and its images for good. Pieces that appear in an inquiry can only be archived.",
+      "delete": "Delete piece",
+      "deleting": "Deleting…",
+      "deleteConfirm": "Delete this piece permanently? This cannot be undone.",
+      "deleteInUse": "This piece is part of an inquiry, so it can’t be deleted. Set it to Archived instead.",
+      "deleteFailed": "Could not delete. Please try again."
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Contact details shown in the contact section of the site.",
+      "contactHeading": "Contact details",
+      "email": {
+        "label": "Contact email",
+        "hint": "Leave empty to hide the email line on the site.",
+        "error": "Enter a valid email address, or leave it empty."
+      },
+      "whatsapp": {
+        "label": "WhatsApp number",
+        "hint": "Include the country code, e.g. +962 7 9123 4567. Leave empty to hide it.",
+        "error": "Enter 8–15 digits including the country code, or leave it empty.",
+        "test": "Test the link:"
+      },
+      "save": "Save settings",
+      "saving": "Saving…",
+      "saved": "Settings saved. The site is updated.",
+      "saveError": "Some fields need attention."
+    },
+    "loading": "Loading…"
   }
 }

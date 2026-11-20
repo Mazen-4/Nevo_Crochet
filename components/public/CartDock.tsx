@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState, useSyncExternalStore } from 'react';
+import { FormEvent, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { HoneypotField } from '@/components/public/HoneypotField';
 import { useInquiryCart } from '@/components/public/InquiryCartProvider';
@@ -11,7 +11,7 @@ const emptySubscribe = () => () => {};
 type Step = 'cart' | 'details' | 'sent';
 type Status = 'idle' | 'sending' | 'error' | 'limited';
 
-const inputClass = 'w-full rounded-2xl border border-[#decbe5] bg-white px-4 py-2.5 text-sm text-[#2f1d36] outline-none placeholder:text-[#927e9a] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20';
+const inputClass = 'w-full rounded-2xl border border-[#decbe5] bg-white px-4 py-2.5 text-sm text-[#2f1d36] outline-none placeholder:text-[#806f88] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20';
 
 export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
   const { items: savedItems, isOpen, openCart, closeCart, updateQuantity, removeItem, clearCart, lastAdded } = useInquiryCart();
@@ -22,6 +22,19 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
   const locale = useLocale();
   const t = useTranslations('common');
   const home = useTranslations('home');
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the panel and returns focus to the cart button.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      closeCart();
+      toggleRef.current?.focus();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, closeCart]);
 
   if (prevIsOpen !== isOpen) {
     setPrevIsOpen(isOpen);
@@ -74,31 +87,38 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+    // `end-5` keeps the dock in the reading-direction corner: bottom-right in English, bottom-left in Arabic.
+    <div className="fixed bottom-5 end-5 z-50 flex flex-col items-end gap-3">
+      {/* Always-mounted live region, so screen readers announce each "Added" message. */}
+      <p role="status" className="sr-only">{lastAdded ? t('added', { name: titleOf(lastAdded) }) : ''}</p>
       {lastAdded && !isOpen && (
-        <div className="rounded-full border border-[#ead8ef] bg-white px-4 py-2 text-sm font-medium text-[#43314a] shadow-[0_18px_40px_rgba(109,79,143,0.18)] animate-[pulse_2s_ease-in-out_1]">
+        <div aria-hidden="true" className="rounded-full border border-[#ead8ef] bg-white px-4 py-2 text-sm font-medium text-[#43314a] shadow-[0_18px_40px_rgba(109,79,143,0.18)] animate-[pulse_2s_ease-in-out_1]">
           {t('added', { name: titleOf(lastAdded) })}
         </div>
       )}
 
       <button
+        ref={toggleRef}
         type="button"
+        aria-expanded={isOpen}
+        aria-controls="cart-panel"
         onClick={() => (isOpen ? closeCart() : openCart())}
         className="group relative flex items-center gap-3 rounded-full bg-[#2f1d36] px-5 py-3 text-sm font-semibold text-white shadow-[0_24px_60px_rgba(43,25,53,0.28)] transition hover:-translate-y-0.5 hover:bg-[#3a2945]"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-base">🛒</span>
+        <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-base">🛒</span>
         <span>{t('cart')}</span>
-        <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#f7d7ff] px-1.5 text-xs font-bold text-[#2f1d36]">
+        <span aria-hidden="true" className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#f7d7ff] px-1.5 text-xs font-bold text-[#2f1d36]">
           {count}
         </span>
+        <span className="sr-only">{t('cartCount', { count })}</span>
       </button>
 
       {isOpen && (
-        <div className="w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-[1.75rem] border border-[#eedaf1] bg-white shadow-[0_30px_80px_rgba(82,54,95,0.18)]">
+        <section id="cart-panel" aria-labelledby="cart-panel-heading" className="w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-[1.75rem] border border-[#eedaf1] bg-white shadow-[0_30px_80px_rgba(82,54,95,0.18)]">
           <div className="flex items-center justify-between border-b border-[#f3e7f2] bg-[#fffafc] px-5 py-4">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8d6e9e]">{t('cart')}</p>
-              <h3 className="mt-1 text-xl font-semibold text-[#2f1d36]">{count} {count === 1 ? t('item') : t('items')}</h3>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#856895]">{t('cart')}</p>
+              <h3 id="cart-panel-heading" className="mt-1 text-xl font-semibold text-[#2f1d36]">{count} {count === 1 ? t('item') : t('items')}</h3>
             </div>
             <button
               type="button"
@@ -131,6 +151,7 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
                       <button
                         type="button"
                         onClick={() => removeItem(item.id)}
+                        aria-label={t('removeItem', { name: titleOf(item.id) })}
                         className="text-xs font-semibold text-[#8d5f7d] hover:text-[#6d3f63]"
                       >
                         {t('remove')}
@@ -204,7 +225,7 @@ export function CartDock({ catalog }: { catalog: CatalogEntry[] }) {
               )}
             </form>
           )}
-        </div>
+        </section>
       )}
     </div>
   );

@@ -68,7 +68,7 @@ export function HeroSection() {
               />
             </div>
             <div className="absolute bottom-10 left-10 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-lg backdrop-blur-sm">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-[#8d6e9e]">{t('featuredMake')}</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-[#856895]">{t('featuredMake')}</p>
               <p className="mt-1 text-lg font-semibold text-[#2f1d36]">{t('featuredProduct')}</p>
             </div>
           </div>

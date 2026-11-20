@@ -10,7 +10,7 @@ import { requireAdmin } from '@/lib/auth/session';
 import { updateInquiry } from '../actions';
 
 const card = 'rounded-[1.5rem] border border-[#efdfef] bg-white p-5 shadow-[0_10px_24px_rgba(140,112,163,0.05)]';
-const label = 'text-xs font-semibold uppercase tracking-[0.18em] text-[#8d6e9e]';
+const label = 'text-xs font-semibold uppercase tracking-[0.18em] text-[#856895]';
 
 export default async function InquiryDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;

@@ -34,7 +34,11 @@ No test runner is configured yet. Do not add one without confirming the choice f
 | Storefront routes (home, gallery, product) | `app/[locale]/(site)/…` — `(site)/layout.tsx` adds the cart dock + footer |
 | Admin routes | `app/[locale]/admin/` — `login/`, `actions.ts`, `(protected)/` (session required) |
 | Admin auth | `lib/auth/session.ts` (`getAdmin`, `requireAdmin`), `lib/auth/password.ts` |
-| Admin data access (session-checked) | `lib/admin/` |
+| Admin data access (session-checked) | `lib/admin/` (`inquiries.ts`, `projects.ts`) |
+| Admin piece (project) CRUD | `app/[locale]/admin/(protected)/projects/` + `components/admin/ProjectForm.tsx` |
+| Allowed product image hosts | `lib/image-hosts.ts` (read by `next.config.ts` and project validation) |
+| SEO helpers (base URL, hreflang, Open Graph, JSON-LD) | `lib/site.ts`; `app/sitemap.ts`, `app/robots.ts` |
+| Site settings (contact email, WhatsApp) | `lib/settings.ts` (cached, tag `settings`), edited at `/[locale]/admin/settings` |
 | Locale layout (fonts, provider, lang/dir) | `app/[locale]/layout.tsx` |
 | Root layout (cart provider, locale detection) | `app/layout.tsx` |
 | Storefront components | `components/public/` |
@@ -59,8 +63,10 @@ No test runner is configured yet. Do not add one without confirming the choice f
 
 ## Known pitfalls
 
-- Catalog reads are cached with `unstable_cache` (1h, tags `projects` / `testimonials`). After writing project data, call `revalidateTag` or the storefront will show stale content.
-- `middleware.ts` (next-intl locale routing) is deprecated in Next.js 16 in favor of the `proxy` convention; migration pending (see README "Known issues").
+- Catalog and settings reads are cached with `unstable_cache` (1h, tags `projects` / `testimonials` / `settings`). After writing that data, call `updateTag(tag)` in Server Actions (or `revalidateTag(tag, 'max')` in Route Handlers) or the storefront will show stale content. In Next.js 16, `revalidateTag` without a second argument is deprecated.
+- Next.js merges metadata **shallowly**: a page that sets `openGraph` replaces the layout's whole `openGraph` object. Build it with `openGraphFor()` from `lib/site.ts` so `og:locale` / `og:site_name` survive.
+- Don't add a `loading.tsx` to the storefront: streaming makes `notFound()` return a 200 "soft 404" instead of a real 404.
+- Locale routing lives in `proxy.ts` (Next.js 16 renamed `middleware` to `proxy`). Don't recreate a `middleware.ts`.
 - `lib/supabase.ts` is a misleading leftover name — use `lib/prisma.ts` instead.
 - Product images are Unsplash placeholders.
 - Root-level `mockup*.html` / `local-preview.html` are legacy design mockups, not part of the app.

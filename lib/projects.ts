@@ -39,6 +39,8 @@ function toProject(row: ProjectRow, locale: Locale, colorLabels: Map<string, str
     image: gallery[0] ?? '',
     gallery,
     priceLabel: translation.priceLabel ?? undefined,
+    seoTitle: translation.seoTitle ?? undefined,
+    seoDescription: translation.seoDescription ?? undefined,
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -67,6 +69,20 @@ export const getProjects = unstable_cache((locale: Locale) => loadProjects(local
 export const getProjectBySlug = unstable_cache(
   async (slug: string, locale: Locale) => (await loadProjects(locale, { slug }))[0] ?? null,
   ['projects:slug'],
+  { tags: [PROJECTS_TAG], revalidate: REVALIDATE_SECONDS },
+);
+
+/** Slugs and last-edit times of published projects, for the sitemap. */
+export const getSitemapProjects = unstable_cache(
+  async (): Promise<Array<{ slug: string; updatedAt: string }>> =>
+    (
+      await prisma.project.findMany({
+        where: { status: ProjectStatus.PUBLISHED },
+        orderBy: { sortOrder: 'asc' },
+        select: { slug: true, updatedAt: true },
+      })
+    ).map((row) => ({ slug: row.slug, updatedAt: row.updatedAt.toISOString() })),
+  ['projects:sitemap'],
   { tags: [PROJECTS_TAG], revalidate: REVALIDATE_SECONDS },
 );
 

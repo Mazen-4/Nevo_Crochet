@@ -9,7 +9,7 @@ export function ProcessSection() {
   return (
     <section id="process" className="mx-auto max-w-6xl px-5 py-20 md:px-8 lg:px-10">
       <div className="mb-10 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#8d6e9e]">{t('processEyebrow')}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#856895]">{t('processEyebrow')}</p>
         <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-[#2f1d36] md:text-4xl">
           {t('processTitle')}
         </h2>

@@ -58,11 +58,11 @@ Public routes from the schema doc:
 
 - [X] ~~Admin authentication (credential + session flow) and protected admin routes~~ (`/[locale]/admin`, scrypt + HMAC-signed cookie, no new deps; `npm run admin:create`)
 - [X] ~~Admin layout and navigation~~ (header with language switch and sign-out)
-- [ ] Project management: list, add/edit/delete, featured toggle, ordering — call `revalidateTag('projects')` after writes so the storefront cache refreshes
-- [ ] Image upload + storage (Cloudinary or S3-compatible; see schema doc)
+- [X] ~~Project management: list, add/edit/delete, featured toggle, ordering~~ (`/[locale]/admin/projects` — EN/AR side-by-side form, shared color labels, image URLs limited to `lib/image-hosts.ts`, writes call `updateTag('projects')`; pieces used by an inquiry can only be archived)
+- [ ] Image upload + storage — **decided: Cloudinary free tier** (25 GB storage / 25 credits per month, generous for a small catalog; signed uploads from the admin, URLs added to `lib/image-hosts.ts`)
 - [ ] Attach custom-request reference images to inquiries (`InquiryImage`) once upload storage exists
 - [X] ~~Inquiry management: view submissions with cart items, add notes, change status~~ (`/[locale]/admin/inquiries` — status tabs with counts, detail page, reply-by-email, private notes; new-count badge in the header)
-- [ ] Contact settings (WhatsApp number, email) via `SiteSetting`
+- [X] ~~Contact settings (WhatsApp number, email) via `SiteSetting`~~ (`/[locale]/admin/settings`, cached in `lib/settings.ts` under tag `settings`; an empty value hides that line on the site — **real values still need to be entered**)
 
 **Boundary:** Do not implement online payment, checkout, or customer order tracking in this phase.
 
@@ -70,24 +70,24 @@ Public routes from the schema doc:
 
 ## Phase 4 — Polish & SEO (Week 6)
 
-- [ ] Add `loading.tsx`, `error.tsx`, and a custom `not-found.tsx`
-- [ ] SEO: `sitemap.ts`, `robots.ts`, Open Graph metadata, structured data (Product/FAQ)
+- [X] ~~Add `loading.tsx`, `error.tsx`, and a custom `not-found.tsx`~~ (bilingual 404 via `(site)/[...rest]` catch-all, `[locale]/error.tsx` + `global-error.tsx`; `loading.tsx` only in the admin, because storefront streaming would turn real 404s into soft 404s)
+- [X] ~~SEO: `sitemap.ts`, `robots.ts`, Open Graph metadata, structured data (Product/FAQ)~~ (canonical + EN/AR hreflang on every page, per-piece SEO fields from the admin, Organization + FAQPage + Product JSON-LD; base URL from `NEXT_PUBLIC_APP_URL` → Vercel production URL → localhost, see `lib/site.ts`)
 - [ ] Replace Unsplash placeholders with real product photography
-- [ ] Install and implement Framer Motion entrance/scroll animations
+- [ ] Install and implement Framer Motion entrance/scroll animations — **approved**. Keep it light: transform/opacity only (no layout-triggering properties), stagger ≤ 60 ms, IntersectionObserver-triggered one-shot entrance instead of scroll-linked motion, respect `prefers-reduced-motion`. Use `motion/react` only where a CSS transition can't do the job; measure with Lighthouse before merging.
 - [ ] Evaluate the planned 3D hero (Three.js / React Three Fiber) — decide scope or defer
 - [ ] Responsive QA across mobile/tablet/desktop; verify RTL on every page
-- [ ] Fix known issues in [README.md](README.md#known-issues) (middleware → proxy migration, Tailwind module warning)
-- [ ] Accessibility pass (focus states, contrast, aria on cart/FAQ)
+- [X] ~~Fix known issues in [README.md](README.md#known-issues) (middleware → proxy migration, Tailwind module warning)~~
+- [X] ~~Accessibility pass (focus states, contrast, aria on cart/FAQ)~~ (site-wide `:focus-visible` ring; 3 text colors darkened to pass WCAG AA 4.5:1; cart: `aria-expanded`, announced "added" messages, Escape to close, named Remove buttons, RTL-aware position; FAQ: headings + `inert` collapsed answers; reduced-motion disables smooth scroll). Still worth a manual screen-reader pass on a real device.
 
 ---
 
 ## Phase 5 — Testing & Deployment (Week 7–8)
 
-- [ ] Testing setup (unit + integration; E2E last)
+- [ ] Testing setup (unit + integration; E2E last) — **approved**. Vitest for unit/integration (Zod schemas, cache-tag logic, admin data helpers), Playwright for the small E2E loop already covered by the scratchpad scripts (`admin/projects`, `admin/settings`, SEO). No Jest, no snapshot tests of HTML.
 - [ ] Lighthouse pass — target 90+, FCP < 1.5s on mobile
 - [ ] Deploy frontend to Vercel; connect Neon PostgreSQL and set env vars
 - [ ] Production migration (`npx prisma migrate deploy`)
-- [ ] Email notifications for new inquiries (Resend/SendGrid)
+- [ ] Email notifications for new inquiries — **decided: Resend free tier** (3 000 emails / month, 100 / day; one transactional sender, template in both languages)
 - [ ] Error tracking (Sentry, optional) and database backups
 - [ ] If spam gets through, move the per-IP limit to a shared store (e.g. Upstash Redis free tier) or add Cloudflare Turnstile
 - [ ] Launch checklist in [TEAM_WORK_PLAN.md](TEAM_WORK_PLAN.md#-launch-checklist)
@@ -111,6 +111,6 @@ Answer before Phase 1 begins:
 1. ~~**Database host**~~ — **Neon PostgreSQL** (confirmed)
 2. **Domain name** for deployment?
 3. **Admin credentials** — who is the admin user?
-4. **Image storage** — Cloudinary or S3-compatible?
+4. ~~**Image storage**~~ — **Cloudinary free tier** (confirmed)
 5. **Deployment target date?**
 6. **WhatsApp number and contact email** — real values to replace placeholders?

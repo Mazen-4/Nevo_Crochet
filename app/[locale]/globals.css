@@ -29,6 +29,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Visible keyboard focus everywhere. In the base layer so components that draw their
+   own focus ring (inputs with `outline-none focus:ring-…`) still override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -341,6 +350,7 @@ a {
 /* --- Reduced motion --- */
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .reveal-hidden { opacity: 1; }
   .hero-animate,
   .hero-animate-image { opacity: 1; animation: none; }

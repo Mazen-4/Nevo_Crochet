@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Almarai, Cairo } from 'next/font/google';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { openGraphFor, SITE_URL } from '@/lib/site';
 
 const cairo = Cairo({
   subsets: ['arabic'],
@@ -26,7 +27,16 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
-  return { title: locale === 'ar' ? 'نيفو | صُنِع ببطء، ليبقى إلى الأبد' : 'Nevo | Made slowly. Kept forever.' };
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+
+  // Pages refine these; relative URLs in page metadata resolve against metadataBase.
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: t('title'),
+    description: t('description'),
+    openGraph: openGraphFor(locale, t('siteName'), { title: t('title'), description: t('description') }),
+    twitter: { card: 'summary_large_image' },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: Readonly<LayoutProps<'/[locale]'>>) {

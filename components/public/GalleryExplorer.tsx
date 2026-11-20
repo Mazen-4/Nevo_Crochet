@@ -39,7 +39,7 @@ export function GalleryExplorer({ projects }: { projects: Project[] }) {
     <main className={`min-h-screen bg-[#fffafc] text-[#2f1d36] ${isArabic ? 'text-ar' : ''}`}>
       <section className="border-b border-[#ead8ef] bg-[radial-gradient(circle_at_top_left,_#fff8fc,_#f5ecff_34%,_#fffafc_82%)] px-5 py-16 md:px-8 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <p className={`text-xs font-semibold uppercase tracking-[0.24em] text-[#8d6e9e] ${isArabic ? 'text-ar-small' : ''}`}>{t('galleryPage.eyebrow')}</p>
+          <p className={`text-xs font-semibold uppercase tracking-[0.24em] text-[#856895] ${isArabic ? 'text-ar-small' : ''}`}>{t('galleryPage.eyebrow')}</p>
           <h1 className={`mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-[#2f1d36] md:text-6xl ${isArabic ? 'text-ar-title' : ''}`}>{t('galleryPage.title')}</h1>
           <p className={`mt-5 max-w-2xl text-lg leading-8 text-[#5d4868] ${isArabic ? 'text-ar-body' : ''}`}>{t('galleryPage.description')}</p>
         </div>
@@ -48,7 +48,7 @@ export function GalleryExplorer({ projects }: { projects: Project[] }) {
       <section className="mx-auto max-w-6xl px-5 py-12 md:px-8 lg:px-10">
         <div className="mb-10 flex flex-col gap-6 border-b border-[#ead8ef] pb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <label className={`mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-[#8d6e9e] ${isArabic ? 'text-ar-small' : ''}`}>
+            <label className={`mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-[#856895] ${isArabic ? 'text-ar-small' : ''}`}>
               {t('galleryPage.filterLabel')}
             </label>
             <div className="flex flex-wrap gap-2" role="group" aria-label={t('galleryPage.filterLabel')}>

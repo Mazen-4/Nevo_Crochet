@@ -42,7 +42,7 @@ export function InquiryUpdateForm({ action, status, statuses, adminNotes }: Prop
           defaultValue={adminNotes}
           dir="auto"
           placeholder={t('notesPlaceholder')}
-          className="w-full rounded-2xl border border-[#decbe5] bg-white px-4 py-3 text-sm text-[#2f1d36] outline-none placeholder:text-[#927e9a] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20"
+          className="w-full rounded-2xl border border-[#decbe5] bg-white px-4 py-3 text-sm text-[#2f1d36] outline-none placeholder:text-[#806f88] focus:border-[#7b5ca8] focus:ring-2 focus:ring-[#7b5ca8]/20"
         />
       </div>
 

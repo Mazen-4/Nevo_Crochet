@@ -10,20 +10,21 @@ Online payment and checkout are intentionally out of scope for the current phase
 
 ## Current status
 
-The public storefront frontend is complete and runs locally against a live Neon PostgreSQL database. Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS is next.
+The public storefront frontend is complete and runs locally against a live Neon PostgreSQL database. Products and testimonials are read from the database, and the contact, custom request, newsletter, and cart forms persist through API routes. The admin CMS manages inquiries and pieces; photo uploads wait on an image storage choice.
 
 | Area | Status | Notes |
 | --- | --- | --- |
 | Storefront UI (home, gallery, product detail) | Done | 3 routes, 14 components |
-| English/Arabic i18n + RTL | Done | `next-intl`, locale middleware, language switcher |
+| English/Arabic i18n + RTL | Done | `next-intl`, locale proxy, language switcher |
 | Inquiry cart (add, quantity, remove, persistence) | Done | `localStorage`-backed, floating cart dock |
 | Design system & responsive layout | Done | Pink/purple palette, Cairo/Almarai Arabic typography |
 | Database schema (PostgreSQL + Prisma) | Done | Neon PostgreSQL provisioned, migrated, and seeded (3 projects, 6 testimonials) |
 | API routes (inquiries, newsletter, products) | Done | `app/api/*`, Zod validation, pages read via cached `lib/projects.ts` |
-| Admin CMS | Not started | |
+| Admin CMS | In progress | Sign-in, inquiry management and piece (project) management done; image upload pending a storage choice |
 | CSS animations (scroll reveal, hero, cards) | Done | Pure CSS + IntersectionObserver, no external deps |
 | Framer Motion / 3D hero | Not started | No Framer Motion or Three.js installed yet |
-| SEO (sitemap, robots, OG, structured data) | Not started | Basic page metadata only |
+| SEO (sitemap, robots, OG, structured data) | Done | `app/sitemap.ts`, `app/robots.ts`, per-page canonical/hreflang/OG, JSON-LD; set `NEXT_PUBLIC_APP_URL` once the domain is known |
+| Loading / error / 404 states | Done | Bilingual 404 + error boundaries; admin loading skeleton |
 | Testing / CI | Not started | |
 | Production deployment | Not started | Target: Vercel free tier + Neon PostgreSQL |
 
@@ -98,7 +99,7 @@ messages/
   en.json, ar.json           # UI translations (product/testimonial copy lives in the DB)
 types/index.ts               # Shared Project / Testimonial / CartItem types
 docs/                        # Database schema and project documents
-middleware.ts                # next-intl locale routing (see Known issues)
+proxy.ts                     # next-intl locale routing (Next.js 16 "proxy", formerly middleware)
 ```
 
 Root-level `mockup.html`, `mockup01.html`, and `local-preview.html` are early design mockups kept for visual reference only — they are not part of the app.
@@ -182,11 +183,13 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 ## Known issues
 
 - **~~Lint failures~~** — Resolved. `npm run lint` passes with 0 errors and 0 warnings.
-- **Middleware deprecation** — Next.js 16 flags `middleware.ts` as deprecated in favor of the `proxy` convention. Migrate with `npx @next/codemod@canary middleware-to-proxy .` (update `i18n` references accordingly).
-- **Tailwind config warning** — dev server warns about module type detection for `tailwind.config.ts`; adding `"type": "module"` to `package.json` resolves it.
+- **~~Middleware deprecation~~** — Resolved. Locale routing now lives in `proxy.ts` (Next.js 16 convention).
+- **~~Tailwind config warning~~** — Resolved by `"type": "module"` in `package.json`.
 - **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
 - **Per-IP rate limit is per server instance** — `lib/rate-limit.ts` keeps counts in memory, so on Vercel each instance counts separately and resets on cold start. The per-email inquiry limit (database-backed) and the honeypot field still apply everywhere.
-- **Sample imagery** — product images are Unsplash placeholders pending real product photography.
+- **Sample imagery** — product images are Unsplash placeholders pending real product photography. Until uploads exist, the admin accepts image links only from hosts listed in `lib/image-hosts.ts`.
+- **Contact details are empty** — the site hides the email/WhatsApp lines until they're entered at `/[locale]/admin/settings`.
+- **All storefront routes render dynamically** — the root layout reads request headers for `lang`/`dir`, which opts every page out of static rendering. Database reads are still cached; revisit during the Lighthouse pass.
 
 ---
 

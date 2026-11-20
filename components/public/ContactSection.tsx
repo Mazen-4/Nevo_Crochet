@@ -3,10 +3,12 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { HoneypotField } from '@/components/public/HoneypotField';
+import type { ContactSettings } from '@/lib/settings';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error' | 'limited';
 
-export function ContactSection() {
+/** `contact` comes from the admin Settings page; unset lines are hidden rather than showing placeholders. */
+export function ContactSection({ contact }: { contact: ContactSettings }) {
   const [status, setStatus] = useState<Status>('idle');
   const [activeForm, setActiveForm] = useState<'question' | 'custom'>('question');
   const [imageCount, setImageCount] = useState(0);
@@ -96,18 +98,22 @@ export function ContactSection() {
           </p>
 
           <div className="mt-8 space-y-4 text-sm text-[#f4ebff]">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#d4b5f3]">{t('email')}</p>
-              <a href="mailto:hello@nevo-studio.com" className="mt-1 block text-lg font-medium text-white">
-                hello@nevo-studio.com
-              </a>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-[#d4b5f3]">{t('whatsapp')}</p>
-              <a href="https://wa.me/1234567890" className="mt-1 block text-lg font-medium text-white">
-                +1 (234) 567-890
-              </a>
-            </div>
+            {contact.email && (
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#d4b5f3]">{t('email')}</p>
+                <a href={`mailto:${contact.email}`} dir="ltr" className="mt-1 block break-all text-start text-lg font-medium text-white">
+                  {contact.email}
+                </a>
+              </div>
+            )}
+            {contact.whatsapp && (
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#d4b5f3]">{t('whatsapp')}</p>
+                <a href={`https://wa.me/${contact.whatsapp.digits}`} target="_blank" rel="noreferrer" dir="ltr" className="mt-1 block text-start text-lg font-medium text-white">
+                  {contact.whatsapp.display}
+                </a>
+              </div>
+            )}
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-[#d4b5f3]">{t('responseTime')}</p>
               <p className="mt-1 text-lg font-medium text-white">{t('responseValue')}</p>

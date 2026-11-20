@@ -1,6 +1,7 @@
-import { InquiryStatus } from '@prisma/client';
+import { InquiryStatus, ProjectStatus } from '@prisma/client';
 import { z } from 'zod';
 import { routing } from '@/i18n/routing';
+import { isAllowedImageUrl } from '@/lib/image-hosts';
 
 export const localeSchema = z.enum(routing.locales);
 
@@ -69,4 +70,62 @@ export const inquiryUpdateSchema = z.object({
   id: requiredText(40),
   status: z.enum(InquiryStatus),
   adminNotes: optionalText(5000),
+});
+
+/** URL-safe lowercase slug: `luna-cushion-set`. */
+export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const projectTranslationSchema = z.object({
+  title: requiredText(180),
+  category: requiredText(80),
+  description: requiredText(5000),
+  materials: optionalText(2000),
+  priceLabel: optionalText(100),
+  seoTitle: optionalText(180),
+  seoDescription: optionalText(300),
+});
+
+/** Admin project form. Colors are keyed by a stable slug; their labels are shared across projects. */
+export const projectSchema = z.object({
+  slug: z.string().trim().toLowerCase().min(1).max(160).regex(SLUG_PATTERN),
+  status: z.enum(ProjectStatus),
+  featured: z.boolean(),
+  en: projectTranslationSchema,
+  ar: projectTranslationSchema,
+  colors: z
+    .array(
+      z.object({
+        key: z.string().trim().toLowerCase().max(80).regex(SLUG_PATTERN),
+        en: requiredText(100),
+        ar: requiredText(100),
+      }),
+    )
+    .max(20)
+    .refine((colors) => new Set(colors.map((c) => c.key)).size === colors.length, { message: 'duplicate' }),
+  images: z
+    .array(
+      z.object({
+        url: z.string().trim().max(2000).refine(isAllowedImageUrl, { message: 'host' }),
+        altText: optionalText(255),
+      }),
+    )
+    .max(12),
+}).refine((project) => project.status !== ProjectStatus.PUBLISHED || project.images.length > 0, {
+  // Storefront cards and the product page always render a cover image.
+  message: 'imageRequired',
+  path: ['images'],
+});
+
+export type ProjectInput = z.infer<typeof projectSchema>;
+
+/** Empty strings clear a setting. WhatsApp numbers need a country code: 8–15 digits (E.164). */
+export const contactSettingsSchema = z.object({
+  email: z.string().trim().pipe(z.union([z.literal(''), email])),
+  whatsapp: z
+    .string()
+    .trim()
+    .max(30)
+    .refine((value) => value === '' || (/^\+?[\d\s()-]+$/.test(value) && /^\d{8,15}$/.test(value.replace(/\D/g, ''))), {
+      message: 'phone',
+    }),
 });
