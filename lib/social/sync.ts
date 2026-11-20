@@ -22,6 +22,8 @@ const TIME_BUDGET_MS = 45_000;
 const UPLOAD_CONCURRENCY = 4;
 /** Captions must match on at least this many letters to count as the same post. */
 const MIN_MATCH_LENGTH = 30;
+/** When several Facebook posts share a caption, an Instagram post within this window of one of them is its cross-post. */
+const SAME_DAY_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
 
 /** Letters and digits only, so emoji, spacing and punctuation differences between platforms don't matter. */
 const captionKey = (caption: string | null, length = 80) => (caption ?? '').normalize('NFKC').replace(/[^\p{L}\p{N}]+/gu, '').slice(0, length);
@@ -79,14 +81,18 @@ async function linkCrossPosts() {
       select: { id: true, caption: true, postedAt: true },
     }),
   ]);
-  const uniqueMatch = (caption: string | null, length: number) => {
-    const key = captionKey(caption, length);
+  const uniqueMatch = (post: { caption: string | null; postedAt: Date }, length: number) => {
+    const key = captionKey(post.caption, length);
     if (key.length < MIN_MATCH_LENGTH) return undefined;
     const hits = facebook.filter((fb) => captionKey(fb.caption, length) === key);
-    return hits.length === 1 ? hits[0] : undefined;
+    if (hits.length === 1) return hits[0];
+    // The same piece posted twice on Facebook (e.g. a photo post plus an Instagram share): take the closest one in time.
+    const distance = (fb: { postedAt: Date }) => Math.abs(fb.postedAt.getTime() - post.postedAt.getTime());
+    const nearest = hits.sort((a, b) => distance(a) - distance(b))[0];
+    return nearest && distance(nearest) <= SAME_DAY_WINDOW_MS ? nearest : undefined;
   };
   for (const post of instagram) {
-    const match = uniqueMatch(post.caption, 80) ?? uniqueMatch(post.caption, 40);
+    const match = uniqueMatch(post, 80) ?? uniqueMatch(post, 40);
     if (match) {
       await prisma.socialPost.update({ where: { id: post.id }, data: { duplicateOfId: match.id, status: SocialPostStatus.IGNORED } });
     }
