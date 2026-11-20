@@ -8,7 +8,7 @@ import { routing } from '@/i18n/routing';
 import { getAdminProject, listCategories, listColorOptions } from '@/lib/admin/projects';
 import { requireAdmin } from '@/lib/auth/session';
 import type { ProjectFormValues, ProjectTranslationValues } from '@/types';
-import { deleteProject, saveProject } from '../actions';
+import { deleteProject, saveProject, signImageUpload } from '../actions';
 
 type Translation = NonNullable<Awaited<ReturnType<typeof getAdminProject>>>['translations'][number];
 
@@ -87,6 +87,7 @@ export default async function EditProjectPage({
         isNew={false}
         colorOptions={colorOptions}
         categories={categories}
+        signUpload={signImageUpload.bind(null, locale)}
       />
 
       <section className="rounded-[1.5rem] border border-rose-100 bg-white p-5">

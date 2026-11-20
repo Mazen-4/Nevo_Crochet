@@ -59,7 +59,7 @@ Public routes from the schema doc:
 - [X] ~~Admin authentication (credential + session flow) and protected admin routes~~ (`/[locale]/admin`, scrypt + HMAC-signed cookie, no new deps; `npm run admin:create`)
 - [X] ~~Admin layout and navigation~~ (header with language switch and sign-out)
 - [X] ~~Project management: list, add/edit/delete, featured toggle, ordering~~ (`/[locale]/admin/projects` — EN/AR side-by-side form, shared color labels, image URLs limited to `lib/image-hosts.ts`, writes call `updateTag('projects')`; pieces used by an inquiry can only be archived)
-- [ ] Image upload + storage — **decided: Cloudinary free tier** (25 GB storage / 25 credits per month, generous for a small catalog; signed uploads from the admin, URLs added to `lib/image-hosts.ts`)
+- [X] ~~Image upload + storage — Cloudinary free tier~~ (signed direct uploads from the piece form: `lib/cloudinary.ts` signs folder `nevo/products`, a 2400px size cap and allowed formats; the browser uploads straight to Cloudinary; only this cloud's URLs pass `lib/image-hosts.ts`. Removed photos stay in Cloudinary — clean up from its Media Library if storage ever matters)
 - [ ] Attach custom-request reference images to inquiries (`InquiryImage`) once upload storage exists
 - [X] ~~Inquiry management: view submissions with cart items, add notes, change status~~ (`/[locale]/admin/inquiries` — status tabs with counts, detail page, reply-by-email, private notes; new-count badge in the header)
 - [X] ~~Contact settings (WhatsApp number, email) via `SiteSetting`~~ (`/[locale]/admin/settings`, cached in `lib/settings.ts` under tag `settings`; an empty value hides that line on the site — **real values still need to be entered**)

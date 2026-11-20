@@ -6,12 +6,20 @@ import type { z } from 'zod';
 import { redirect } from '@/i18n/navigation';
 import { PROJECT_ORDER } from '@/lib/admin/projects';
 import { requireAdmin } from '@/lib/auth/session';
+import { createUploadSignature } from '@/lib/cloudinary';
 import { prisma } from '@/lib/prisma';
 import { PROJECTS_TAG } from '@/lib/projects';
 import { localeSchema, projectSchema, type ProjectInput } from '@/lib/validation';
-import type { ProjectFormState } from '@/types';
+import type { ProjectFormState, UploadSignature } from '@/types';
 
 export type DeleteProjectState = { error?: 'inUse' | 'failed' };
+
+/** Signs one batch of photo uploads for the project form. `null` when Cloudinary isn't configured. */
+export async function signImageUpload(rawLocale: string): Promise<UploadSignature | null> {
+  const locale = localeSchema.parse(rawLocale);
+  await requireAdmin(locale);
+  return createUploadSignature();
+}
 
 const LOCALES = [Locale.en, Locale.ar] as const;
 

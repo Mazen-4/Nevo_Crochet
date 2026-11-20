@@ -3,9 +3,10 @@
 import { useActionState, useState, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import { ImageUploadButton } from '@/components/admin/ImageUploadButton';
 import { IMAGE_HOSTS, isAllowedImageUrl } from '@/lib/image-hosts';
 import { slugify } from '@/lib/slug';
-import type { ProjectFormState, ProjectFormValues, ProjectTranslationValues } from '@/types';
+import type { ProjectFormState, ProjectFormValues, ProjectTranslationValues, UploadSignature } from '@/types';
 
 type ColorOption = { key: string; en: string; ar: string };
 type ColorRow = ColorOption & { uid: string; isNew: boolean };
@@ -17,8 +18,10 @@ type Props = {
   isNew: boolean;
   colorOptions: ColorOption[];
   categories: { en: string[]; ar: string[] };
+  signUpload: () => Promise<UploadSignature | null>;
 };
 
+const MAX_IMAGES = 12;
 const STATUSES = ['PUBLISHED', 'DRAFT', 'ARCHIVED'] as const;
 
 const uid = () => Math.random().toString(36).slice(2, 10);
@@ -42,7 +45,7 @@ function Field({ id, label, hint, error, children }: { id: string; label: string
 
 const describedBy = (id: string, error?: string, hint?: string) => (error ? `${id}-error` : hint ? `${id}-hint` : undefined);
 
-export function ProjectForm({ action, initial, isNew, colorOptions, categories }: Props) {
+export function ProjectForm({ action, initial, isNew, colorOptions, categories, signUpload }: Props) {
   const t = useTranslations('admin.projects');
   const [state, formAction, pending] = useActionState(action, {});
 
@@ -53,6 +56,7 @@ export function ProjectForm({ action, initial, isNew, colorOptions, categories }
   const [translations, setTranslations] = useState({ en: initial.en, ar: initial.ar });
   const [colors, setColors] = useState<ColorRow[]>(() => initial.colors.map((c) => ({ ...c, uid: uid(), isNew: false })));
   const [images, setImages] = useState<ImageRow[]>(() => initial.images.map((image) => ({ ...image, uid: uid() })));
+  const [uploading, setUploading] = useState(false);
 
   const errors = state.errors ?? {};
   const errorText = (path: string) => (errors[path] ? t(`errors.${errors[path]}`) : undefined);
@@ -294,7 +298,7 @@ export function ProjectForm({ action, initial, isNew, colorOptions, categories }
                       onChange={(event) => update('url', event.target.value)}
                       aria-invalid={Boolean(urlError)}
                       aria-describedby={describedBy(urlId, urlError)}
-                      placeholder="https://images.unsplash.com/…"
+                      placeholder="https://res.cloudinary.com/…"
                       className={`${input} border-[#decbe5] text-start`}
                     />
                   </Field>
@@ -320,9 +324,17 @@ export function ProjectForm({ action, initial, isNew, colorOptions, categories }
             );
           })}
         </ol>
-        <button type="button" disabled={images.length >= 12} onClick={() => setImages((rows) => [...rows, { uid: uid(), url: '', altText: '' }])} className={smallButton}>
-          + {t('addImage')}
-        </button>
+        <div className="flex flex-wrap items-start gap-3">
+          <ImageUploadButton
+            signUpload={signUpload}
+            remaining={MAX_IMAGES - images.length}
+            onUploaded={(url) => setImages((rows) => [...rows, { uid: uid(), url, altText: '' }])}
+            onBusyChange={setUploading}
+          />
+          <button type="button" disabled={images.length >= MAX_IMAGES} onClick={() => setImages((rows) => [...rows, { uid: uid(), url: '', altText: '' }])} className={smallButton}>
+            + {t('addImage')}
+          </button>
+        </div>
       </section>
 
       <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-end gap-3 rounded-full border border-[#ead8ef] bg-white/90 p-2 shadow-[0_12px_30px_rgba(47,29,54,0.12)] backdrop-blur">
@@ -331,10 +343,10 @@ export function ProjectForm({ action, initial, isNew, colorOptions, categories }
         )}
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || uploading}
           className="rounded-full bg-[#2f1d36] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#3a2945] disabled:opacity-60"
         >
-          {pending ? t('saving') : isNew ? t('create') : t('save')}
+          {pending ? t('saving') : uploading ? t('upload.waiting') : isNew ? t('create') : t('save')}
         </button>
       </div>
     </form>

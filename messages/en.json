@@ -314,7 +314,7 @@
       "addColor": "Add new color",
       "addExistingColor": "Add an existing color…",
       "removeColor": "Remove color",
-      "imagesHint": "The first image is the cover. Paste links from {hosts} until photo uploads are set up.",
+      "imagesHint": "The first image is the cover. Upload photos, or paste a link from {hosts}.",
       "addImage": "Add image",
       "removeImage": "Remove image",
       "cover": "Cover",
@@ -341,7 +341,17 @@
       "deleting": "Deleting…",
       "deleteConfirm": "Delete this piece permanently? This cannot be undone.",
       "deleteInUse": "This piece is part of an inquiry, so it can’t be deleted. Set it to Archived instead.",
-      "deleteFailed": "Could not delete. Please try again."
+      "deleteFailed": "Could not delete. Please try again.",
+      "upload": {
+        "button": "Upload photos",
+        "uploading": "Uploading {done} of {total}…",
+        "waiting": "Waiting for uploads…",
+        "hint": "JPG, PNG, WebP or AVIF, up to 10 MB each. Large photos are resized automatically.",
+        "tooLarge": "{name} is larger than 10 MB. Please export a smaller version.",
+        "tooMany": "Only {count, plural, =0 {no more photos} one {# more photo} other {# more photos}} can be added to this piece.",
+        "failed": "Couldn’t upload {name}. Please try again.",
+        "notConfigured": "Photo uploads aren’t available right now. Please try again later."
+      }
     },
     "settings": {
       "title": "Settings",

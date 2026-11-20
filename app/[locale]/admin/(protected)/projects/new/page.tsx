@@ -7,7 +7,7 @@ import { routing } from '@/i18n/routing';
 import { listCategories, listColorOptions } from '@/lib/admin/projects';
 import { requireAdmin } from '@/lib/auth/session';
 import type { ProjectFormValues, ProjectTranslationValues } from '@/types';
-import { saveProject } from '../actions';
+import { saveProject, signImageUpload } from '../actions';
 
 const emptyTranslation: ProjectTranslationValues = {
   title: '',
@@ -50,6 +50,7 @@ export default async function NewProjectPage({ params }: { params: Promise<{ loc
         isNew
         colorOptions={colorOptions}
         categories={categories}
+        signUpload={signImageUpload.bind(null, locale)}
       />
     </div>
   );

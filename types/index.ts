@@ -60,6 +60,12 @@ export type ProjectFormState = {
   errors?: Record<string, string>;
 };
 
+/** A signed Cloudinary upload: POST the file plus `fields` as multipart form data to `uploadUrl`. */
+export type UploadSignature = {
+  uploadUrl: string;
+  fields: Record<string, string>;
+};
+
 /** Minimal project info the cart needs to render localized titles. */
 export type CatalogEntry = Pick<Project, 'id' | 'slug' | 'title' | 'priceLabel'>;
 

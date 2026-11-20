@@ -37,6 +37,7 @@ No test runner is configured yet. Do not add one without confirming the choice f
 | Admin data access (session-checked) | `lib/admin/` (`inquiries.ts`, `projects.ts`) |
 | Admin piece (project) CRUD | `app/[locale]/admin/(protected)/projects/` + `components/admin/ProjectForm.tsx` |
 | Allowed product image hosts | `lib/image-hosts.ts` (read by `next.config.ts` and project validation) |
+| Photo uploads (Cloudinary signed direct upload) | `lib/cloudinary.ts` (server-only signing), `components/admin/ImageUploadButton.tsx` |
 | SEO helpers (base URL, hreflang, Open Graph, JSON-LD) | `lib/site.ts`; `app/sitemap.ts`, `app/robots.ts` |
 | Site settings (contact email, WhatsApp) | `lib/settings.ts` (cached, tag `settings`), edited at `/[locale]/admin/settings` |
 | Locale layout (fonts, provider, lang/dir) | `app/[locale]/layout.tsx` |

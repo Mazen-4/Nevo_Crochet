@@ -152,7 +152,9 @@ AUTH_SECRET=replace_with_at_least_32_random_characters
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. For Vercel, set the same variables in the project settings — `DATABASE_URL` must be available to the **Build** step too, because product pages and the sitemap read the catalog at build time. The `postinstall` script runs `prisma generate`, which a clean install (like Vercel's) needs before TypeScript can see the Prisma types.
+`DATABASE_URL` is required — every page reads from Neon (pull it with `neon env pull`). `AUTH_SECRET` signs admin session cookies; generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"`. `.env.local` is git-ignored; never commit real credentials. **Database branches (Neon project `young-bird-10422240`):** `production` (default) is the live site's database; `dev` is a copy for local development and Vercel Preview deploys. Keep your local `.env` on `dev` (`NEON_BRANCH=dev`) so local testing never touches live data. Vercel's Production environment uses `production`, its Preview environment uses `dev`, and each has its own `AUTH_SECRET`.
+
+For Vercel, set the same variables in the project settings — `DATABASE_URL` must be available to the **Build** step too, because product pages and the sitemap read the catalog at build time. The `postinstall` script runs `prisma generate`, which a clean install (like Vercel's) needs before TypeScript can see the Prisma types.
 
 ---
 
@@ -187,7 +189,7 @@ Deferred: 3D hero elements, blog, payments/checkout, customer order tracking.
 - **~~Tailwind config warning~~** — Resolved by `"type": "module"` in `package.json`.
 - **Custom request images are not uploaded** — the file picker works, but files are not sent until image storage lands in Phase 3.
 - **Per-IP rate limit is per server instance** — `lib/rate-limit.ts` keeps counts in memory, so on Vercel each instance counts separately and resets on cold start. The per-email inquiry limit (database-backed) and the honeypot field still apply everywhere.
-- **Sample imagery** — product images are Unsplash placeholders pending real product photography. Until uploads exist, the admin accepts image links only from hosts listed in `lib/image-hosts.ts`.
+- **Sample imagery** — the seeded pieces still use Unsplash placeholders. Upload real photos from the piece form (Cloudinary); pasted links are accepted only from hosts in `lib/image-hosts.ts`.
 - **Contact details are empty** — the site hides the email/WhatsApp lines until they're entered at `/[locale]/admin/settings`.
 - **All storefront routes render dynamically** — the root layout reads request headers for `lang`/`dir`, which opts every page out of static rendering. Database reads are still cached; revisit during the Lighthouse pass.
 
